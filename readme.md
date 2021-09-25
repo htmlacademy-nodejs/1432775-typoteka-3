@@ -1,7 +1,7 @@
 # Личный проект «Типотека» [![Build status][travis-image]][travis-url]
 
 * Студент: [Иван](https://up.htmlacademy.ru/nodejs/3/user/1432775).
-* Наставник: `Неизвестно`.
+* Наставник: [Вадим Осюков](https://up.htmlacademy.ru/nodejs/3/user/1411353).
 
 ---
 
