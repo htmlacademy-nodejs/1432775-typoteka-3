@@ -1,10 +1,9 @@
 "use strict";
 
-const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
 
-const {TEXTS, TITLES, CATEGORIES} = require(`./possibleData`);
-const {getRandomInt, shuffle} = require(`../../utils`);
+const {getRandomInt, shuffle} = require(`../../utils/util`);
+const {readContent, writeContent} = require(`../../utils/fs`);
 const {ExitCode} = require(`../../const`);
 
 const DEFAULT_NOTES_NUMBER = 1;
@@ -12,58 +11,68 @@ const MAX_NOTES_NUMBER = 1000;
 const MAX_MONTHS_AGO_CREATED = 3;
 const MAX_ANNOUNCE_SENTENCES = 5;
 const MAX_FULL_TEXT_SENTENCES = 10;
-const MONTH_MILLISECONDS = 3600000 * 24 * 30;
+const MAX_CATEGORIES_NUMBER = 5;
 
 const FILE_NAME = `mock.json`;
-const WRITE_ERROR_MESSAGE = `Can't write data to file...`;
-const WRITE_SUCCESS_MESSAGE = `Operation success. File created.`;
-const MAX_NOTES_ERROR_MESSAGE = `Can't be more than ${MAX_NOTES_NUMBER} notes`;
+const FAKE_DATA_PATH = `./data/`;
+const SENTENCES_PATH = FAKE_DATA_PATH + `sentences.txt`;
+const TITLES_PATH = FAKE_DATA_PATH + `titles.txt`;
+const CATEGORIES_PATH = FAKE_DATA_PATH + `categories.txt`;
 
-const getNotes = (notesNum) =>
+const getNotes = (notesNum, categories, sentences, titles) =>
   Array(notesNum)
     .fill()
     .map(() => {
       const currentDate = +new Date();
       const minCreationData =
-        currentDate - MONTH_MILLISECONDS * MAX_MONTHS_AGO_CREATED;
+        currentDate - 3600000 * 24 * 30 * MAX_MONTHS_AGO_CREATED;
 
       return {
-        title: TITLES[getRandomInt(0, TITLES.length - 1)],
+        title: titles[getRandomInt(0, titles.length - 1)],
         createdDate: new Date(getRandomInt(minCreationData, currentDate)),
-        announce: shuffle(TEXTS)
+        announce: shuffle(sentences)
           .slice(0, getRandomInt(1, MAX_ANNOUNCE_SENTENCES))
           .join(` `),
-        fullText: shuffle(TEXTS)
+        fullText: shuffle(sentences)
           .slice(0, getRandomInt(1, MAX_FULL_TEXT_SENTENCES))
           .join(` `),
         сategory: [
           ...new Set(
-              Array(getRandomInt(1, CATEGORIES.length))
+              Array(getRandomInt(1, MAX_CATEGORIES_NUMBER))
               .fill()
-              .map(() => CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)])
+              .map(() => categories[getRandomInt(0, categories.length - 1)])
           ),
         ],
       };
     });
 
+const run = async (args) => {
+  const notesNum = +args[0] || DEFAULT_NOTES_NUMBER;
+
+  if (notesNum > MAX_NOTES_NUMBER) {
+    console.error(chalk.red(`Can't be more than ${MAX_NOTES_NUMBER} notes`));
+    process.exit(ExitCode.ERROR);
+  }
+
+  let categories; let sentences; let titles;
+  try {
+    categories = await readContent(CATEGORIES_PATH);
+    sentences = await readContent(SENTENCES_PATH);
+    titles = await readContent(TITLES_PATH);
+  } catch (err) {
+    process.exit(ExitCode.ERROR);
+  }
+
+  const content = JSON.stringify(getNotes(notesNum, categories, sentences, titles));
+
+  try {
+    writeContent(FILE_NAME, content);
+  } catch (err) {
+    process.exit(ExitCode.ERROR);
+  }
+};
+
 module.exports = {
   name: `--generate`,
-  run: async (args) => {
-    const notesNum = +args[0] || DEFAULT_NOTES_NUMBER;
-
-    if (notesNum > MAX_NOTES_NUMBER) {
-      console.error(chalk.red(MAX_NOTES_ERROR_MESSAGE));
-      process.exit(ExitCode.ERROR);
-    }
-
-    const content = JSON.stringify(getNotes(notesNum));
-
-    try {
-      await fs.writeFile(FILE_NAME, content);
-      console.info(chalk.green(WRITE_SUCCESS_MESSAGE));
-    } catch (err) {
-      console.error(chalk.red(WRITE_ERROR_MESSAGE));
-      process.exit(ExitCode.ERROR);
-    }
-  },
+  run,
 };
