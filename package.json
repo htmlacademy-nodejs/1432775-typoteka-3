@@ -4,7 +4,7 @@
   "description": "Типотека",
   "main": "./src/service/service.js",
   "scripts": {
-    "start": "node ./src/service/service.js",
+    "start": "nodemon ./src/service/service.js --server 3000",
     "test": "npm run eslint",
     "eslint": "eslint --ext .js src/"
   },
@@ -20,6 +20,10 @@
   "homepage": "https://github.com/Ibarsuk/1432775-typoteka-3#readme",
   "devDependencies": {
     "eslint": "7.32.0",
-    "eslint-config-htmlacademy": "0.6.0"
+    "eslint-config-htmlacademy": "0.6.0",
+    "nodemon": "2.0.13"
+  },
+  "dependencies": {
+    "chalk": "4.1.2"
   }
 }
