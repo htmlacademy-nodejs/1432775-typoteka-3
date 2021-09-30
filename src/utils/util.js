@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 exports.getRandomInt = (min, max) => {
   min = Math.ceil(min);

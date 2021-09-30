@@ -1,17 +1,27 @@
-'use strict';
+"use strict";
 
 const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
-const {getFileNameFromPath} = require(`./util`);
 
-exports.readContent = async (path) => {
+const {getFileNameFromPath} = require(`./util`);
+const {ExitCode} = require(`../const`);
+
+const exitWithMessageOnError = (err, message) => {
+  console.error(chalk.red(message));
+  console.error(chalk.red(err.message));
+  process.exit(ExitCode.ERROR);
+};
+
+exports.readContentByLines = async (path) => {
   try {
     const content = await fs.readFile(path, `utf8`);
     return content.trim().split(`\n`);
   } catch (err) {
     const fileName = getFileNameFromPath(path);
-    console.error(chalk.red(`Haven't managed to read from file ${fileName}`));
-    throw new Error(err);
+    return exitWithMessageOnError(
+        err,
+        `Haven't managed to read from file ${fileName}`
+    );
   }
 };
 
@@ -21,7 +31,6 @@ exports.writeContent = async (path, content) => {
     await fs.writeFile(path, content);
     console.info(chalk.green(`File ${fileName} created.`));
   } catch (err) {
-    console.error(chalk.red(`Can't write data to file ${fileName}`));
-    throw new Error(err);
+    exitWithMessageOnError(err, `Can't write data to file ${fileName}`);
   }
 };

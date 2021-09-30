@@ -3,8 +3,8 @@
 const chalk = require(`chalk`);
 
 const {getRandomInt, shuffle} = require(`../../utils/util`);
-const {readContent, writeContent} = require(`../../utils/fs`);
-const {ExitCode} = require(`../../const`);
+const {readContentByLines, writeContent} = require(`../../utils/fs`);
+const {ExitCode, MOCKS_FILE_NAME} = require(`../../const`);
 
 const DEFAULT_NOTES_NUMBER = 1;
 const MAX_NOTES_NUMBER = 1000;
@@ -13,7 +13,6 @@ const MAX_ANNOUNCE_SENTENCES = 5;
 const MAX_FULL_TEXT_SENTENCES = 10;
 const MAX_CATEGORIES_NUMBER = 5;
 
-const FILE_NAME = `mock.json`;
 const FAKE_DATA_PATH = `./data/`;
 const SENTENCES_PATH = FAKE_DATA_PATH + `sentences.txt`;
 const TITLES_PATH = FAKE_DATA_PATH + `titles.txt`;
@@ -54,22 +53,17 @@ const run = async (args) => {
     process.exit(ExitCode.ERROR);
   }
 
-  let categories; let sentences; let titles;
-  try {
-    categories = await readContent(CATEGORIES_PATH);
-    sentences = await readContent(SENTENCES_PATH);
-    titles = await readContent(TITLES_PATH);
-  } catch (err) {
-    process.exit(ExitCode.ERROR);
-  }
+  const [categories, sentences, titles] = await Promise.all([
+    readContentByLines(CATEGORIES_PATH),
+    readContentByLines(SENTENCES_PATH),
+    readContentByLines(TITLES_PATH),
+  ]);
 
-  const content = JSON.stringify(getNotes(notesNum, categories, sentences, titles));
+  const content = JSON.stringify(
+      getNotes(notesNum, categories, sentences, titles)
+  );
 
-  try {
-    writeContent(FILE_NAME, content);
-  } catch (err) {
-    process.exit(ExitCode.ERROR);
-  }
+  writeContent(MOCKS_FILE_NAME, content);
 };
 
 module.exports = {
