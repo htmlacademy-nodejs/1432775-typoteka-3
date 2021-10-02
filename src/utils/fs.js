@@ -4,12 +4,10 @@ const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
 
 const {getFileNameFromPath} = require(`./util`);
-const {ExitCode} = require(`../const`);
 
-const exitWithMessageOnError = (err, message) => {
+const showErrorWithMessafe = (err, message) => {
   console.error(chalk.red(message));
   console.error(chalk.red(err.message));
-  process.exit(ExitCode.ERROR);
 };
 
 exports.readContentByLines = async (path) => {
@@ -18,10 +16,11 @@ exports.readContentByLines = async (path) => {
     return content.trim().split(`\n`);
   } catch (err) {
     const fileName = getFileNameFromPath(path);
-    return exitWithMessageOnError(
+    showErrorWithMessafe(
         err,
         `Haven't managed to read from file ${fileName}`
     );
+    throw new Error(err);
   }
 };
 
@@ -31,6 +30,7 @@ exports.writeContent = async (path, content) => {
     await fs.writeFile(path, content);
     console.info(chalk.green(`File ${fileName} created.`));
   } catch (err) {
-    exitWithMessageOnError(err, `Can't write data to file ${fileName}`);
+    showErrorWithMessafe(err, `Can't write data to file ${fileName}`);
+    throw new Error(err);
   }
 };
