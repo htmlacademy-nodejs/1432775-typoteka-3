@@ -16,3 +16,5 @@ exports.StatusCode = {
 };
 
 exports.MOCKS_FILE_NAME = `mock.json`;
+
+exports.FAKE_DATA_PATH = `data/`;
