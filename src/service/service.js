@@ -6,7 +6,8 @@ const {ExitCode, DEFAULT_COMMAND} = require(`../const`);
 const args = process.argv.slice(2);
 const command = args[0];
 
-if (!args.length || !cli[command]) {
+const isCommandExists = cli[command]; 
+if (!args.length || !isCommandExists) {
   cli[DEFAULT_COMMAND].run();
   process.exit(ExitCode.ERROR);
 }
