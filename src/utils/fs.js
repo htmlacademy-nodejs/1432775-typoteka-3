@@ -24,10 +24,10 @@ exports.readContentByLines = async (path) => {
   }
 };
 
-exports.writeContent = async (path, content) => {
+exports.writeToTextFile = async (path, data) => {
   const fileName = getFileNameFromPath(path);
   try {
-    await fs.writeFile(path, content);
+    await fs.writeFile(path, JSON.stringify(data));
     console.info(chalk.green(`File ${fileName} created.`));
   } catch (err) {
     showErrorWithMessafe(err, `Can't write data to file ${fileName}`);
