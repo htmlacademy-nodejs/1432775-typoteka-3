@@ -4,6 +4,6 @@ const {Router} = require(`express`);
 
 const searchRouter = new Router();
 
-searchRouter.get(`/`, (_, res) => res.send(`/search`));
+searchRouter.get(`/`, (_, res) => res.render(`search`));
 
 module.exports = searchRouter;
