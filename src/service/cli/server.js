@@ -4,7 +4,7 @@ const chalk = require(`chalk`);
 const http = require(`http`);
 const fs = require(`fs`).promises;
 
-const {ExitCode, MOCKS_FILE_NAME, StatusCode} = require(`../../const`);
+const {MOCKS_FILE_NAME, StatusCode} = require(`../../const`);
 
 const DEFAUL_PORT = 3000;
 const NOT_FOUND_MESSAGE = `Not found`;
@@ -41,8 +41,7 @@ const run = (args) => {
   const port = Math.floor(+args[0]) || DEFAUL_PORT;
 
   if (port < 0 || port > 65535) {
-    console.error(chalk.red(`Port can't be less than 0 or bigger than 65535`));
-    process.exit(ExitCode.ERROR);
+    throw new Error(chalk.red(`Port can't be less than 0 or bigger than 65535`));
   }
 
   http
