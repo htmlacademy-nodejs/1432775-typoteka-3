@@ -1,5 +1,6 @@
 "use strict";
 
+exports.FRONT_PORT = 8080;
 exports.DEFAULT_COMMAND = `--help`;
 
 exports.ExitCode = {
