@@ -28,7 +28,7 @@ const run = async (args) => {
 
   const content = getMockNotes(notesNum, categories, sentences, titles);
 
-  writeToTextFile(MOCKS_FILE_NAME, content);
+  await writeToTextFile(MOCKS_FILE_NAME, content);
 };
 
 module.exports = {

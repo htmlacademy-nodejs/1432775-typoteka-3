@@ -28,12 +28,9 @@ app.use(express.static(path.resolve(__dirname, `public`)));
 app.set(`views`, path.resolve(__dirname, `templates`));
 app.set(`view engine`, `pug`);
 
-app.use((req, res) => res.render(`404`, {status: 404, url: req.url}));
-app.use((err, _, res) =>
-  res.render(`500`, {
-    status: err.status || StatusCode.INTERNAL_SERVER_ERROR,
-    error: err,
-  })
+app.use((_, res) => res.status(StatusCode.NOT_FOUND).render(`404`));
+app.use((err, req, res, _) =>
+  res.status(StatusCode.INTERNAL_SERVER_ERROR).render(`500`)
 );
 
 app.listen(FRONT_PORT);
