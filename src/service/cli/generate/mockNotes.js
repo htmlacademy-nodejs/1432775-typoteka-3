@@ -1,7 +1,11 @@
 "use strict";
 
-const {getRandomInt, shuffle} = require(`../../../utils/util`);
+const {nanoid} = require(`nanoid`);
 
+const {getRandomInt, shuffle} = require(`../../../utils/util`);
+const getMockComments = require(`./mockComments`);
+
+const NOTE_ID_SIZE = 10;
 const MAX_MONTHS_AGO_CREATED = 3;
 const MAX_ANNOUNCE_SENTENCES = 5;
 const MAX_FULL_TEXT_SENTENCES = 10;
@@ -35,15 +39,17 @@ const getRandomNoteCreationDate = () => {
   return new Date(getRandomInt(minCreationData, currentDate));
 };
 
-const getMockNotes = (notesNum, categories, sentences, titles) =>
+const getMockNotes = (notesNum, categories, sentences, titles, commentSentences) =>
   Array(notesNum)
     .fill()
     .map(() => ({
+      id: nanoid(NOTE_ID_SIZE),
       title: getRandomNoteTitle(titles),
       createdDate: getRandomNoteCreationDate(),
       announce: getRandomNoteAnnounce(sentences),
       fullText: getRandomNoteFullText(sentences),
       сategory: getRandomNoteCategory(categories),
+      comments: getMockComments(commentSentences),
     }));
 
 module.exports = getMockNotes;

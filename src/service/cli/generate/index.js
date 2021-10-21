@@ -12,6 +12,7 @@ const MAX_NOTES_NUMBER = 1000;
 const SENTENCES_PATH = FAKE_DATA_PATH + `sentences.txt`;
 const TITLES_PATH = FAKE_DATA_PATH + `titles.txt`;
 const CATEGORIES_PATH = FAKE_DATA_PATH + `categories.txt`;
+const COMMENT_SENTENCES_PATH = FAKE_DATA_PATH + `commentSentences.txt`;
 
 const run = async (args) => {
   const notesNum = +args[0] || DEFAULT_NOTES_NUMBER;
@@ -20,13 +21,14 @@ const run = async (args) => {
     throw new Error(chalk.red(`Can't be more than ${MAX_NOTES_NUMBER} notes`));
   }
 
-  const [categories, sentences, titles] = await Promise.all([
+  const [categories, sentences, titles, commentSentences] = await Promise.all([
     readContentByLines(CATEGORIES_PATH),
     readContentByLines(SENTENCES_PATH),
     readContentByLines(TITLES_PATH),
+    readContentByLines(COMMENT_SENTENCES_PATH),
   ]);
 
-  const content = getMockNotes(notesNum, categories, sentences, titles);
+  const content = getMockNotes(notesNum, categories, sentences, titles, commentSentences);
 
   await writeToTextFile(MOCKS_FILE_NAME, content);
 };
