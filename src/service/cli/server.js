@@ -1,10 +1,9 @@
 "use strict";
 
 const chalk = require(`chalk`);
-const fs = require(`fs`).promises;
 const express = require(`express`);
 
-const {MOCKS_FILE_NAME} = require(`../../const`);
+const getMockNotes = require(`../lib/getMockNotes`);
 
 const DEFAUL_PORT = 3000;
 
@@ -13,9 +12,8 @@ app.use(express.json());
 
 app.get(`/posts`, async (req, res) => {
   try {
-    const fileContent = await fs.readFile(MOCKS_FILE_NAME);
-    const notesList = JSON.parse(fileContent);
-    res.json(notesList);
+    const mockNotes = await getMockNotes();
+    res.json(mockNotes);
   } catch (err) {
     res.send([]);
   }
