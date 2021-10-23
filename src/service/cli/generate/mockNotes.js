@@ -4,8 +4,8 @@ const {nanoid} = require(`nanoid`);
 
 const {getRandomInt, shuffle} = require(`../../../utils/util`);
 const getMockComments = require(`./mockComments`);
+const {NOTE_ID_SIZE} = require(`../../../const`);
 
-const NOTE_ID_SIZE = 10;
 const MAX_MONTHS_AGO_CREATED = 3;
 const MAX_ANNOUNCE_SENTENCES = 5;
 const MAX_FULL_TEXT_SENTENCES = 10;

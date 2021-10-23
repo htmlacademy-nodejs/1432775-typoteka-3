@@ -3,21 +3,14 @@
 const chalk = require(`chalk`);
 const express = require(`express`);
 
-const getMockNotes = require(`../lib/getMockNotes`);
+const routes = require(`../api`);
 
 const DEFAUL_PORT = 3000;
 
 const app = express();
 app.use(express.json());
 
-app.get(`/posts`, async (req, res) => {
-  try {
-    const mockNotes = await getMockNotes();
-    res.json(mockNotes);
-  } catch (err) {
-    res.send([]);
-  }
-});
+app.use(`/api`, routes);
 
 const run = (args) => {
   const port = Math.floor(+args[0]) || DEFAUL_PORT;

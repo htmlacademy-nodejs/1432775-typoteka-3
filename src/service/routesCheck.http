@@ -1,0 +1,21 @@
+GET /api/articles HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+###
+
+post /api/articles HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{
+    "title": "А вам не стыдно пропускать мимо себя большие деньги, когда эти ребята зарабатывают их так легко?",
+    "createdDate": "2021-08-17T17:28:09.818Z",
+    "announce": "Собрать камни бесконечности легко, если вы прирожденный герой.",
+    "fullText": "Альбом ",
+    "categories": [
+      "Анекдоты",
+      "Программирование",
+      "Разное"
+    ]
+}
