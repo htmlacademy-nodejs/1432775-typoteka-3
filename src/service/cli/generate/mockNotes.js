@@ -39,17 +39,27 @@ const getRandomNoteCreationDate = () => {
   return new Date(getRandomInt(minCreationData, currentDate));
 };
 
-const getMockNotes = (notesNum, categories, sentences, titles, commentSentences) =>
-  Array(notesNum)
+const getMockData = (notesNum, categories, sentences, titles, commentSentences) => {
+  const comments = [];
+  const notes = Array(notesNum)
     .fill()
-    .map(() => ({
-      id: nanoid(NOTE_ID_SIZE),
-      title: getRandomNoteTitle(titles),
-      createdDate: getRandomNoteCreationDate(),
-      announce: getRandomNoteAnnounce(sentences),
-      fullText: getRandomNoteFullText(sentences),
-      сategory: getRandomNoteCategory(categories),
-      comments: getMockComments(commentSentences),
-    }));
+    .map(() => {
+      const noteId = nanoid(NOTE_ID_SIZE);
+      return {
+        id: noteId,
+        title: getRandomNoteTitle(titles),
+        createdDate: getRandomNoteCreationDate(),
+        announce: getRandomNoteAnnounce(sentences),
+        fullText: getRandomNoteFullText(sentences),
+        сategory: getRandomNoteCategory(categories),
+        comments: getMockComments(commentSentences, comments, noteId),
+      };
+    });
 
-module.exports = getMockNotes;
+  return {
+    comments,
+    notes
+  };
+};
+
+module.exports = getMockData;

@@ -9,11 +9,7 @@ class DataService {
   }
 
   create(item) {
-    const newItem = Object.assign(
-        {},
-        item,
-        {id: nanoid(this._itemIdLength)}
-    );
+    const newItem = Object.assign({}, item, {id: nanoid(this._itemIdLength)});
 
     this._data.push(newItem);
     return newItem;
@@ -40,6 +36,19 @@ class DataService {
   update(id, item) {
     const oldItem = this.findOne(id);
     return Object.assign(oldItem, item);
+  }
+
+  findByProperty(property, value, {isExact = true} = {}) {
+    return this._data.reduce((acc, curr) => {
+      if (
+        (isExact && curr[property] === value) ||
+        (!isExact && !curr[property].search(value))
+      ) {
+        acc.push(curr);
+      }
+
+      return acc;
+    }, []);
   }
 }
 

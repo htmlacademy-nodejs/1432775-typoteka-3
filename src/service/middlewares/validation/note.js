@@ -2,31 +2,57 @@
 
 const Joi = require(`joi`);
 
-const {StatusCode} = require(`../../../const`);
+const getValidationMeddleware = require(`./getValidationMiddleware`);
 
-const noteStructure = {
-  title: Joi.string().min(30).max(250).required(),
-  createdDate: Joi.date().iso().required(),
-  categories: Joi.array().min(1).required(),
-  announce: Joi.string().min(30).max(250).required(),
-  fullText: Joi.string().max(1000),
-  comments: Joi.array(),
+const NoteTitleLength = {
+  MIN: 30,
+  MAX: 250,
 };
 
-const noteSchema = Joi.object(noteStructure);
+const NoteAnnounceLength = {
+  MIN: 30,
+  MAX: 250,
+};
 
-module.exports = (req, res, next) => {
-  const note = req.body;
+const NOTE_MAX_FULL_TEXT_LENGTH = 1000;
+const NOTE_MIN_CATEGORIES_NUMBER = 1;
 
-  const {error} = noteSchema.validate(note);
+const noteStructure = {
+  title: Joi.string()
+    .min(NoteTitleLength.MIN)
+    .max(NoteTitleLength.MAX)
+    .required(),
+  createdDate: Joi.date().iso().required(),
+  categories: Joi.array().min(NOTE_MIN_CATEGORIES_NUMBER).required(),
+  announce: Joi.string()
+    .min(NoteAnnounceLength.MIN)
+    .max(NoteAnnounceLength.MAX)
+    .required(),
+  fullText: Joi.string().max(NOTE_MAX_FULL_TEXT_LENGTH),
+};
 
-  if (error) {
-    res.status(StatusCode.BAD_REQUEST).send(`Bad request: ${error.message}`);
-  }
+const noteUpdateStructure = {
+  title: Joi.string().min(NoteTitleLength.MIN).max(NoteTitleLength.MAX),
+  createdDate: Joi.date().iso(),
+  categories: Joi.array().min(NOTE_MIN_CATEGORIES_NUMBER),
+  announce: Joi.string()
+    .min(NoteAnnounceLength.MIN)
+    .max(NoteAnnounceLength.MAX),
+  fullText: Joi.string().max(NOTE_MAX_FULL_TEXT_LENGTH),
+};
 
-  if (!req.body.comments) {
-    req.body.comments = [];
-  }
+const validateNoteUpdate = getValidationMeddleware(
+    Joi.object(noteUpdateStructure)
+);
 
-  next();
+const validateNewNote = getValidationMeddleware(
+    Joi.object(noteStructure),
+    (req, _res, _schema) => {
+      req.body.comments = [];
+    }
+);
+
+module.exports = {
+  validateNoteUpdate,
+  validateNewNote,
 };

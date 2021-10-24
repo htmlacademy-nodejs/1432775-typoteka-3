@@ -1,0 +1,73 @@
+GET /api/articles HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+###
+
+GET /api/articles/i7UcRSGdu6 HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+###
+
+POST /api/articles HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{
+    "title": "А вам не стыдно пропускать мимо себя большие деньги, когда эти ребята зарабатывают их так легко?",
+    "createdDate": "2021-08-17T17:28:09.818Z",
+    "announce": "Собрать камни бесконечности легко, если вы прирожденный герой.",
+    "fullText": "Альбом ",
+    "categories": [
+      "Анекдоты",
+      "Программирование",
+      "Разное"
+    ]
+}
+
+###
+
+PUT /api/articles/i7UcRSGdu6 HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{
+    "title": "А вам не стыдно пропускать мимо себя большие деньги, когда эти ребята зарабатывают их так легко?",
+    "createdDate": "2021-08-17T17:28:09.818Z",
+    "announce": "Собрать камни бесконечности легко, если вы прирожденный герой.",
+    "fullText": "new title but old",
+    "categories": [
+      "Анекдоты",
+      "Программирование",
+      "Разное"
+    ]
+}
+
+###
+
+DELETE /api/articles/t-TGFcRxlE HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+###
+
+GET /api/articles/i7UcRSGdu6/comments HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+###
+
+POST /api/articles/i7UcRSGdu6/comments HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{
+    "text": "В недрах тундры выдры в гетрах тырят в ведра ядра кедров"
+}
+
+###
+
+DELETE /api/articles/i7UcRSGdu6/comments/rPWr8yqfRi HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
