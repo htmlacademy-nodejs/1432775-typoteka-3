@@ -10,7 +10,8 @@ Thumbs.db
 # Вспомогательные файлы
 *.log*
 node_modules/
-mock.json
+notes.json
+comments.json
 
 # Директория с собранными файлами проекта
 build/

@@ -34,3 +34,14 @@ exports.writeToTextFile = async (path, data) => {
     throw new Error(err);
   }
 };
+
+exports.readContent = async (path) => {
+  try {
+    const fileContent = await fs.readFile(path);
+    return JSON.parse(fileContent);
+  } catch (err) {
+    const fileName = getFileNameFromPath(path);
+    showErrorWithMessafe(err, `Can't read data from file ${fileName}`);
+    throw new Error(err);
+  }
+};

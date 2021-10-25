@@ -1,6 +1,10 @@
 "use strict";
 
+const {nanoid} = require(`nanoid`);
+
 const {getRandomInt, shuffle} = require(`../../../utils/util`);
+const getMockComments = require(`./mockComments`);
+const {NOTE_ID_SIZE} = require(`../../../const`);
 
 const MAX_MONTHS_AGO_CREATED = 3;
 const MAX_ANNOUNCE_SENTENCES = 5;
@@ -35,15 +39,27 @@ const getRandomNoteCreationDate = () => {
   return new Date(getRandomInt(minCreationData, currentDate));
 };
 
-const getMockNotes = (notesNum, categories, sentences, titles) =>
-  Array(notesNum)
+const getMockData = (notesNum, categories, sentences, titles, commentSentences) => {
+  const comments = [];
+  const notes = Array(notesNum)
     .fill()
-    .map(() => ({
-      title: getRandomNoteTitle(titles),
-      createdDate: getRandomNoteCreationDate(),
-      announce: getRandomNoteAnnounce(sentences),
-      fullText: getRandomNoteFullText(sentences),
-      сategory: getRandomNoteCategory(categories),
-    }));
+    .map(() => {
+      const noteId = nanoid(NOTE_ID_SIZE);
+      return {
+        id: noteId,
+        title: getRandomNoteTitle(titles),
+        createdDate: getRandomNoteCreationDate(),
+        announce: getRandomNoteAnnounce(sentences),
+        fullText: getRandomNoteFullText(sentences),
+        сategory: getRandomNoteCategory(categories),
+        comments: getMockComments(commentSentences, comments, noteId),
+      };
+    });
 
-module.exports = getMockNotes;
+  return {
+    comments,
+    notes
+  };
+};
+
+module.exports = getMockData;
