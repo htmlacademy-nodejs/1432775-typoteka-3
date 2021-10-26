@@ -4,6 +4,6 @@ const {Router} = require(`express`);
 
 const loginRouter = new Router();
 
-loginRouter.get(`/`, (_, res) => res.send(`/login`));
+loginRouter.get(`/`, (_, res) => res.render(`login`));
 
 module.exports = loginRouter;
