@@ -10,7 +10,6 @@ class DataService {
 
   create(item) {
     const newItem = Object.assign({}, item, {id: nanoid(this._itemIdLength)});
-
     this._data.push(newItem);
     return newItem;
   }
@@ -30,7 +29,7 @@ class DataService {
       return null;
     }
 
-    return this._data.splice(idx, 1);
+    return this._data.splice(idx, 1)[0];
   }
 
   update(id, item) {

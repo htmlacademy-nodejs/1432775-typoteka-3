@@ -28,7 +28,7 @@ class CommentsService extends BaseService {
 
     this._noteService.deleteComment(this._data[idx].noteId, commentId);
 
-    return this._data.splice(idx, 1);
+    return this._data.splice(idx, 1)[0];
   }
 
   findByNoteId(noteId) {

@@ -21,7 +21,7 @@ class NotesService extends BaseService {
       return null;
     }
 
-    return note.comments.splice(idx, 1);
+    return note.comments.splice(idx, 1)[0];
   }
 
   search(str) {

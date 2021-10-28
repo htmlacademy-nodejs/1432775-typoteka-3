@@ -7,7 +7,7 @@ const getMockComments = require(`./mockComments`);
 const {NOTE_ID_SIZE} = require(`../../../const`);
 
 const MAX_MONTHS_AGO_CREATED = 3;
-const MAX_ANNOUNCE_SENTENCES = 5;
+const MAX_ANNOUNCE_SENTENCES = 4;
 const MAX_FULL_TEXT_SENTENCES = 10;
 const MAX_CATEGORIES_NUMBER = 5;
 
@@ -51,7 +51,7 @@ const getMockData = (notesNum, categories, sentences, titles, commentSentences) 
         createdDate: getRandomNoteCreationDate(),
         announce: getRandomNoteAnnounce(sentences),
         fullText: getRandomNoteFullText(sentences),
-        сategory: getRandomNoteCategory(categories),
+        сategories: getRandomNoteCategory(categories),
         comments: getMockComments(commentSentences, comments, noteId),
       };
     });
