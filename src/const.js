@@ -3,6 +3,11 @@
 exports.FRONT_PORT = 8080;
 exports.DEFAULT_COMMAND = `--help`;
 
+exports.Env = {
+  DEVELOPMENT: `development`,
+  PRODUCTION: `production`,
+};
+
 exports.ExitCode = {
   SUCCESS: 0,
   ERROR: 1,
@@ -17,6 +22,8 @@ exports.StatusCode = {
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
 };
+
+exports.LOGS_FILE_PATH = `./logs/apiLogs.log`;
 
 exports.MOCK_NOTES_FILE_NAME = `notes.json`;
 exports.MOCK_COMMENTS_FILE_NAME = `comments.json`;
