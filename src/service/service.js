@@ -1,5 +1,6 @@
 "use strict";
 
+require(`dotenv`).config();
 const cli = require(`./cli/index`);
 const {ExitCode, DEFAULT_COMMAND} = require(`../const`);
 

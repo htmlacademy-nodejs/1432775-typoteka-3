@@ -34,6 +34,22 @@ class CommentsService extends BaseService {
   findByNoteId(noteId) {
     return this.findByProperty(`noteId`, noteId);
   }
+
+  // TODO: should get author id param
+  findMyComments() {
+    return this.findAll();
+  }
+
+  findMyCommentsWithTitles() {
+    const myComments = this.findMyComments();
+
+    myComments.forEach((comment) => {
+      const note = this._noteService.findOne(comment.noteId);
+      comment.noteTitle = note.title;
+    });
+
+    return myComments;
+  }
 }
 
 module.exports = CommentsService;

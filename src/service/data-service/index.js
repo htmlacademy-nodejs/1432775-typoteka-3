@@ -15,7 +15,7 @@ class DataService {
   }
 
   findAll() {
-    return this._data;
+    return this._data.slice();
   }
 
   findOne(id) {
@@ -38,10 +38,12 @@ class DataService {
   }
 
   findByProperty(property, value, {isExact = true} = {}) {
+    const valueToCompare = value.trim().toLowerCase();
     return this._data.reduce((acc, curr) => {
+      const currentValue = curr[property].trim().toLowerCase();
       if (
-        (isExact && curr[property] === value) ||
-        (!isExact && !curr[property].search(value))
+        (isExact && currentValue === valueToCompare) ||
+        (!isExact && currentValue.search(valueToCompare) !== -1)
       ) {
         acc.push(curr);
       }

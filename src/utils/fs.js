@@ -3,7 +3,7 @@
 const fs = require(`fs`).promises;
 
 const {getFileNameFromPath} = require(`./util`);
-const {getLogger} = require(`../service/lib/logger`);
+const {getLogger} = require(`./logger`);
 
 const logger = getLogger({name: `File system`});
 

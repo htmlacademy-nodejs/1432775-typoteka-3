@@ -4,10 +4,10 @@
   "description": "Типотека",
   "main": "./src/service/service.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node src/service/service.js --server 3000",
-    "start::dev": "cross-env NODE_ENV=development nodemon src/service/service.js --server 3000 -L",
-    "start-front": "node ./src/express/express.js",
-    "start-front::dev": "nodemon ./src/express/express.js -L -e js,pug,json",
+    "start": "cross-env NODE_ENV=production node src/service/service.js --server",
+    "start::dev": "cross-env NODE_ENV=development nodemon src/service/service.js --server -L",
+    "start-front": "cross-env NODE_ENV=production node ./src/express/express.js",
+    "start-front::dev": "cross-env NODE_ENV=development nodemon ./src/express/express.js -L -e js,pug,json",
     "test": "npm run eslint && npm run jest",
     "eslint": "eslint --ext .js src/",
     "jest": "jest"
@@ -32,9 +32,13 @@
     "supertest": "6.1.6"
   },
   "dependencies": {
+    "axios": "0.24.0",
     "chalk": "4.1.2",
+    "cross-env": "7.0.3",
+    "dotenv": "10.0.0",
     "express": "4.17.1",
     "joi": "17.4.2",
+    "multer": "1.4.3",
     "nanoid": "3.1.30",
     "pino": "7.0.5",
     "pug": "3.0.2"
