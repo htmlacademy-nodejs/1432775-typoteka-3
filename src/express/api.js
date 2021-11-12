@@ -2,8 +2,9 @@
 
 const axios = require(`axios`);
 
-const {BACK_DEFAULT_PORT, TIMEOUT} = require(`../const`);
+const {BACK_DEFAULT_PORT, TIMEOUT, StatusCode} = require(`../const`);
 const {adaptArticleToClient} = require(`../utils/adapter`);
+const {NotFoundErr} = require(`../utils/exceptions`);
 
 class Api {
   constructor(baseUrl, timeout) {
@@ -11,6 +12,17 @@ class Api {
     this._timeout = timeout;
 
     this._axios = axios.create({baseURL: baseUrl, timeout});
+    this._setResponseInterceptors();
+  }
+
+  _setResponseInterceptors() {
+    this._axios.interceptors.response.use((res) => res, (err) => {
+      const {status} = err.response;
+      if (status === StatusCode.NOT_FOUND) {
+        throw new NotFoundErr();
+      }
+      Promise.reject(err.response);
+    });
   }
 
   async _request(url, options = {}) {
@@ -43,6 +55,10 @@ class Api {
 
   async updateArticle(id, data) {
     return this._request(`/articles/${id}`, {method: `PUT`, data});
+  }
+
+  async getCommentsToArticle(id) {
+    return this._request(`/articles/${id}/comments`);
   }
 
   async getMyComments() {

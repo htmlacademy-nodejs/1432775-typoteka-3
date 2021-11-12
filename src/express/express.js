@@ -20,6 +20,7 @@ const {
   categoriesRouter,
 } = require(`./routes`);
 const {getFrontLogger} = require(`../utils/logger`);
+const {NotFoundErr} = require(`../utils/exceptions`);
 
 const logger = getFrontLogger({name: `express`});
 
@@ -40,9 +41,15 @@ app.set(`views`, path.resolve(__dirname, `templates`));
 app.set(`view engine`, `pug`);
 
 app.use((_, res) => res.status(StatusCode.NOT_FOUND).render(`404`));
+
 app.use((err, _req, res, _next) => {
+
+  if (err instanceof NotFoundErr) {
+    return res.status(StatusCode.NOT_FOUND).render(`404`);
+  }
+
   logger.error(`Error 500: ${err.message}`);
-  res.status(StatusCode.INTERNAL_SERVER_ERROR).render(`500`);
+  return res.status(StatusCode.INTERNAL_SERVER_ERROR).render(`500`);
 });
 
 app.listen(port, () => {
