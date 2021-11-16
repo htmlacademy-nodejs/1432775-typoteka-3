@@ -3,15 +3,24 @@
 const chalk = require(`chalk`);
 
 const {readContentByLines, writeToTextFile} = require(`../../../utils/fs`);
-const {MOCKS_FILE_NAME, FAKE_DATA_PATH} = require(`../../../const`);
-const getMockNotes = require(`./mockNotes`);
+const {
+  MOCK_NOTES_FILE_NAME,
+  MOCK_COMMENTS_FILE_NAME,
+  FAKE_DATA_PATH,
+  MOCK_TITLES_FILE_NAME,
+  MOCK_CATEGORIES_FILE_NAME,
+  MOCK_COMMENT_SENTENCES_FILE_NAME,
+} = require(`../../../const`);
+const getMockData = require(`./mockNotes`);
 
 const DEFAULT_NOTES_NUMBER = 1;
 const MAX_NOTES_NUMBER = 1000;
 
-const SENTENCES_PATH = FAKE_DATA_PATH + `sentences.txt`;
-const TITLES_PATH = FAKE_DATA_PATH + `titles.txt`;
-const CATEGORIES_PATH = FAKE_DATA_PATH + `categories.txt`;
+const SENTENCES_PATH = FAKE_DATA_PATH + MOCK_NOTES_FILE_NAME;
+const TITLES_PATH = FAKE_DATA_PATH + MOCK_TITLES_FILE_NAME;
+const CATEGORIES_PATH = FAKE_DATA_PATH + MOCK_CATEGORIES_FILE_NAME;
+const COMMENT_SENTENCES_PATH =
+  FAKE_DATA_PATH + MOCK_COMMENT_SENTENCES_FILE_NAME;
 
 const run = async (args) => {
   const notesNum = +args[0] || DEFAULT_NOTES_NUMBER;
@@ -20,15 +29,25 @@ const run = async (args) => {
     throw new Error(chalk.red(`Can't be more than ${MAX_NOTES_NUMBER} notes`));
   }
 
-  const [categories, sentences, titles] = await Promise.all([
+  const [categories, sentences, titles, commentSentences] = await Promise.all([
     readContentByLines(CATEGORIES_PATH),
     readContentByLines(SENTENCES_PATH),
     readContentByLines(TITLES_PATH),
+    readContentByLines(COMMENT_SENTENCES_PATH),
   ]);
 
-  const content = getMockNotes(notesNum, categories, sentences, titles);
+  const {notes, comments} = getMockData(
+      notesNum,
+      categories,
+      sentences,
+      titles,
+      commentSentences
+  );
 
-  await writeToTextFile(MOCKS_FILE_NAME, content);
+  await Promise.all([
+    writeToTextFile(MOCK_NOTES_FILE_NAME, notes),
+    writeToTextFile(MOCK_COMMENTS_FILE_NAME, comments),
+  ]);
 };
 
 module.exports = {
