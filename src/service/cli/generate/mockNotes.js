@@ -39,20 +39,30 @@ const getRandomNoteCreationDate = () => {
   return new Date(getRandomInt(minCreationData, currentDate));
 };
 
-const getMockData = (notesNum, categories, sentences, titles, commentSentences) => {
+const getRandomPhoto = (photos) => {
+  const photo = photos[getRandomInt(0, photos.length - 1)];
+  return {
+    name: photo,
+    id: photo
+  };
+};
+
+const getMockData = (notesNum, categories, sentences, titles, commentSentences, photos) => {
   const comments = [];
   const notes = Array(notesNum)
     .fill()
     .map(() => {
       const noteId = nanoid(NOTE_ID_SIZE);
+      const isWithPhoto = Math.round(getRandomInt(0, 1));
       return {
         id: noteId,
         title: getRandomNoteTitle(titles),
         createdDate: getRandomNoteCreationDate(),
         announce: getRandomNoteAnnounce(sentences),
         fullText: getRandomNoteFullText(sentences),
-        сategories: getRandomNoteCategory(categories),
+        categories: getRandomNoteCategory(categories),
         comments: getMockComments(commentSentences, comments, noteId),
+        ...(isWithPhoto && {photo: getRandomPhoto(photos)})
       };
     });
 

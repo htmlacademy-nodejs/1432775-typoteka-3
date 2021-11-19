@@ -1,9 +1,15 @@
 "use strict";
 
+require(`dotenv`).config();
 const express = require(`express`);
 const path = require(`path`);
 
-const {FRONT_PORT, StatusCode} = require(`../const`);
+const {
+  StatusCode,
+  FRONT_DEFAULT_PORT,
+  UPLOAD_DIR,
+  PUBLIC_DIR,
+} = require(`../const`);
 const {
   mainRouter,
   registerRouter,
@@ -13,8 +19,13 @@ const {
   searchRouter,
   categoriesRouter,
 } = require(`./routes`);
+const {getFrontLogger} = require(`../utils/logger`);
+const {NotFoundErr} = require(`../utils/exceptions`);
+
+const logger = getFrontLogger({name: `express`});
 
 const app = express();
+const port = process.env.FRONT_PORT || FRONT_DEFAULT_PORT;
 
 app.use(`/`, mainRouter);
 app.use(`/register`, registerRouter);
@@ -24,13 +35,23 @@ app.use(`/articles`, articlesRouter);
 app.use(`/search`, searchRouter);
 app.use(`/categories`, categoriesRouter);
 
-app.use(express.static(path.resolve(__dirname, `public`)));
+app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
+app.use(express.static(path.resolve(__dirname, UPLOAD_DIR)));
 app.set(`views`, path.resolve(__dirname, `templates`));
 app.set(`view engine`, `pug`);
 
 app.use((_, res) => res.status(StatusCode.NOT_FOUND).render(`404`));
-app.use((err, req, res, _) =>
-  res.status(StatusCode.INTERNAL_SERVER_ERROR).render(`500`)
-);
 
-app.listen(FRONT_PORT);
+app.use((err, _req, res, _next) => {
+
+  if (err instanceof NotFoundErr) {
+    return res.status(StatusCode.NOT_FOUND).render(`404`);
+  }
+
+  logger.error(`Error 500: ${err.message}`);
+  return res.status(StatusCode.INTERNAL_SERVER_ERROR).render(`500`);
+});
+
+app.listen(port, () => {
+  logger.info(`Started on port ${port}`);
+});

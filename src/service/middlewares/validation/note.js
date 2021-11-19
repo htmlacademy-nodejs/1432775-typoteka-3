@@ -21,24 +21,35 @@ const noteStructure = {
   title: Joi.string()
     .min(NoteTitleLength.MIN)
     .max(NoteTitleLength.MAX)
+    .trim()
     .required(),
   createdDate: Joi.date().iso().required(),
   categories: Joi.array().min(NOTE_MIN_CATEGORIES_NUMBER).required(),
   announce: Joi.string()
     .min(NoteAnnounceLength.MIN)
     .max(NoteAnnounceLength.MAX)
+    .trim()
     .required(),
-  fullText: Joi.string().max(NOTE_MAX_FULL_TEXT_LENGTH),
+  fullText: Joi.string().max(NOTE_MAX_FULL_TEXT_LENGTH).trim(),
+  photo: Joi.object({
+    name: Joi.string(),
+    id: Joi.string(),
+  }),
 };
 
 const noteUpdateStructure = {
-  title: Joi.string().min(NoteTitleLength.MIN).max(NoteTitleLength.MAX),
+  title: Joi.string().min(NoteTitleLength.MIN).max(NoteTitleLength.MAX).trim(),
   createdDate: Joi.date().iso(),
   categories: Joi.array().min(NOTE_MIN_CATEGORIES_NUMBER),
   announce: Joi.string()
     .min(NoteAnnounceLength.MIN)
-    .max(NoteAnnounceLength.MAX),
-  fullText: Joi.string().max(NOTE_MAX_FULL_TEXT_LENGTH),
+    .max(NoteAnnounceLength.MAX)
+    .trim(),
+  fullText: Joi.string().max(NOTE_MAX_FULL_TEXT_LENGTH).trim(),
+  photo: Joi.object({
+    name: Joi.string(),
+    id: Joi.string(),
+  }),
 };
 
 const validateNoteUpdate = getValidationMeddleware(
