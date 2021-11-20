@@ -260,90 +260,6 @@
           },
           {
             "objectType": "Table_LOGICAL",
-            "name": "comments",
-            "comment": "",
-            "oldName": "",
-            "fields": [
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "id",
-                "type": "INTEGER",
-                "length": 0,
-                "decimals": 0,
-                "isNullable": false,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "id"
-              },
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "text",
-                "type": "CHAR VARYING",
-                "length": 1000,
-                "decimals": 0,
-                "isNullable": false,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "text"
-              },
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "createdDate",
-                "type": "DATE",
-                "length": 0,
-                "decimals": 0,
-                "isNullable": false,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "createdDate"
-              },
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "userId",
-                "type": "INTEGER",
-                "length": 0,
-                "decimals": 0,
-                "isNullable": false,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "userId"
-              }
-            ],
-            "foreignKeys": [
-              {
-                "objectType": "ForeignKey_LOGICAL",
-                "name": "fk_comments_articles_comments_1",
-                "fields": [
-                  "id"
-                ],
-                "referencedSchema": "Default",
-                "referencedTable": "articles_comments",
-                "referencedFields": [
-                  "commentId"
-                ],
-                "sourceCardinality": "OneAndOnlyOneRelationship",
-                "targetCardinality": "ManyRelationship",
-                "comment": "",
-                "oldName": ""
-              }
-            ],
-            "indexes": [],
-            "uniques": [],
-            "primaryKey": {
-              "objectType": "PrimaryKey_LOGICAL",
-              "name": "",
-              "fields": [
-                "id"
-              ],
-              "oldName": ""
-            }
-          },
-          {
-            "objectType": "Table_LOGICAL",
             "name": "articles",
             "comment": "",
             "oldName": "",
@@ -498,6 +414,30 @@
                 "defaultValue": "",
                 "comment": "",
                 "oldName": "lastName"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "email",
+                "type": "CHARACTER VARYING",
+                "length": 255,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "email"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "passwordHash",
+                "type": "CHAR VARYING",
+                "length": 255,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "passwordHash"
               }
             ],
             "foreignKeys": [
@@ -514,6 +454,128 @@
                 ],
                 "sourceCardinality": "OneAndOnlyOneRelationship",
                 "targetCardinality": "OneOrManyRelationship",
+                "comment": "",
+                "oldName": ""
+              }
+            ],
+            "indexes": [],
+            "uniques": [
+              {
+                "objectType": "Unique_LOGICAL",
+                "name": "",
+                "fields": [
+                  "email"
+                ],
+                "comment": "",
+                "oldName": ""
+              }
+            ],
+            "primaryKey": {
+              "objectType": "PrimaryKey_LOGICAL",
+              "name": "",
+              "fields": [
+                "id"
+              ],
+              "oldName": ""
+            }
+          },
+          {
+            "objectType": "Table_LOGICAL",
+            "name": "comments",
+            "comment": "",
+            "oldName": "",
+            "fields": [
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "id",
+                "type": "INTEGER",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "id"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "text",
+                "type": "CHAR VARYING",
+                "length": 1000,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "text"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "createdDate",
+                "type": "DATE",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "createdDate"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "userId",
+                "type": "INTEGER",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "userId"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "articleId",
+                "type": "INTEGER",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "articleId"
+              }
+            ],
+            "foreignKeys": [
+              {
+                "objectType": "ForeignKey_LOGICAL",
+                "name": "fk_comments_articles_comments_1",
+                "fields": [
+                  "id"
+                ],
+                "referencedSchema": "Default",
+                "referencedTable": "articles_comments",
+                "referencedFields": [
+                  "commentId"
+                ],
+                "sourceCardinality": "OneAndOnlyOneRelationship",
+                "targetCardinality": "ManyRelationship",
+                "comment": "",
+                "oldName": ""
+              },
+              {
+                "objectType": "ForeignKey_LOGICAL",
+                "name": "fk_comments_articles_1",
+                "fields": [
+                  "articleId"
+                ],
+                "referencedSchema": "Default",
+                "referencedTable": "articles",
+                "referencedFields": [
+                  "id"
+                ],
+                "sourceCardinality": "ZeroOrManyRelationship",
+                "targetCardinality": "OneAndOnlyOneRelationship",
                 "comment": "",
                 "oldName": ""
               }
@@ -614,25 +676,9 @@
         {
           "type": "table",
           "schemaName": "Default",
-          "tableName": "articles_comments",
-          "x": 840,
-          "y": 640,
-          "width": 200,
-          "height": 200,
-          "isBold": false,
-          "titleColor": {
-            "r": 55,
-            "g": 131,
-            "b": 192,
-            "a": 1
-          }
-        },
-        {
-          "type": "table",
-          "schemaName": "Default",
           "tableName": "comments",
-          "x": 840,
-          "y": 900,
+          "x": 820,
+          "y": 640,
           "width": 200,
           "height": 200,
           "isBold": false,
@@ -789,90 +835,6 @@
           }
         },
         {
-          "name": "fk_articles_comments_articles_1",
-          "sourceTableName": "articles_comments",
-          "sourceSchemaName": "Default",
-          "lineWidth": 1,
-          "visible": true,
-          "vertices": [
-            {
-              "x": 825,
-              "y": 740
-            },
-            {
-              "x": 790,
-              "y": 740
-            },
-            {
-              "x": 790,
-              "y": 740
-            },
-            {
-              "x": 755,
-              "y": 740
-            }
-          ],
-          "label": {
-            "x": 626,
-            "y": 692,
-            "width": 209,
-            "height": 40,
-            "fontName": "Arial Unicode MS",
-            "fontSize": 14,
-            "fontColor": {
-              "r": 51,
-              "g": 51,
-              "b": 51,
-              "a": 1
-            },
-            "isFontBold": false,
-            "isFontItalic": false,
-            "isVisible": false
-          }
-        },
-        {
-          "name": "fk_comments_articles_comments_1",
-          "sourceTableName": "comments",
-          "sourceSchemaName": "Default",
-          "lineWidth": 1,
-          "visible": true,
-          "vertices": [
-            {
-              "x": 940,
-              "y": 885
-            },
-            {
-              "x": 940,
-              "y": 870
-            },
-            {
-              "x": 940,
-              "y": 870
-            },
-            {
-              "x": 940,
-              "y": 855
-            }
-          ],
-          "label": {
-            "x": 948,
-            "y": 855,
-            "width": 228,
-            "height": 40,
-            "fontName": "Arial Unicode MS",
-            "fontSize": 14,
-            "fontColor": {
-              "r": 51,
-              "g": 51,
-              "b": 51,
-              "a": 1
-            },
-            "isFontBold": false,
-            "isFontItalic": false,
-            "isVisible": false
-          }
-        },
-        {
           "name": "fk_users_articles_1",
           "sourceTableName": "users",
           "sourceSchemaName": "Default",
@@ -900,6 +862,48 @@
             "x": 648,
             "y": 855,
             "width": 128,
+            "height": 40,
+            "fontName": "Arial Unicode MS",
+            "fontSize": 14,
+            "fontColor": {
+              "r": 51,
+              "g": 51,
+              "b": 51,
+              "a": 1
+            },
+            "isFontBold": false,
+            "isFontItalic": false,
+            "isVisible": false
+          }
+        },
+        {
+          "name": "fk_comments_articles_1",
+          "sourceTableName": "comments",
+          "sourceSchemaName": "Default",
+          "lineWidth": 1,
+          "visible": true,
+          "vertices": [
+            {
+              "x": 805,
+              "y": 740
+            },
+            {
+              "x": 780,
+              "y": 740
+            },
+            {
+              "x": 780,
+              "y": 740
+            },
+            {
+              "x": 755,
+              "y": 740
+            }
+          ],
+          "label": {
+            "x": 658,
+            "y": 692,
+            "width": 157,
             "height": 40,
             "fontName": "Arial Unicode MS",
             "fontSize": 14,

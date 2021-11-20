@@ -30,6 +30,10 @@ CREATE TABLE comments (
   userId INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
     ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (articleId) REFERENCES articles (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE articles (
@@ -49,18 +53,6 @@ CREATE TABLE articles_categories (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   FOREIGN KEY (categoryId) REFERENCES categories (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-CREATE TABLE articles_comments (
-  articleId INTEGER NOT NULL,
-  commentId INTEGER NOT NULL,
-  CONSTRAINT articles_comments_pk PRIMARY KEY (articleId, commentId),
-  FOREIGN KEY (articleId) REFERENCES articles (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  FOREIGN KEY (commentId) REFERENCES comments (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
