@@ -139,66 +139,6 @@
           },
           {
             "objectType": "Table_LOGICAL",
-            "name": "photos",
-            "comment": "",
-            "oldName": "",
-            "fields": [
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "id",
-                "type": "CHAR VARYING",
-                "length": 15,
-                "decimals": 0,
-                "isNullable": false,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "id"
-              },
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "name",
-                "type": "CHAR VARYING",
-                "length": 100,
-                "decimals": 0,
-                "isNullable": false,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "name"
-              }
-            ],
-            "foreignKeys": [
-              {
-                "objectType": "ForeignKey_LOGICAL",
-                "name": "fk_photos_articles_1",
-                "fields": [
-                  "id"
-                ],
-                "referencedSchema": "Default",
-                "referencedTable": "articles",
-                "referencedFields": [
-                  "photoId"
-                ],
-                "sourceCardinality": "ZeroOrOneRelationship",
-                "targetCardinality": "OneAndOnlyOneRelationship",
-                "comment": "",
-                "oldName": ""
-              }
-            ],
-            "indexes": [],
-            "uniques": [],
-            "primaryKey": {
-              "objectType": "PrimaryKey_LOGICAL",
-              "name": "",
-              "fields": [
-                "id"
-              ],
-              "oldName": ""
-            }
-          },
-          {
-            "objectType": "Table_LOGICAL",
             "name": "articles_comments",
             "comment": "",
             "oldName": "",
@@ -254,109 +194,6 @@
               "fields": [
                 "articleId",
                 "commentId"
-              ],
-              "oldName": ""
-            }
-          },
-          {
-            "objectType": "Table_LOGICAL",
-            "name": "articles",
-            "comment": "",
-            "oldName": "",
-            "fields": [
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "id",
-                "type": "INTEGER",
-                "length": 0,
-                "decimals": 0,
-                "isNullable": false,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "id"
-              },
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "title",
-                "type": "CHAR VARYING",
-                "length": 250,
-                "decimals": 0,
-                "isNullable": false,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "title"
-              },
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "createdDate",
-                "type": "DATE",
-                "length": 0,
-                "decimals": 0,
-                "isNullable": false,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "createdDate"
-              },
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "announce",
-                "type": "CHAR VARYING",
-                "length": 250,
-                "decimals": 0,
-                "isNullable": false,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "announce"
-              },
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "fullText",
-                "type": "CHAR VARYING",
-                "length": 1000,
-                "decimals": 0,
-                "isNullable": true,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "fullText"
-              },
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "photoId",
-                "type": "CHAR VARYING",
-                "length": 15,
-                "decimals": 0,
-                "isNullable": true,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "photoId"
-              },
-              {
-                "objectType": "TableField_LOGICAL",
-                "name": "userId",
-                "type": "INTEGER",
-                "length": 0,
-                "decimals": 0,
-                "isNullable": false,
-                "defaultType": "None",
-                "defaultValue": "",
-                "comment": "",
-                "oldName": "userId"
-              }
-            ],
-            "foreignKeys": [],
-            "indexes": [],
-            "uniques": [],
-            "primaryKey": {
-              "objectType": "PrimaryKey_LOGICAL",
-              "name": "",
-              "fields": [
-                "id"
               ],
               "oldName": ""
             }
@@ -575,6 +412,169 @@
                   "id"
                 ],
                 "sourceCardinality": "ZeroOrManyRelationship",
+                "targetCardinality": "OneAndOnlyOneRelationship",
+                "comment": "",
+                "oldName": ""
+              }
+            ],
+            "indexes": [],
+            "uniques": [],
+            "primaryKey": {
+              "objectType": "PrimaryKey_LOGICAL",
+              "name": "",
+              "fields": [
+                "id"
+              ],
+              "oldName": ""
+            }
+          },
+          {
+            "objectType": "Table_LOGICAL",
+            "name": "articles",
+            "comment": "",
+            "oldName": "",
+            "fields": [
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "id",
+                "type": "INTEGER",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "id"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "title",
+                "type": "CHAR VARYING",
+                "length": 250,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "title"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "createdDate",
+                "type": "DATE",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "createdDate"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "announce",
+                "type": "CHAR VARYING",
+                "length": 250,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "announce"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "fullText",
+                "type": "CHAR VARYING",
+                "length": 1000,
+                "decimals": 0,
+                "isNullable": true,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "fullText"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "userId",
+                "type": "INTEGER",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "userId"
+              }
+            ],
+            "foreignKeys": [],
+            "indexes": [],
+            "uniques": [],
+            "primaryKey": {
+              "objectType": "PrimaryKey_LOGICAL",
+              "name": "",
+              "fields": [
+                "id"
+              ],
+              "oldName": ""
+            }
+          },
+          {
+            "objectType": "Table_LOGICAL",
+            "name": "photos",
+            "comment": "",
+            "oldName": "",
+            "fields": [
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "id",
+                "type": "CHAR VARYING",
+                "length": 15,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "id"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "name",
+                "type": "CHAR VARYING",
+                "length": 100,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "name"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "articleId",
+                "type": "INTEGER",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "articleId"
+              }
+            ],
+            "foreignKeys": [
+              {
+                "objectType": "ForeignKey_LOGICAL",
+                "name": "fk_photos_articles_1",
+                "fields": [
+                  "id"
+                ],
+                "referencedSchema": "Default",
+                "referencedTable": "articles",
+                "referencedFields": [
+                  "photoId"
+                ],
+                "sourceCardinality": "ZeroOrOneRelationship",
                 "targetCardinality": "OneAndOnlyOneRelationship",
                 "comment": "",
                 "oldName": ""

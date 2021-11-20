@@ -8,7 +8,11 @@ DROP TABLE IF EXISTS photos;
 
 CREATE TABLE photos (
   id VARCHAR(15) PRIMARY KEY,
-  name VARCHAR(100) NOT NULL
+  name VARCHAR(100) NOT NULL,
+  articleId INTEGER NOT NULL,
+  FOREIGN KEY (articleId) REFERENCES articles (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE categories (
@@ -41,8 +45,7 @@ CREATE TABLE articles (
   title VARCHAR(250) NOT NULL,
   createdDate TIMESTAMP NOT NULL,
   announce VARCHAR(250) NOT NULL,
-  fullText VARCHAR(1000),
-  photoId VARCHAR(15)
+  fullText VARCHAR(1000)
 );
 
 CREATE TABLE articles_categories (
