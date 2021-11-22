@@ -8,8 +8,7 @@ const {
   COMMENT_ID_SIZE,
   MOCK_NOTES_FILE_NAME,
   MOCK_COMMENTS_FILE_NAME,
-  FAKE_DATA_PATH,
-  MOCK_CATEGORIES_FILE_NAME,
+  MockСomprisingPath,
 } = require(`../../const`);
 
 const articles = require(`./articles`);
@@ -27,7 +26,7 @@ const app = new Router();
   const [mockNotes, mockComments, possibleCategories] = await Promise.all([
     readContent(MOCK_NOTES_FILE_NAME),
     readContent(MOCK_COMMENTS_FILE_NAME),
-    readContentByLines(FAKE_DATA_PATH + MOCK_CATEGORIES_FILE_NAME),
+    readContentByLines(MockСomprisingPath.CATEGORIES),
   ]);
 
   const noteService = new NoteService(mockNotes, NOTE_ID_SIZE);

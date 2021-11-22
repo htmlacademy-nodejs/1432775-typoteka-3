@@ -3,8 +3,8 @@
 const pino = require(`pino`);
 const {Env, LOGS_FILE_PATH, FRONT_LOGS_FILE_PATH} = require(`../const`);
 
-const isDev = process.env.NODE_ENV === Env.DEVELOPMENT;
-const logLevel = isDev ? `debug` : `error`;
+const isProd = process.env.NODE_ENV === Env.PRODUCTION;
+const logLevel = isProd ? `error` : `debug`;
 
 const prettyTransport = {
   target: `pino-pretty`,
@@ -13,27 +13,27 @@ const prettyTransport = {
 const fileTransport = {
   target: `pino/file`,
   options: {
-    destination: LOGS_FILE_PATH
-  }
+    destination: LOGS_FILE_PATH,
+  },
 };
 
 const frontFileTransport = {
   target: `pino/file`,
   options: {
-    destination: FRONT_LOGS_FILE_PATH
-  }
+    destination: FRONT_LOGS_FILE_PATH,
+  },
 };
 
 const logger = pino({
   name: `base-logger`,
   level: process.env.LOG_LEVEL || logLevel,
-  transport: isDev ? prettyTransport : fileTransport,
+  transport: isProd ? fileTransport : prettyTransport,
 });
 
 const frontLogger = pino({
   name: `front-base-logger`,
   level: process.env.LOG_LEVEL || logLevel,
-  transport: isDev ? prettyTransport : frontFileTransport,
+  transport: isProd ? frontFileTransport : prettyTransport,
 });
 
 module.exports = {

@@ -17,18 +17,19 @@ exports.readContentByLines = async (path) => {
     return content.trim().split(`\n`);
   } catch (err) {
     const fileName = getFileNameFromPath(path);
-    showErrorWithMessafe(
-        err,
-        `Haven't managed to read from file ${fileName}`
-    );
+    showErrorWithMessafe(err, `Haven't managed to read from file ${fileName}`);
     throw new Error(err);
   }
 };
 
-exports.writeToTextFile = async (path, data) => {
+exports.writeToTextFile = async (
+    path,
+    data,
+    {isJSON = true} = {isJSON: true}
+) => {
   const fileName = getFileNameFromPath(path);
   try {
-    await fs.writeFile(path, JSON.stringify(data));
+    await fs.writeFile(path, isJSON ? JSON.stringify(data) : data);
     logger.debug(`File ${fileName} created.`);
   } catch (err) {
     showErrorWithMessafe(err, `Can't write data to file ${fileName}`);
