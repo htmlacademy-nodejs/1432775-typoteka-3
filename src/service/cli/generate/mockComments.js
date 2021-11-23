@@ -46,8 +46,8 @@ const getDbComments = (notesNumber, usersNumber, sentences) => {
       id: i,
       text: getCommentText(sentences),
       createdDate: getCommentCreationDate().toISOString(),
-      userId: getRandomInt(0, usersNumber),
-      articleId: getRandomInt(0, notesNumber),
+      userId: getRandomInt(0, usersNumber - 1),
+      articleId: getRandomInt(0, notesNumber - 1),
     }));
 };
 
