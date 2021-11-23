@@ -2,17 +2,24 @@
 
 const {nanoid} = require(`nanoid`);
 
-const {getRandomInt, shuffle} = require(`../../../utils/util`);
+const {getRandomInt, shuffle, getRandomDate} = require(`../../../utils/util`);
 
 const COMMENT_ID_SIZE = 10;
 const MAX_COMMENTS_NUMBER = 10;
 const MAX_SENTENCES_IN_COMMENT = 5;
+const AVERAGE_COMMENTS_FOR_NOTE = 5;
+const MAX_MONTHS_AGO_CREATED = 3;
 
 const getCommentText = (sentences) => {
   return shuffle(sentences)
     .slice(0, getRandomInt(1, MAX_SENTENCES_IN_COMMENT))
     .join(` `);
 };
+
+const getCommentCreationDate = getRandomDate.bind(
+    null,
+    3600000 * 24 * 30 * MAX_MONTHS_AGO_CREATED
+);
 
 const getMockComments = (sentences, comments, noteId) => {
   const ids = Array(getRandomInt(1, MAX_COMMENTS_NUMBER))
@@ -30,4 +37,18 @@ const getMockComments = (sentences, comments, noteId) => {
   return ids;
 };
 
-module.exports = getMockComments;
+const getDbComments = (notesNumber, usersNumber, sentences) => {
+  const commentsNumber = AVERAGE_COMMENTS_FOR_NOTE * notesNumber;
+
+  return Array(commentsNumber)
+    .fill()
+    .map((_, i) => ({
+      id: i,
+      text: getCommentText(sentences),
+      createdDate: getCommentCreationDate().toISOString(),
+      userId: getRandomInt(0, usersNumber),
+      articleId: getRandomInt(0, notesNumber),
+    }));
+};
+
+module.exports = {getMockComments, getDbComments};

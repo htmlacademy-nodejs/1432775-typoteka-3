@@ -11,6 +11,7 @@ const HELP_MESSAGE = `
       --version: выводит номер версии
       --help: печатает этот текст
       --generate <count> формирует файл mocks.json
+      --fill <count> формирует файл с запросами для заполнения базы данных
 `;
 
 module.exports = {

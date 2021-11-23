@@ -1,15 +1,9 @@
-DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS articles_categories;
-DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS articles_comments;
 DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS photos;
-
-CREATE TABLE photos (
-  id VARCHAR(15) PRIMARY KEY,
-  name VARCHAR(100) NOT NULL
-);
+DROP TABLE IF EXISTS articles;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS categories;
 
 CREATE TABLE categories (
   id SERIAL PRIMARY KEY,
@@ -20,25 +14,46 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   avatar VARCHAR(15),
   firstName VARCHAR(30) NOT NULL,
-  lastName VARCHAR(30) NOT NULL
-);
-
-CREATE TABLE comments (
-  id SERIAL PRIMARY KEY,
-  text VARCHAR(1000) NOT NULL,
-  createdDate TIMESTAMP NOT NULL,
-  userId INTEGER NOT NULL,
-  FOREIGN KEY (userId) REFERENCES users (id)
-    ON DELETE CASCADE
+  lastName VARCHAR(30) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  passwordHash VARCHAR(32) NOT NULL
 );
 
 CREATE TABLE articles (
   id SERIAL PRIMARY KEY,
   title VARCHAR(250) NOT NULL,
-  createdDate TIMESTAMP NOT NULL,
+  createdDate TIMESTAMP DEFAULT current_timestamp,
   announce VARCHAR(250) NOT NULL,
   fullText VARCHAR(1000),
-  photoId VARCHAR(15)
+  userId INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE INDEX ON articles(title);
+
+CREATE TABLE photos (
+  id VARCHAR(15) PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  articleId INTEGER NOT NULL,
+  FOREIGN KEY (articleId) REFERENCES articles (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE comments (
+  id SERIAL PRIMARY KEY,
+  text VARCHAR(1000) NOT NULL,
+  createdDate TIMESTAMP DEFAULT current_timestamp,
+  userId INTEGER NOT NULL,
+  articleId INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (articleId) REFERENCES articles (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE articles_categories (
@@ -49,18 +64,6 @@ CREATE TABLE articles_categories (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   FOREIGN KEY (categoryId) REFERENCES categories (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-CREATE TABLE articles_comments (
-  articleId INTEGER NOT NULL,
-  commentId INTEGER NOT NULL,
-  CONSTRAINT articles_comments_pk PRIMARY KEY (articleId, commentId),
-  FOREIGN KEY (articleId) REFERENCES articles (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  FOREIGN KEY (commentId) REFERENCES comments (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
