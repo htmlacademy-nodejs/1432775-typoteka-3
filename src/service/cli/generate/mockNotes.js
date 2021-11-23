@@ -9,7 +9,7 @@ const getMockUsers = require(`./mockUsers`);
 const getCategories = require(`./categories`);
 
 const MAX_MONTHS_AGO_CREATED = 3;
-const MAX_ANNOUNCE_SENTENCES = 4;
+const MAX_ANNOUNCE_SENTENCES = 2;
 const MAX_FULL_TEXT_SENTENCES = 10;
 const MAX_CATEGORIES_NUMBER = 5;
 const AVERAGE_NOTES_FROM_USER = 3;
@@ -91,7 +91,7 @@ const getDbFillData = (notesNum, {possibleCategories, sentences, titles, comment
   const usersNumber = Math.floor(notesNum / AVERAGE_NOTES_FROM_USER);
   const users = getMockUsers(usersNumber, names);
 
-  const comments = getDbComments(notesNum, users.length - 1, commentSentences);
+  const comments = getDbComments(notesNum, usersNumber, commentSentences);
 
   const notes = Array(notesNum)
     .fill()

@@ -55,7 +55,7 @@ const getSQLStringFromArray = (arr) =>
           .map((value) => (isNaN(value) ? `'${value}'` : value))
           .join(`,`)})`
     )
-    .join(`,`);
+    .join(`,\n`);
 
 module.exports = {
   getRandomInt,

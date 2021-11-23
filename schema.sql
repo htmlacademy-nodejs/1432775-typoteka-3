@@ -34,9 +34,9 @@ CREATE TABLE articles (
 CREATE INDEX ON articles(title);
 
 CREATE TABLE photos (
-  id VARCHAR(15) PRIMARY KEY,
+  id VARCHAR(20) NOT NULL,
   name VARCHAR(100) NOT NULL,
-  articleId INTEGER NOT NULL,
+  articleId INTEGER PRIMARY KEY,
   FOREIGN KEY (articleId) REFERENCES articles (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
