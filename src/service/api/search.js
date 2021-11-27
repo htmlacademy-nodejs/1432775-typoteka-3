@@ -10,6 +10,11 @@ module.exports = (app, noteService) => {
 
   route.get(`/`, (req, res) => {
     const {query} = req.query;
+
+    if (!query.trim().length) {
+      return res.status(StatusCode.BAD_REQUEST).send(`search query cann't be empty`);
+    }
+
     const foundNotes = noteService.search(query);
     return res.status(StatusCode.OK).json(foundNotes);
   });

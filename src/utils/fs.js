@@ -1,13 +1,14 @@
 "use strict";
 
 const fs = require(`fs`).promises;
-const chalk = require(`chalk`);
 
 const {getFileNameFromPath} = require(`./util`);
+const {getLogger} = require(`../service/lib/logger`);
+
+const logger = getLogger({name: `File system`});
 
 const showErrorWithMessafe = (err, message) => {
-  console.error(chalk.red(message));
-  console.error(chalk.red(err.message));
+  logger.error(`${message}: ${err.message}`);
 };
 
 exports.readContentByLines = async (path) => {
@@ -28,7 +29,7 @@ exports.writeToTextFile = async (path, data) => {
   const fileName = getFileNameFromPath(path);
   try {
     await fs.writeFile(path, JSON.stringify(data));
-    console.info(chalk.green(`File ${fileName} created.`));
+    logger.debug(`File ${fileName} created.`);
   } catch (err) {
     showErrorWithMessafe(err, `Can't write data to file ${fileName}`);
     throw new Error(err);
