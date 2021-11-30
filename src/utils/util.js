@@ -20,3 +20,15 @@ exports.shuffle = (someArray) => {
 };
 
 exports.getFileNameFromPath = (path) => path.split(`/`).pop();
+
+exports.getCheckboxArray = (body, fieldPreffix) => {
+  const checkboxes = [];
+  for (const [key, value] of Object.entries(body)) {
+    if (key.startsWith(fieldPreffix) && value === `on`) {
+      const fieldName = key.split(fieldPreffix);
+      checkboxes.push(fieldName.pop());
+      delete body[key];
+    }
+  }
+  return checkboxes;
+};

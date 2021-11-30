@@ -1,6 +1,6 @@
 "use strict";
 
-const {getLogger} = require(`../lib/logger`);
+const {getLogger} = require(`../../utils/logger`);
 
 const logger = getLogger({name: `request`});
 

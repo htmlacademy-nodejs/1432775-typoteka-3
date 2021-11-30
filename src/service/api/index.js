@@ -15,6 +15,7 @@ const {
 const articles = require(`./articles`);
 const categories = require(`./categories`);
 const search = require(`./search`);
+const my = require(`./my`);
 
 const NoteService = require(`../data-service/NotesService`);
 const CommentService = require(`../data-service/CommentsService`);
@@ -40,6 +41,7 @@ const app = new Router();
   articles(app, noteService, commentService);
   categories(app, categoriesService);
   search(app, noteService);
+  my(app, commentService);
 })();
 
 module.exports = app;

@@ -11,6 +11,7 @@ const {
   MOCK_CATEGORIES_FILE_NAME,
   MOCK_COMMENT_SENTENCES_FILE_NAME,
   MOCK_NOTE_SENTENCES_FILE_NAME,
+  MOCK_PHOTOS_FILE_NAME,
 } = require(`../../../const`);
 const getMockData = require(`./mockNotes`);
 
@@ -22,6 +23,7 @@ const TITLES_PATH = FAKE_DATA_PATH + MOCK_TITLES_FILE_NAME;
 const CATEGORIES_PATH = FAKE_DATA_PATH + MOCK_CATEGORIES_FILE_NAME;
 const COMMENT_SENTENCES_PATH =
   FAKE_DATA_PATH + MOCK_COMMENT_SENTENCES_FILE_NAME;
+const PHOTOS_PATH = FAKE_DATA_PATH + MOCK_PHOTOS_FILE_NAME;
 
 const run = async (args) => {
   const notesNum = +args[0] || DEFAULT_NOTES_NUMBER;
@@ -30,19 +32,17 @@ const run = async (args) => {
     throw new Error(chalk.red(`Can't be more than ${MAX_NOTES_NUMBER} notes`));
   }
 
-  const [categories, sentences, titles, commentSentences] = await Promise.all([
+  const dataForGeneration = await Promise.all([
     readContentByLines(CATEGORIES_PATH),
     readContentByLines(SENTENCES_PATH),
     readContentByLines(TITLES_PATH),
     readContentByLines(COMMENT_SENTENCES_PATH),
+    readContentByLines(PHOTOS_PATH),
   ]);
 
   const {notes, comments} = getMockData(
       notesNum,
-      categories,
-      sentences,
-      titles,
-      commentSentences
+      ...dataForGeneration
   );
 
   await Promise.all([

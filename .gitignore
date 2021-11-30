@@ -12,6 +12,7 @@ Thumbs.db
 node_modules/
 notes.json
 comments.json
+upload/
 
 # Директория с собранными файлами проекта
 build/
