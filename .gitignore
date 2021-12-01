@@ -13,6 +13,7 @@ node_modules/
 notes.json
 comments.json
 upload/
+fill-db.sql
 
 # Директория с собранными файлами проекта
 build/
