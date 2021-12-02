@@ -2,13 +2,16 @@
 
 const express = require(`express`);
 
-const {StatusCode, BACK_DEFAULT_PORT} = require(`../../const`);
+const {StatusCode, BACK_DEFAULT_PORT, ExitCode} = require(`../../const`);
 const routes = require(`../api`);
+const sequelize = require(`../../utils/sequelize`);
+
 const {getLogger} = require(`../../utils/logger`);
 const logRequest = require(`../middlewares/logRequest`);
 
 const logger = getLogger({name: `api`});
 const app = express();
+
 app.use(express.json());
 
 app.use(logRequest);
@@ -23,13 +26,21 @@ app.use((_req, _res, _next, err) => {
   logger.error(`Error during request handling: ${err.message}`);
 });
 
-const run = () => {
+const run = async () => {
   const port = process.env.BACK_PORT || BACK_DEFAULT_PORT;
 
   if (port < 0 || port > 65535) {
     throw new Error(
         logger.error(`Port can't be less than 0 or bigger than 65535`)
     );
+  }
+
+  try {
+    await sequelize.authenticate();
+    logger.info(`Connected to DB`);
+  } catch (err) {
+    logger.error(`Haven't managed to connect DB: ${err.message}`);
+    process.exit(ExitCode.ERROR);
   }
 
   app.listen(port, (err) => {
