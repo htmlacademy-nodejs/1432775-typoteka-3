@@ -30,8 +30,8 @@ module.exports = (sequelize) => {
   Article.hasMany(Comment, {as: Aliase.COMMENTS, foreignKey: ForeignKey.ARTICLE, onDelete: `cascade`});
   Comment.belongsTo(Article, {foreignKey: ForeignKey.ARTICLE});
 
-  Article.belongsToMany(Category, {through: ArticleCategory, as: Aliase.CATEGORIES, foreignKey: ForeignKey.CATEGORY});
-  Category.belongsToMany(Article, {through: ArticleCategory, as: Aliase.ARTICLES, foreignKey: ForeignKey.ARTICLE});
+  Article.belongsToMany(Category, {through: ArticleCategory, as: Aliase.CATEGORIES, foreignKey: ForeignKey.ARTICLE});
+  Category.belongsToMany(Article, {through: ArticleCategory, as: Aliase.ARTICLES, foreignKey: ForeignKey.CATEGORY});
   Article.hasMany(ArticleCategory, {as: Aliase.ARTICLES_CATEGORIES, foreignKey: ForeignKey.ARTICLE});
   ArticleCategory.belongsTo(Article, {foreignKey: ForeignKey.ARTICLE});
   Category.hasMany(ArticleCategory, {as: Aliase.ARTICLES_CATEGORIES, foreignKey: ForeignKey.CATEGORY});
@@ -45,4 +45,13 @@ module.exports = (sequelize) => {
 
   User.hasMany(Comment, {as: Aliase.COMMENTS, foreignKey: ForeignKey.USER});
   Comment.belongsTo(User, {foreignKey: ForeignKey.USER});
+
+  return {
+    Article,
+    Category,
+    Comment,
+    Photo,
+    User,
+    ArticleCategory,
+  };
 };

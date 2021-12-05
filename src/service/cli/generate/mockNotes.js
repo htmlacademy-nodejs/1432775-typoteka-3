@@ -1,10 +1,7 @@
 "use strict";
 
-const {nanoid} = require(`nanoid`);
-
 const {getRandomInt, shuffle, getRandomDate} = require(`../../../utils/util`);
-const {getMockComments, getDbComments} = require(`./mockComments`);
-const {NOTE_ID_SIZE} = require(`../../../const`);
+const {getDbComments} = require(`./mockComments`);
 const getMockUsers = require(`./mockUsers`);
 const getCategories = require(`./categories`);
 
@@ -42,44 +39,23 @@ const getRandomNoteCategory = (categories) => {
 
 const getRandomNoteCreationDate = getRandomDate.bind(null, 3600000 * 24 * 30 * MAX_MONTHS_AGO_CREATED);
 
+let photoId = 0;
 const getRandomPhoto = (photos, photosArr, articleId) => {
   const photoName = photos[getRandomInt(0, photos.length - 1)];
   const photo = {
-    id: photoName,
+    id: photoId,
     name: photoName,
-    ...((articleId || articleId === 0) && {articleId})
+    uniqueName: photoName,
+    articleId,
   };
 
   if (photosArr) {
     photosArr.push(photo);
   }
 
+  photoId++;
+
   return photo;
-};
-
-const getMockData = (notesNum, {categories, sentences, titles, commentSentences, photos}) => {
-  const comments = [];
-  const notes = Array(notesNum)
-    .fill()
-    .map(() => {
-      const noteId = nanoid(NOTE_ID_SIZE);
-      const isWithPhoto = Math.round(getRandomInt(0, 1));
-      return {
-        id: noteId,
-        title: getRandomNoteTitle(titles),
-        createdDate: getRandomNoteCreationDate(),
-        announce: getRandomNoteAnnounce(sentences),
-        fullText: getRandomNoteFullText(sentences),
-        categories: getRandomNoteCategory(categories),
-        comments: getMockComments(commentSentences, comments, noteId),
-        ...(isWithPhoto && {photo: getRandomPhoto(photos)})
-      };
-    });
-
-  return {
-    comments,
-    notes
-  };
 };
 
 const getDbFillData = (notesNum, {possibleCategories, sentences, titles, commentSentences, possiblePhotos, names}) => {
@@ -113,7 +89,7 @@ const getDbFillData = (notesNum, {possibleCategories, sentences, titles, comment
       return {
         id: i,
         title: getRandomNoteTitle(titles),
-        createdDate: getRandomNoteCreationDate().toISOString(),
+        createdAt: getRandomNoteCreationDate().toISOString(),
         announce: getRandomNoteAnnounce(sentences),
         fullText: getRandomNoteFullText(sentences),
         userId: users[getRandomInt(0, users.length - 1)].id,
@@ -130,4 +106,4 @@ const getDbFillData = (notesNum, {possibleCategories, sentences, titles, comment
   };
 };
 
-module.exports = {getMockData, getDbFillData};
+module.exports = {getDbFillData};

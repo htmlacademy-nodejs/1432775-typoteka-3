@@ -56,9 +56,6 @@ const MockСomprisingPath = {
   NAMES: FAKE_DATA_PATH + MockFileName.NAMES
 };
 
-const NOTE_ID_SIZE = 10;
-const COMMENT_ID_SIZE = 10;
-
 module.exports = {
   FRONT_DEFAULT_PORT,
   TIMEOUT,
@@ -77,6 +74,4 @@ module.exports = {
   FAKE_DATA_PATH,
   MockFileName,
   MockСomprisingPath,
-  NOTE_ID_SIZE,
-  COMMENT_ID_SIZE,
 };
