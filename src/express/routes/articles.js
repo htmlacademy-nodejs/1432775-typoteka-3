@@ -5,7 +5,7 @@ const {Router} = require(`express`);
 const {api} = require(`../api`);
 const upload = require(`../../utils/multer`);
 const {adaptArticleToServer} = require(`../../utils/adapter`);
-const asyncHandler = require(`express-async-handler`);
+const {asyncHandler} = require(`../../utils/util`);
 
 const articlesRouter = new Router();
 
