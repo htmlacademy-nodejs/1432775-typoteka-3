@@ -1,22 +1,22 @@
 "use strict";
 
-exports.FRONT_DEFAULT_PORT = 8080;
-exports.TIMEOUT = 10000;
+const FRONT_DEFAULT_PORT = 8080;
+const TIMEOUT = 10000;
 
-exports.BACK_DEFAULT_PORT = 3000;
-exports.DEFAULT_COMMAND = `--help`;
+const BACK_DEFAULT_PORT = 3000;
+const DEFAULT_COMMAND = `--help`;
 
-exports.Env = {
+const Env = {
   DEVELOPMENT: `development`,
   PRODUCTION: `production`,
 };
 
-exports.ExitCode = {
+const ExitCode = {
   SUCCESS: 0,
   ERROR: 1,
 };
 
-exports.StatusCode = {
+const StatusCode = {
   OK: 200,
   CREATED: 201,
   BAD_REQUEST: 400,
@@ -26,21 +26,57 @@ exports.StatusCode = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
-exports.UPLOAD_DIR = `upload`;
-exports.PUBLIC_DIR = `public`;
+const UPLOAD_DIR = `upload`;
+const PUBLIC_DIR = `public`;
 
-exports.LOGS_FILE_PATH = `./logs/apiLogs.log`;
-exports.FRONT_LOGS_FILE_PATH = `./logs/frontLogs.log`;
+const LOGS_FILE_PATH = `./logs/apiLogs.log`;
+const FRONT_LOGS_FILE_PATH = `./logs/frontLogs.log`;
 
-exports.MOCK_NOTES_FILE_NAME = `notes.json`;
-exports.MOCK_COMMENTS_FILE_NAME = `comments.json`;
-exports.FAKE_DATA_PATH = `data/`;
+const MOCK_NOTES_FILE_NAME = `notes.json`;
+const MOCK_COMMENTS_FILE_NAME = `comments.json`;
+const FILL_DB_QUERY_FILE_NAME = `fill-db.sql`;
+const FAKE_DATA_PATH = `data/`;
 
-exports.MOCK_NOTE_SENTENCES_FILE_NAME = `sentences.txt`;
-exports.MOCK_TITLES_FILE_NAME = `titles.txt`;
-exports.MOCK_CATEGORIES_FILE_NAME = `categories.txt`;
-exports.MOCK_COMMENT_SENTENCES_FILE_NAME = `commentSentences.txt`;
-exports.MOCK_PHOTOS_FILE_NAME = `photos.txt`;
 
-exports.NOTE_ID_SIZE = 10;
-exports.COMMENT_ID_SIZE = 10;
+const MockFileName = {
+  NOTE_SENTENCES: `sentences.txt`,
+  TITLES: `titles.txt`,
+  CATEGORIES: `categories.txt`,
+  COMMENT_SENTENCES: `commentSentences.txt`,
+  PHOTOS: `photos.txt`,
+  NAMES: `names.txt`,
+};
+
+const MockСomprisingPath = {
+  SENTENCES: FAKE_DATA_PATH + MockFileName.NOTE_SENTENCES,
+  TITLES: FAKE_DATA_PATH + MockFileName.TITLES,
+  CATEGORIES: FAKE_DATA_PATH + MockFileName.CATEGORIES,
+  COMMENT_SENTENCES: FAKE_DATA_PATH + MockFileName.COMMENT_SENTENCES,
+  PHOTOS: FAKE_DATA_PATH + MockFileName.PHOTOS,
+  NAMES: FAKE_DATA_PATH + MockFileName.NAMES
+};
+
+const NOTE_ID_SIZE = 10;
+const COMMENT_ID_SIZE = 10;
+
+module.exports = {
+  FRONT_DEFAULT_PORT,
+  TIMEOUT,
+  BACK_DEFAULT_PORT,
+  DEFAULT_COMMAND,
+  Env,
+  ExitCode,
+  StatusCode,
+  UPLOAD_DIR,
+  PUBLIC_DIR,
+  LOGS_FILE_PATH,
+  FRONT_LOGS_FILE_PATH,
+  MOCK_NOTES_FILE_NAME,
+  MOCK_COMMENTS_FILE_NAME,
+  FILL_DB_QUERY_FILE_NAME,
+  FAKE_DATA_PATH,
+  MockFileName,
+  MockСomprisingPath,
+  NOTE_ID_SIZE,
+  COMMENT_ID_SIZE,
+};
