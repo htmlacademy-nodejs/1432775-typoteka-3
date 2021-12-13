@@ -75,7 +75,7 @@ class Api {
 }
 
 const port = process.env.BACK_PORT || BACK_DEFAULT_PORT;
-const url = process.env.API_URL || `http://localhost:${port}/api/`;
+const url = `http://${process.env.API_HOST}:${port}/api/`;
 const api = new Api(url, TIMEOUT);
 
 module.exports = {
