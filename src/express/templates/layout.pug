@@ -1,3 +1,12 @@
+-
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDay();
+    return `${year}-${month}-${day}`;
+  }
+
 doctype html
 html(lang='ru')
   head

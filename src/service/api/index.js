@@ -2,45 +2,35 @@
 
 const {Router} = require(`express`);
 
-const {readContent, readContentByLines} = require(`../../utils/fs`);
-const {
-  NOTE_ID_SIZE,
-  COMMENT_ID_SIZE,
-  MOCK_NOTES_FILE_NAME,
-  MOCK_COMMENTS_FILE_NAME,
-  MockСomprisingPath,
-} = require(`../../const`);
+const sequelize = require(`../../utils/sequelize`);
+const defineModels = require(`../models`);
 
 const articles = require(`./articles`);
 const categories = require(`./categories`);
 const search = require(`./search`);
 const my = require(`./my`);
+const comments = require(`./comments`);
 
 const NoteService = require(`../data-service/NotesService`);
 const CommentService = require(`../data-service/CommentsService`);
-const DataService = require(`../data-service`);
+const CategoryService = require(`../data-service/Category`);
+const SearchService = require(`../data-service/SearchService`);
 
 const app = new Router();
 
-(async () => {
-  const [mockNotes, mockComments, possibleCategories] = await Promise.all([
-    readContent(MOCK_NOTES_FILE_NAME),
-    readContent(MOCK_COMMENTS_FILE_NAME),
-    readContentByLines(MockСomprisingPath.CATEGORIES),
-  ]);
+defineModels(sequelize);
 
-  const noteService = new NoteService(mockNotes, NOTE_ID_SIZE);
-  const commentService = new CommentService(
-      mockComments,
-      COMMENT_ID_SIZE,
-      noteService
-  );
-  const categoriesService = new DataService(possibleCategories, 0);
+(async () => {
+  const noteService = new NoteService(sequelize);
+  const commentService = new CommentService(sequelize);
+  const categoriesService = new CategoryService(sequelize);
+  const searchService = new SearchService(sequelize);
 
   articles(app, noteService, commentService);
   categories(app, categoriesService);
-  search(app, noteService);
-  my(app, commentService);
+  search(app, searchService);
+  my(app, commentService, noteService);
+  comments(app, commentService);
 })();
 
 module.exports = app;

@@ -25,13 +25,12 @@ const getRandomNoteFullText = (sentences) =>
     .join(` `);
 
 const getRandomNoteCategory = (categories) => {
-  const isItemObj = typeof categories[0] === `object`;
   return [
     ...new Set(
         Array(getRandomInt(1, MAX_CATEGORIES_NUMBER))
         .fill()
         .map(() => {
-          return isItemObj ? categories[getRandomInt(0, categories.length - 1)].id : categories[getRandomInt(0, categories.length - 1)];
+          return getRandomInt(1, categories.length);
         })
     ),
   ];
@@ -39,11 +38,9 @@ const getRandomNoteCategory = (categories) => {
 
 const getRandomNoteCreationDate = getRandomDate.bind(null, 3600000 * 24 * 30 * MAX_MONTHS_AGO_CREATED);
 
-let photoId = 0;
 const getRandomPhoto = (photos, photosArr, articleId) => {
   const photoName = photos[getRandomInt(0, photos.length - 1)];
   const photo = {
-    id: photoId,
     name: photoName,
     uniqueName: photoName,
     articleId,
@@ -52,8 +49,6 @@ const getRandomPhoto = (photos, photosArr, articleId) => {
   if (photosArr) {
     photosArr.push(photo);
   }
-
-  photoId++;
 
   return photo;
 };
@@ -75,24 +70,23 @@ const getDbFillData = (notesNum, {possibleCategories, sentences, titles, comment
       const isWithPhoto = Math.round(getRandomInt(0, 1));
 
       if (isWithPhoto) {
-        getRandomPhoto(possiblePhotos, photos, i);
+        getRandomPhoto(possiblePhotos, photos, i + 1);
       }
 
       const noteCategories = getRandomNoteCategory(categories);
       noteCategories.forEach((categoryId) => {
         notesCategories.push({
-          articleId: i,
+          articleId: i + 1,
           categoryId,
         });
       });
 
       return {
-        id: i,
         title: getRandomNoteTitle(titles),
         createdAt: getRandomNoteCreationDate().toISOString(),
         announce: getRandomNoteAnnounce(sentences),
         fullText: getRandomNoteFullText(sentences),
-        userId: users[getRandomInt(0, users.length - 1)].id,
+        userId: getRandomInt(1, users.length),
       };
     });
 

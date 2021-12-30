@@ -1,54 +1,66 @@
 "use strict";
 
-const {nanoid} = require(`nanoid`);
+const Aliase = require(`../models/aliase`);
 
-const BaseService = require(`./index`);
-
-class CommentsService extends BaseService {
-  constructor(data, itemIdLength, noteService) {
-    super(data, itemIdLength);
-    this._noteService = noteService;
+class CommentsService {
+  constructor(sequelize) {
+    this._Comment = sequelize.models.Comment;
+    this._Article = sequelize.models.Article;
+    this._User = sequelize.models.User;
   }
 
-  create(item, noteId) {
-    const commentId = nanoid(this._itemIdLength);
-    const newItem = Object.assign({}, item, {id: commentId, noteId});
-
-    this._noteService.addComment(noteId, commentId);
-    this._data.push(newItem);
-    return newItem;
+  async create(comment, articleId) {
+    const validComment = {...comment, userId: 1, articleId};
+    return await this._Comment.create(validComment);
   }
 
-  drop(commentId) {
-    const idx = this._data.findIndex((item) => item.id === commentId);
-
-    if (idx === -1) {
-      return null;
-    }
-
-    this._noteService.deleteComment(this._data[idx].noteId, commentId);
-
-    return this._data.splice(idx, 1)[0];
-  }
-
-  findByNoteId(noteId) {
-    return this.findByProperty(`noteId`, noteId);
-  }
-
-  // TODO: should get author id param
-  findMyComments() {
-    return this.findAll();
-  }
-
-  findMyCommentsWithTitles() {
-    const myComments = this.findMyComments();
-
-    myComments.forEach((comment) => {
-      const note = this._noteService.findOne(comment.noteId);
-      comment.noteTitle = note.title;
+  async drop(id, articleId) {
+    return await this._Comment.destroy({
+      where: {
+        id,
+        articleId,
+      },
     });
+  }
 
-    return myComments;
+  async findLatestComments({limit = 5} = {limit: 5}) {
+    return await this._Comment.findAll({
+      include: [
+        {
+          model: this._User,
+          as: Aliase.USER,
+          attributes: [`id`, `firstName`, `lastName`, `avatar`],
+        },
+      ],
+      attributes: [`id`, `text`, `articleId`],
+      limit,
+      order: [[`createdAt`, `DESC`]],
+    });
+  }
+
+  async findMyComments(userId) {
+    const [user, comments] = await Promise.all([
+      this._User.findByPk(userId, {
+        attributes: [`id`, `firstName`, `lastName`, `avatar`],
+      }),
+
+      this._Comment.findAll({
+        include: [
+          {
+            model: this._Article,
+            as: Aliase.ARTICLE,
+            attributes: [`id`, `title`],
+          },
+        ],
+        attributes: [`id`, `createdAt`, `text`],
+        order: [[`createdAt`, `DESC`]],
+        where: {
+          userId,
+        },
+      }),
+    ]);
+
+    return comments.map((comment) => ({...comment.get(), user}));
   }
 }
 

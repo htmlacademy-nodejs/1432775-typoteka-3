@@ -21,12 +21,13 @@ const shuffle = (someArray) => {
 
 const getFileNameFromPath = (path) => path.split(`/`).pop();
 
-const getCheckboxArray = (body, fieldPreffix) => {
+const getCheckboxArray = (body, fieldPreffix, {isNumber = false} = {inNumber: false}) => {
   const checkboxes = [];
   for (const [key, value] of Object.entries(body)) {
     if (key.startsWith(fieldPreffix) && value === `on`) {
-      const fieldName = key.split(fieldPreffix);
-      checkboxes.push(fieldName.pop());
+      const fieldName = key.split(fieldPreffix).pop();
+      const prepearedName = isNumber ? +fieldName : fieldName;
+      checkboxes.push(prepearedName);
       delete body[key];
     }
   }

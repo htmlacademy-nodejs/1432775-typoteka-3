@@ -3,7 +3,6 @@
 const axios = require(`axios`);
 
 const {BACK_DEFAULT_PORT, TIMEOUT, StatusCode} = require(`../const`);
-const {adaptArticleToClient} = require(`../utils/adapter`);
 const {NotFoundErr} = require(`../utils/exceptions`);
 
 class Api {
@@ -30,23 +29,12 @@ class Api {
     return res.data;
   }
 
-  async _requestArticles(url, options = {}) {
-    const articles = await this._request(url, options);
-    return Array.isArray(articles)
-      ? articles.map((article) => adaptArticleToClient(article))
-      : adaptArticleToClient(articles);
+  async getArticles(params) {
+    return this._request(`/articles`, {params});
   }
 
-  async getArticles() {
-    return this._requestArticles(`/articles`);
-  }
-
-  async getMyArticles() {
-    return this._requestArticles(`/articles`);
-  }
-
-  async getArticle(id) {
-    return this._requestArticles(`/articles/${id}`);
+  async getArticle(id, params) {
+    return this._request(`/articles/${id}`, {params});
   }
 
   async createArticle(data) {
@@ -57,12 +45,32 @@ class Api {
     return this._request(`/articles/${id}`, {method: `PUT`, data});
   }
 
+  async deleteArticle(id) {
+    return this._request(`/articles/${id}`, {method: `DELETE`});
+  }
+
   async getCommentsToArticle(id) {
     return this._request(`/articles/${id}/comments`);
   }
 
+  async getMyArticles() {
+    return this._request(`/my`);
+  }
+
   async getMyComments() {
     return this._request(`/my/comments`);
+  }
+
+  async getLatestComments(params) {
+    return this._request(`/comments/latest`, {params});
+  }
+
+  async createComment(data, articleId) {
+    return this._request(`/articles/${articleId}/comments`, {method: `POST`, data});
+  }
+
+  async deleteComment(commentId, articleId) {
+    return this._request(`/articles/${articleId}/comments/${commentId}`, {method: `DELETE`});
   }
 
   async getCategories() {
@@ -70,7 +78,7 @@ class Api {
   }
 
   async search(query) {
-    return this._requestArticles(`/search`, {params: {query}});
+    return this._request(`/search`, {params: {query}});
   }
 }
 

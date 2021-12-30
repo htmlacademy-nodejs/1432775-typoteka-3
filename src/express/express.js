@@ -27,6 +27,8 @@ const logger = getFrontLogger({name: `express`});
 const app = express();
 const port = process.env.FRONT_PORT || FRONT_DEFAULT_PORT;
 
+app.use(express.urlencoded({extended: false}));
+
 app.use(`/`, mainRouter);
 app.use(`/register`, registerRouter);
 app.use(`/login`, loginRouter);

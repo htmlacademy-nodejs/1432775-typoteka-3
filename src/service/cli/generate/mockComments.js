@@ -22,12 +22,11 @@ const getDbComments = (notesNumber, usersNumber, sentences) => {
 
   return Array(commentsNumber)
     .fill()
-    .map((_, i) => ({
-      id: i,
+    .map(() => ({
       text: getCommentText(sentences),
       createdAt: getCommentCreationDate().toISOString(),
-      userId: getRandomInt(0, usersNumber - 1),
-      articleId: getRandomInt(0, notesNumber - 1),
+      userId: getRandomInt(1, usersNumber),
+      articleId: getRandomInt(1, notesNumber),
     }));
 };
 

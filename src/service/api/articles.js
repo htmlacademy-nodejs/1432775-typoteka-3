@@ -16,13 +16,14 @@ const route = new Router();
 module.exports = (app, notesService, commentsService) => {
   app.use(`/articles`, route);
 
-  route.get(`/`, (_req, res) => {
-    const notes = notesService.findAll();
+  route.get(`/`, async (req, res) => {
+    const {commentsNumber, mostCommented, comments, offset, limit} = req.query;
+    const notes = await notesService.findAll({commentsNumber, mostCommented, comments, offset, limit});
     return res.status(StatusCode.OK).json(notes);
   });
 
-  route.post(`/`, validateNewNote, (req, res) => {
-    const newNote = notesService.create(req.body);
+  route.post(`/`, validateNewNote, async (req, res) => {
+    const newNote = await notesService.create(req.body);
     return res.status(StatusCode.CREATED).json(newNote);
   });
 
@@ -34,16 +35,16 @@ module.exports = (app, notesService, commentsService) => {
   route.put(
       `/:id`,
       [checkExistance(notesService), validateNoteUpdate],
-      (req, res) => {
+      async (req, res) => {
         const {id} = req.params;
-        const updatedNote = notesService.update(id, req.body);
+        const updatedNote = await notesService.update(id, req.body);
         return res.status(StatusCode.OK).json(updatedNote);
       }
   );
 
-  route.delete(`/:id`, checkExistance(notesService), (req, res) => {
+  route.delete(`/:id`, async (req, res) => {
     const {id} = req.params;
-    const deletedNote = notesService.drop(id);
+    const deletedNote = await notesService.drop(id);
     return res.status(StatusCode.OK).json(deletedNote);
   });
 
@@ -64,14 +65,10 @@ module.exports = (app, notesService, commentsService) => {
   );
 
   route.delete(
-      `/:noteId/comments/:commentId`,
-      [
-        checkExistance(notesService, `noteId`),
-        checkExistance(commentsService, `commentId`),
-      ],
-      (req, res) => {
-        const {commentId} = req.params;
-        const deletedComment = commentsService.drop(commentId);
+      `/:articleId/comments/:commentId`,
+      async (req, res) => {
+        const {commentId, articleId} = req.params;
+        const deletedComment = await commentsService.drop(commentId, articleId);
         return res.status(StatusCode.OK).json(deletedComment);
       }
   );

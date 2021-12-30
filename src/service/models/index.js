@@ -25,7 +25,7 @@ module.exports = (sequelize) => {
   const User = deineUser(sequelize);
 
   class ArticleCategory extends Model {}
-  ArticleCategory.init({}, {sequelize, timestamps: false});
+  ArticleCategory.init({}, {sequelize, timestamps: false, tableName: Aliase.ARTICLES_CATEGORIES});
 
   Article.hasMany(Comment, {as: Aliase.COMMENTS, foreignKey: ForeignKey.ARTICLE, onDelete: `cascade`});
   Comment.belongsTo(Article, {foreignKey: ForeignKey.ARTICLE});
@@ -37,7 +37,7 @@ module.exports = (sequelize) => {
   Category.hasMany(ArticleCategory, {as: Aliase.ARTICLES_CATEGORIES, foreignKey: ForeignKey.CATEGORY});
   ArticleCategory.belongsTo(Category, {foreignKey: ForeignKey.CATEGORY});
 
-  Article.hasOne(Photo, {as: Aliase.PHOTOS, foreignKey: ForeignKey.ARTICLE});
+  Article.hasOne(Photo, {as: Aliase.PHOTO, foreignKey: ForeignKey.ARTICLE});
   Photo.belongsTo(Article, {foreignKey: ForeignKey.ARTICLE});
 
   User.hasMany(Article, {as: Article.ARTICLES, foreignKey: ForeignKey.USER});

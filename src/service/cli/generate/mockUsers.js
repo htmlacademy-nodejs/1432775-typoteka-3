@@ -10,10 +10,9 @@ const MOCK_AVATARS_NUMBER = 5;
 const getMockUsers = (usersNum, names) => {
   return Array(usersNum)
     .fill()
-    .map((_, i) => {
+    .map(() => {
       const name = names[getRandomInt(0, names.length - 1)].split(` `);
       return {
-        id: i,
         avatar: `avatar-${getRandomInt(1, MOCK_AVATARS_NUMBER)}.png`,
         firstName: name[0],
         lastName: name[1],

@@ -32,11 +32,40 @@ articlesRouter.get(
     asyncHandler(async (req, res) => {
       const {id} = req.params;
 
-      const article = await api.getArticle(id);
-      const comments = await api.getCommentsToArticle(id);
-
-      res.render(`post-detail`, {article, comments});
+      const article = await api.getArticle(id, {comments: true});
+      res.render(`post-detail`, {article});
     })
+);
+
+articlesRouter.get(
+    `/delete/:id`,
+    asyncHandler(async (req, res) => {
+      const {id} = req.params;
+
+      await api.deleteArticle(id);
+
+      res.redirect(`/my`);
+    })
+);
+
+articlesRouter.post(
+    `/:id/comments`,
+    asyncHandler(async (req, res) => {
+      const {id} = req.params;
+
+      await api.createComment(req.body, id);
+
+      res.redirect(`back`);
+    })
+);
+
+articlesRouter.get(
+    `/:articleId/comments/delete/:commentId`,
+    async (req, res) => {
+      const {commentId, articleId} = req.params;
+      await api.deleteComment(commentId, articleId);
+      res.redirect(`back`);
+    }
 );
 
 articlesRouter.get(`/category/:id`, (_req, res) =>
@@ -51,6 +80,7 @@ articlesRouter.get(
         api.getArticle(id),
         api.getCategories(),
       ]);
+      console.log(article);
       res.render(`edit-post`, {article, categories});
     })
 );
