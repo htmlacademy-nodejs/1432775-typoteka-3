@@ -10,7 +10,7 @@ block content
       ul.themes
         each category in categories
           li(class='themes__item')
-            a(class='themes__item-link' href='#') #{category.name}
+            a(class='themes__item-link' href=`/articles/category/${category.id}`) #{category.name}
               sup #{category.count}
     div(class='main-page__section-flex')
       section(class='main-page__hot hot')
@@ -19,7 +19,7 @@ block content
         ul(class='hot__list')
           each article of mostCommentedArticles
             li(class='hot__list-item')
-              a(class='hot__list-link' href='#') #{article.title}
+              a(class='hot__list-link' href=`/articles/${article.id}`) #{article.title}
                 sup(class='hot__link-sup') #{article.commentsNumber}
       section(class='main-page__last last')
         h2(class='last__name') Последние комментарии
@@ -29,7 +29,7 @@ block content
             li(class='last__list-item')
               img(class='last__list-image' src=`/img/${comment.User.avatar}` width='20' height='20' alt='Аватар пользователя')
               b(class='last__list-name') #{`${comment.User.firstName} ${comment.User.lastName}`}
-              a(class='last__list-link' href='#') #{comment.text}
+              a(class='last__list-link' href=`/articles/${comment.articleId}`) #{comment.text}
     section(class='main-page__list preview')
       h2.visually-hidden Список превью статей
       ul(class='preview__list')
@@ -38,15 +38,15 @@ block content
             ul(class='preview__breadcrumbs')
               each category of article.categories
                 li(class='preview__breadcrumbs-item')
-                  a(class='preview__breadcrumbs-link' href='#') #{category.name}
+                  a(class='preview__breadcrumbs-link' href=`/articles/category/${category.id}`) #{category.name}
             if article.photo
               div(class='preview__background')
                 img(class='preview__background-image' src=`/img/${article.photo.uniqueName}` width='460' height='240' alt='Фотография пользователя')
             time(class='preview__time' datetime=`${article.createdAt}`) #{formatDate(article.createdAt)}
             h3(class='preview__name')
-              a(class='preview__name-link' href='#') #{article.title}
+              a(class='preview__name-link' href=`/articles/${article.id}`) #{article.title}
             p(class='preview__text') #{article.announce}
-            a(class='preview__comment' href='#') Комментарии
+            a(class='preview__comment' href=`/articles/${article.id}`) Комментарии
               span(class='preview__cloud')
               b(class='preview__comment-count') #{article.commentsNumber}
     div(class='preview__toggle-wrapper')

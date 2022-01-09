@@ -8,13 +8,13 @@ block content
         h2.visually-hidden Основное содержание
         div(class='post__wrapper')
           div(class='post__head')
-            a(href='#' class='post__backwards button button--backwards') Назад
+            a(href='#' onclick='history.back();' class='post__backwards button button--backwards') Назад
             time(class='post__date' datetime='2019-03-21T20:33') #{formatDate(article.createdAt)}
             h2(class='post__title title title--main') #{article.title}
             ul(class='post__themes themes')
               each category of article.categories
                 li(class='themes__item')
-                  a(class='themes__item-link' href='#') #{category.name}
+                  a(class='themes__item-link' href=`/articles/category/${category.id}`) #{category.name}
                   button(class='themes__remove-btn' type='button') Удалить категорию
           if article.photo
             div(class='post__picture')
