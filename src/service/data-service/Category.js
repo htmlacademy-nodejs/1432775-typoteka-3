@@ -8,29 +8,65 @@ class Category {
     this._Category = sequelize.models.Category;
   }
 
-  async findAll({count = false} = {count: false}) {
+  async findAll(
+      {count = false, where = null} = {count: false, where: null}
+  ) {
+    const attributes = [
+      [Sequelize.col(`Category.id`), `id`],
+      [Sequelize.col(`Category.name`), `name`],
+    ];
+
+    if (count) {
+      attributes.push([
+        Sequelize.fn(`COUNT`, Sequelize.col(`"ArticleCategory"."categoryId"`)),
+        `count`,
+      ]);
+    }
+
     return await this._ArticleCategory.findAll({
+      attributes,
+      raw: true,
+      include: {
+        model: this._Category,
+        right: true,
+        attributes: [],
+      },
+
       ...(count && {
-        include: {
-          model: this._Category,
-          right: true,
-          attributes: [],
-        },
-        raw: true,
-        attributes: [
-          [
-            Sequelize.fn(
-                `COUNT`,
-                Sequelize.col(`"ArticleCategory"."categoryId"`)
-            ),
-            `count`,
-          ],
-          [Sequelize.col(`Category.id`), `id`],
-          [Sequelize.col(`Category.name`), `name`],
-        ],
         group: [`Category.id`],
-        order: [[`count`, `DESC`]]
+        order: [[`count`, `DESC`]],
       }),
+
+      ...(where && {where}),
+    });
+  }
+
+  async findOneRelation(categoryId) {
+    return await this._ArticleCategory.findOne({where: {categoryId}});
+  }
+
+  async create(articleId, category) {
+    const newCategory = await this._Category.create(category);
+    await this._ArticleCategory.create({
+      articleId,
+      categoryId: newCategory.id,
+    });
+    return newCategory;
+  }
+
+  async update(id, item) {
+    return await this._Category.update(item, {
+      where: {
+        id,
+      },
+    });
+  }
+
+  async drop(id) {
+    return await this._Category.destroy({
+      where: {
+        id,
+      },
     });
   }
 }

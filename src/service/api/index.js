@@ -26,7 +26,7 @@ defineModels(sequelize);
   const categoriesService = new CategoryService(sequelize);
   const searchService = new SearchService(sequelize);
 
-  articles(app, noteService, commentService);
+  articles(app, noteService, commentService, categoriesService);
   categories(app, categoriesService);
   search(app, searchService);
   my(app, commentService, noteService);

@@ -60,6 +60,25 @@ articlesRouter.post(
 );
 
 articlesRouter.get(
+    `/:articleId/categories`,
+    asyncHandler(async (req, res) => {
+      const {articleId} = req.params;
+      const categories = await api.getCategories(articleId);
+      return res.render(`categories`, {articleId, categories});
+    })
+);
+
+articlesRouter.post(
+    `/:id/categories`,
+    asyncHandler(async (req, res) => {
+      const {id} = req.params;
+      await api.createCategory(id, req.body);
+
+      res.redirect(`back`);
+    })
+);
+
+articlesRouter.get(
     `/:articleId/comments/delete/:commentId`,
     async (req, res) => {
       const {commentId, articleId} = req.params;
@@ -68,8 +87,24 @@ articlesRouter.get(
     }
 );
 
-articlesRouter.get(`/category/:id`, (_req, res) =>
-  res.render(`articles-by-category`)
+articlesRouter.get(
+    `/category/:id`,
+    asyncHandler(async (req, res) => {
+      const {id} = req.params;
+
+      const [categories, articles] = await Promise.all([
+        api.getCategories(),
+        api.getArticles({limit: 8, offset: 1, fromCategoryId: id}),
+      ]);
+
+      const chosenCategoryName = categories.find((e) => e.id === +id).name;
+
+      return res.render(`articles-by-category`, {
+        categories,
+        articles,
+        chosenCategoryName,
+      });
+    })
 );
 
 articlesRouter.get(

@@ -15,13 +15,16 @@ class Api {
   }
 
   _setResponseInterceptors() {
-    this._axios.interceptors.response.use((res) => res, (err) => {
-      const {status} = err.response;
-      if (status === StatusCode.NOT_FOUND) {
-        throw new NotFoundErr();
-      }
-      Promise.reject(err.response);
-    });
+    this._axios.interceptors.response.use(
+        (res) => res,
+        (err) => {
+          const {status} = err.response;
+          if (status === StatusCode.NOT_FOUND) {
+            throw new NotFoundErr();
+          }
+          return Promise.reject(err.response);
+        }
+    );
   }
 
   async _request(url, options = {}) {
@@ -66,15 +69,37 @@ class Api {
   }
 
   async createComment(data, articleId) {
-    return this._request(`/articles/${articleId}/comments`, {method: `POST`, data});
+    return this._request(`/articles/${articleId}/comments`, {
+      method: `POST`,
+      data,
+    });
   }
 
   async deleteComment(commentId, articleId) {
-    return this._request(`/articles/${articleId}/comments/${commentId}`, {method: `DELETE`});
+    return this._request(`/articles/${articleId}/comments/${commentId}`, {
+      method: `DELETE`,
+    });
   }
 
-  async getCategories() {
-    return this._request(`/categories`);
+  async getCategories(articleId) {
+    return this._request(
+        `${articleId ? `articles/${articleId}/categories` : `/categories`}`
+    );
+  }
+
+  async createCategory(articleId, data) {
+    return this._request(`/articles/${articleId}/categories`, {
+      method: `POST`,
+      data,
+    });
+  }
+
+  async updateCategory(categoryId, data) {
+    return this._request(`/categories/${categoryId}`, {method: `PUT`, data});
+  }
+
+  async deleteCategory(categoryId) {
+    return this._request(`/categories/${categoryId}`, {method: `DELETE`});
   }
 
   async search(query) {

@@ -7,18 +7,33 @@ const {
   validateNoteUpdate,
 } = require(`../middlewares/validation/note`);
 const {validateNewComment} = require(`../middlewares/validation/comment`);
+const {validateNewCategory} = require(`../middlewares/validation/category`);
 const checkExistance = require(`../middlewares/checkExistance`);
 
 const {StatusCode} = require(`../../const`);
 
 const route = new Router();
 
-module.exports = (app, notesService, commentsService) => {
+module.exports = (app, notesService, commentsService, categoriesService) => {
   app.use(`/articles`, route);
 
   route.get(`/`, async (req, res) => {
-    const {commentsNumber, mostCommented, comments, offset, limit} = req.query;
-    const notes = await notesService.findAll({commentsNumber, mostCommented, comments, offset, limit});
+    const {
+      commentsNumber,
+      mostCommented,
+      comments,
+      offset,
+      limit,
+      fromCategoryId,
+    } = req.query;
+    const notes = await notesService.findAll({
+      commentsNumber,
+      mostCommented,
+      comments,
+      offset,
+      limit,
+      fromCategoryId,
+    });
     return res.status(StatusCode.OK).json(notes);
   });
 
@@ -48,12 +63,6 @@ module.exports = (app, notesService, commentsService) => {
     return res.status(StatusCode.OK).json(deletedNote);
   });
 
-  route.get(`/:id/comments`, checkExistance(notesService), (req, res) => {
-    const {id} = req.params;
-    const comments = commentsService.findByNoteId(id);
-    return res.status(StatusCode.OK).json(comments);
-  });
-
   route.post(
       `/:id/comments`,
       [checkExistance(notesService), validateNewComment],
@@ -64,12 +73,30 @@ module.exports = (app, notesService, commentsService) => {
       }
   );
 
-  route.delete(
-      `/:articleId/comments/:commentId`,
+  route.delete(`/:articleId/comments/:commentId`, async (req, res) => {
+    const {commentId, articleId} = req.params;
+    const deletedComment = await commentsService.drop(commentId, articleId);
+    return res.status(StatusCode.OK).json(deletedComment);
+  });
+
+  route.get(`/:articleId/categories`, async (req, res) => {
+    const {articleId} = req.params;
+    const articleCategories = await categoriesService.findAll({
+      where: {articleId},
+    });
+    return res.status(StatusCode.OK).json(articleCategories);
+  });
+
+  route.post(
+      `/:articleId/categories`,
+      validateNewCategory,
       async (req, res) => {
-        const {commentId, articleId} = req.params;
-        const deletedComment = await commentsService.drop(commentId, articleId);
-        return res.status(StatusCode.OK).json(deletedComment);
+        const {articleId} = req.params;
+        const newCategory = await categoriesService.create(
+            articleId,
+            req.body
+        );
+        return res.status(StatusCode.CREATED).json(newCategory);
       }
   );
 };

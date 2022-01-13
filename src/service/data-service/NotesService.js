@@ -15,6 +15,7 @@ class NotesService {
 
     this._defaultFindAllOptions = {
       categories: true,
+      fromCategoryId: null,
       photo: true,
       comments: false,
       commentsNumber: false,
@@ -30,6 +31,7 @@ class NotesService {
   async findAll(
       {
         categories = true,
+        fromCategoryId = null,
         photo = true,
         comments = false,
         commentsNumber = true,
@@ -50,10 +52,17 @@ class NotesService {
       include.push({
         model: this._Category,
         as: Aliase.CATEGORIES,
-        through: {
-          attributes: [],
-        },
         attributes: [`id`, `name`],
+      });
+    }
+
+    if (fromCategoryId) {
+      include.push({
+        required: true,
+        model: this._ArticleCategory,
+        as: Aliase.ARTICLES_CATEGORIES,
+        where: {categoryId: fromCategoryId},
+        attributes: [],
       });
     }
 
@@ -73,14 +82,6 @@ class NotesService {
 
     if (photo) {
       include.push(Aliase.PHOTO);
-    }
-
-    if (needIncludeCommentsNumber) {
-      include.push({
-        model: this._Comment,
-        as: Aliase.COMMENTS,
-        attributes: [],
-      });
     }
 
     const order = [];
@@ -105,9 +106,15 @@ class NotesService {
 
       ...(needIncludeCommentsNumber && {
         attributes: {
-          include: [[Sequelize.fn(`COUNT`, `comments.id`), `commentsNumber`]],
+          include: [
+            [
+              Sequelize.literal(
+                  `(SELECT COUNT(*) FROM comments WHERE "articleId" = "Article"."id")`
+              ),
+              `commentsNumber`,
+            ],
+          ],
         },
-        group: [`Article.id`],
       }),
     };
 
