@@ -7,7 +7,6 @@ const {
   validateNoteUpdate,
 } = require(`../middlewares/validation/note`);
 const {validateNewComment} = require(`../middlewares/validation/comment`);
-const {validateNewCategory} = require(`../middlewares/validation/category`);
 const checkExistance = require(`../middlewares/checkExistance`);
 
 const {StatusCode} = require(`../../const`);
@@ -25,6 +24,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
       offset,
       limit,
       fromCategoryId,
+      needCount,
     } = req.query;
     const notes = await notesService.findAll({
       commentsNumber,
@@ -33,6 +33,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
       offset,
       limit,
       fromCategoryId,
+      needCount
     });
     return res.status(StatusCode.OK).json(notes);
   });
@@ -86,17 +87,4 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
     });
     return res.status(StatusCode.OK).json(articleCategories);
   });
-
-  route.post(
-      `/:articleId/categories`,
-      validateNewCategory,
-      async (req, res) => {
-        const {articleId} = req.params;
-        const newCategory = await categoriesService.create(
-            articleId,
-            req.body
-        );
-        return res.status(StatusCode.CREATED).json(newCategory);
-      }
-  );
 };

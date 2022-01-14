@@ -14,9 +14,13 @@ module.exports = (app, categoryService) => {
     return res.status(StatusCode.OK).json(categories);
   });
 
+  route.post(`/`, validateNewCategory, async (req, res) => {
+    const newCategory = await categoryService.create(req.body);
+    return res.status(StatusCode.CREATED).json(newCategory);
+  });
+
   route.put(`/:id`, validateNewCategory, async (req, res) => {
     const {id} = req.params;
-    console.log(req.body);
     const updatedCategory = await categoryService.update(id, req.body);
     return res.status(StatusCode.OK).json(updatedCategory);
   });

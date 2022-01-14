@@ -87,8 +87,8 @@ class Api {
     );
   }
 
-  async createCategory(articleId, data) {
-    return this._request(`/articles/${articleId}/categories`, {
+  async createCategory(data) {
+    return this._request(`/categories`, {
       method: `POST`,
       data,
     });

@@ -45,13 +45,8 @@ class Category {
     return await this._ArticleCategory.findOne({where: {categoryId}});
   }
 
-  async create(articleId, category) {
-    const newCategory = await this._Category.create(category);
-    await this._ArticleCategory.create({
-      articleId,
-      categoryId: newCategory.id,
-    });
-    return newCategory;
+  async create(category) {
+    return await this._Category.create(category);
   }
 
   async update(id, item) {

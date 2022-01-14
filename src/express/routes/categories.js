@@ -7,6 +7,22 @@ const {StatusCode} = require(`../../const`);
 
 const categoriesRouter = new Router();
 
+categoriesRouter.get(
+    `/`,
+    asyncHandler(async (_req, res) => {
+      const categories = await api.getCategories();
+      return res.render(`categories`, {categories});
+    })
+);
+
+categoriesRouter.post(
+    `/`,
+    asyncHandler(async (req, res) => {
+      await api.createCategory(req.body);
+      res.redirect(`back`);
+    })
+);
+
 categoriesRouter.post(
     `/edit/:id`,
     asyncHandler(async (req, res) => {

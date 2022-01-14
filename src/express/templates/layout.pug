@@ -7,6 +7,42 @@
     return `${year}-${month}-${day}`;
   }
 
+mixin pagination(page, totalPages, width, resource)
+  if totalPages > 1
+    -
+      let start = page - width;
+      let end = page + width;
+
+      if (start < 1) {
+        end += 1 - start;
+        start = 1;
+      }
+
+      if (end > totalPages) {
+        start -= end - totalPages;
+        end = totalPages;
+      }
+
+      if (start < 1) {
+        start = 1;
+      }
+
+      let i = start - 1;
+
+    div(class='preview__toggle-wrapper')
+          ul(class='preview__pagination pagination')
+            if page > 1
+              li
+                a(class='pagination__button button button--backwards' href=`${resource}?page=${page - 1}` aria-label='Страница назад') Назад
+            while i++ < end
+              -
+                const isCurrentPage = i === page;
+              li(class=`pagination__item${isCurrentPage ? ` pagination__item--active` : ``}`)
+                a(href= isCurrentPage ? null : `${resource}?page=${i}`)= i
+            if page < totalPages
+              li
+                a(class='pagination__button button button--forward' href=`${resource}?page=${page + 1}` aria-label='Страница вперед') Вперед
+
 doctype html
 html(lang='ru')
   head

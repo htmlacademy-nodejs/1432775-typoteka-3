@@ -7,6 +7,8 @@ const upload = require(`../../utils/multer`);
 const {adaptArticleToServer} = require(`../../utils/adapter`);
 const {asyncHandler} = require(`../../utils/util`);
 
+const ARTICLES_IN_CATEGORY_BY_PAGE = 8;
+
 const articlesRouter = new Router();
 
 articlesRouter.get(`/add`, async (_req, res) => {
@@ -60,25 +62,6 @@ articlesRouter.post(
 );
 
 articlesRouter.get(
-    `/:articleId/categories`,
-    asyncHandler(async (req, res) => {
-      const {articleId} = req.params;
-      const categories = await api.getCategories(articleId);
-      return res.render(`categories`, {articleId, categories});
-    })
-);
-
-articlesRouter.post(
-    `/:id/categories`,
-    asyncHandler(async (req, res) => {
-      const {id} = req.params;
-      await api.createCategory(id, req.body);
-
-      res.redirect(`back`);
-    })
-);
-
-articlesRouter.get(
     `/:articleId/comments/delete/:commentId`,
     async (req, res) => {
       const {commentId, articleId} = req.params;
@@ -91,18 +74,24 @@ articlesRouter.get(
     `/category/:id`,
     asyncHandler(async (req, res) => {
       const {id} = req.params;
+      const {page = 1} = req.query;
 
-      const [categories, articles] = await Promise.all([
+      const offset = (page - 1) * ARTICLES_IN_CATEGORY_BY_PAGE;
+
+      const [categories, {count, rows: articles}] = await Promise.all([
         api.getCategories(),
-        api.getArticles({limit: 8, offset: 1, fromCategoryId: id}),
+        api.getArticles({limit: ARTICLES_IN_CATEGORY_BY_PAGE, offset, fromCategoryId: id, needCount: true}),
       ]);
 
-      const chosenCategoryName = categories.find((e) => e.id === +id).name;
+      const chosenCategory = categories.find((e) => e.id === +id);
+      const totalPages = Math.ceil(count / ARTICLES_IN_CATEGORY_BY_PAGE);
 
       return res.render(`articles-by-category`, {
         categories,
         articles,
-        chosenCategoryName,
+        chosenCategory,
+        page,
+        totalPages,
       });
     })
 );
@@ -115,7 +104,7 @@ articlesRouter.get(
         api.getArticle(id),
         api.getCategories(),
       ]);
-      console.log(article);
+
       res.render(`edit-post`, {article, categories});
     })
 );

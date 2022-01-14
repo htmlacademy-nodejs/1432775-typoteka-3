@@ -42,7 +42,7 @@ block content
                     .new-publication__checkbox.new-publication__checkbox--auto
                       input(type='checkbox' name=`category/${category.id}` id=`category-${category.id}` checked=categoryIds.includes(category.id))
                       label(for=`category-${category.id}`) #{category.name}
-                  a.new-publication__form-link.button.button--transparent(href=`/articles/${article.id}/categories`) Добавить категорию
+                  a.new-publication__form-link.button.button--transparent(href=`/categories`) Добавить категорию
               .form__wrapper.form__wrapper--text
                 .form__field.form__field--publication-text
                   label

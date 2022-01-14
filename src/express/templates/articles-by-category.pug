@@ -2,7 +2,7 @@ extends layout.pug
 
 block content
   main.articles-category
-    h1 #{chosenCategoryName}
+    h1 #{chosenCategory.name}
     section(class='articles-category__theme-list')
       h2.visually-hidden Список тем
       ul.themes
@@ -29,3 +29,4 @@ block content
             a(class='preview__comment' href=`/articles/${article.id}`) Комментарии
               span(class='preview__cloud')
               b(class='preview__comment-count') #{article.commentsNumber}
+    +pagination(+page, totalPages, 5, `/articles/category/${chosenCategory.id}`)

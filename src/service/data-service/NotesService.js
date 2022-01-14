@@ -37,7 +37,7 @@ class NotesService {
         commentsNumber = true,
         mostCommented = false,
         limit = 0,
-        offset = 1,
+        offset = 0,
         needCount = false,
         withPagination = true,
         where = null,
@@ -121,7 +121,17 @@ class NotesService {
     const promises = [this._Article.findAll(queryOptions)];
 
     if (needCount) {
-      promises.push(this._Article.count());
+      if (fromCategoryId) {
+        promises.push(
+            this._ArticleCategory.count({
+              where: {
+                categoryId: fromCategoryId,
+              },
+            })
+        );
+      } else {
+        promises.push(this._Article.count());
+      }
     }
 
     const res = await Promise.all(promises);
