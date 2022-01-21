@@ -1,7 +1,7 @@
 "use strict";
 
 const pino = require(`pino`);
-const {Env, LOGS_FILE_PATH, FRONT_LOGS_FILE_PATH} = require(`../const`);
+const {Env, LogPath} = require(`../const`);
 
 const isProd = process.env.NODE_ENV === Env.PRODUCTION;
 const logLevel = isProd ? `error` : `debug`;
@@ -13,14 +13,14 @@ const prettyTransport = {
 const fileTransport = {
   target: `pino/file`,
   options: {
-    destination: LOGS_FILE_PATH,
+    destination: LogPath.API,
   },
 };
 
 const frontFileTransport = {
   target: `pino/file`,
   options: {
-    destination: FRONT_LOGS_FILE_PATH,
+    destination: LogPath.FRONT,
   },
 };
 

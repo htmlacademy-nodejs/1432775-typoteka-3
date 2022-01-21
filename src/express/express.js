@@ -7,18 +7,9 @@ const path = require(`path`);
 const {
   StatusCode,
   FRONT_DEFAULT_PORT,
-  UPLOAD_DIR,
-  PUBLIC_DIR,
+  ClientDir,
 } = require(`../const`);
-const {
-  mainRouter,
-  registerRouter,
-  loginRouter,
-  myRouter,
-  articlesRouter,
-  searchRouter,
-  categoriesRouter,
-} = require(`./routes`);
+const defineRoutes = require(`./routes`);
 const {getFrontLogger} = require(`../utils/logger`);
 const {NotFoundErr} = require(`../utils/exceptions`);
 
@@ -29,23 +20,16 @@ const port = process.env.FRONT_PORT || FRONT_DEFAULT_PORT;
 
 app.use(express.urlencoded({extended: false}));
 
-app.use(`/`, mainRouter);
-app.use(`/register`, registerRouter);
-app.use(`/login`, loginRouter);
-app.use(`/my`, myRouter);
-app.use(`/articles`, articlesRouter);
-app.use(`/search`, searchRouter);
-app.use(`/categories`, categoriesRouter);
+defineRoutes(app);
 
-app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
-app.use(express.static(path.resolve(__dirname, UPLOAD_DIR)));
+app.use(express.static(path.resolve(__dirname, ClientDir.PUBLIC)));
+app.use(express.static(path.resolve(__dirname, ClientDir.UPLOAD)));
 app.set(`views`, path.resolve(__dirname, `templates`));
 app.set(`view engine`, `pug`);
 
 app.use((_, res) => res.status(StatusCode.NOT_FOUND).render(`404`));
 
 app.use((err, _req, res, _next) => {
-
   if (err instanceof NotFoundErr) {
     return res.status(StatusCode.NOT_FOUND).render(`404`);
   }
