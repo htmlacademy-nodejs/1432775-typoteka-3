@@ -10,7 +10,8 @@
     "start-front::dev": "cross-env NODE_ENV=development nodemon ./src/express/express.js -L -e js,pug,json",
     "test": "npm run eslint && npm run jest",
     "eslint": "eslint --ext .js src/",
-    "jest": "jest"
+    "jest": "jest",
+    "filldb": "node src/service/service.js --filldb 20"
   },
   "repository": {
     "type": "git",
