@@ -1,31 +1,32 @@
 "use strict";
 
-const express = require(`express`);
 const request = require(`supertest`);
 
 const search = require(`./search`);
-const NoteService = require(`../data-service/NotesService`);
-const {testNotes} = require(`../testData`);
+const SearchService = require(`../data-service/SearchService`);
+
 const {StatusCode} = require(`../../const`);
-
-const app = express();
-app.use(express.json());
-
-search(app, new NoteService(testNotes));
-
-const getSearchResponse = async (query) => {
-  return await request(app).get(`/search`).query({
-    query,
-  });
-};
+const {createTestApi} = require(`../../utils/util`);
 
 describe(`/search route works correctly`, () => {
+  let app;
+
+  beforeAll(async () => {
+    app = await createTestApi(search, SearchService);
+  });
+
+  const getSearchResponse = async (query) => {
+    return await request(app).get(`/search`).query({
+      query,
+    });
+  };
+
   it(`Should find one match`, async () => {
-    const res = await getSearchResponse(`Великое новое`);
+    const res = await getSearchResponse(`альбом`);
 
     expect(res.statusCode).toBe(StatusCode.OK);
     expect(res.body.length).toBe(1);
-    expect(res.body[0].id).toBe(`7BdzEYyBO_`);
+    expect(res.body[0].title).toBe(`Самый лучший музыкальный альбом этого года`);
   });
 
   it(`Should be no matches`, async () => {

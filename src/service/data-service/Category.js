@@ -11,30 +11,22 @@ class Category {
   async findAll(
       {count = false, where = null} = {count: false, where: null}
   ) {
-    const attributes = [
-      [Sequelize.col(`Category.id`), `id`],
-      [Sequelize.col(`Category.name`), `name`],
-    ];
+    const attributes = [`id`, `name`];
 
     if (count) {
       attributes.push([
-        Sequelize.fn(`COUNT`, Sequelize.col(`"ArticleCategory"."categoryId"`)),
+        Sequelize.literal(
+            `(SELECT COUNT(*) FROM articles_categories WHERE "categoryId" = "Category"."id")`
+        ),
         `count`,
       ]);
     }
 
-    return await this._ArticleCategory.findAll({
+    return await this._Category.findAll({
       attributes,
-      raw: true,
-      include: {
-        model: this._Category,
-        right: true,
-        attributes: [],
-      },
 
       ...(count && {
-        group: [`Category.id`],
-        order: [[`count`, `DESC`]],
+        order: [[Sequelize.col(`count`), `DESC`]],
       }),
 
       ...(where && {where}),

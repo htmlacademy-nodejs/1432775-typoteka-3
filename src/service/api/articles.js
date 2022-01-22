@@ -67,9 +67,9 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
   route.post(
       `/:id/comments`,
       [checkExistance(notesService), validateNewComment],
-      (req, res) => {
+      async (req, res) => {
         const {id} = req.params;
-        const newComment = commentsService.create(req.body, id);
+        const newComment = await commentsService.create(req.body, id);
         return res.status(StatusCode.CREATED).json(newComment);
       }
   );

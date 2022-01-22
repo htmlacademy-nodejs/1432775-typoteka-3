@@ -20,8 +20,8 @@ class NotesService {
       comments: false,
       commentsNumber: false,
       mostCommented: true,
-      limit: null,
-      offset: null,
+      limit: 10,
+      offset: 0,
       needCount: false,
       withPagination: true,
       where: null,
@@ -36,7 +36,7 @@ class NotesService {
         comments = false,
         commentsNumber = true,
         mostCommented = false,
-        limit = 0,
+        limit = 10,
         offset = 0,
         needCount = false,
         withPagination = true,
@@ -193,7 +193,7 @@ class NotesService {
   }
 
   async drop(id) {
-    await this._Article.destroy({
+    return await this._Article.destroy({
       where: {
         id,
       },

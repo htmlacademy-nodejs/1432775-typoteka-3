@@ -7,8 +7,7 @@ const {ExitCode, MockСomprisingPath} = require(`../../const`);
 const {getDbFillData} = require(`./generate/mockNotes`);
 const {getLogger} = require(`../../utils/logger`);
 
-const defineModels = require(`../models`);
-const sequelize = require(`../../utils/sequelize`);
+const {sequelize, initdb} = require(`../../utils/sequelize`);
 
 const logger = getLogger({name: `filldb`});
 
@@ -29,10 +28,6 @@ const run = async (args) => {
     logger.error(`Haven't managed to connect DB: ${err.message}`);
     process.exit(ExitCode.ERROR);
   }
-
-  const {Article, Category, Comment, Photo, User, ArticleCategory} =
-    defineModels(sequelize);
-  await sequelize.sync({force: true});
 
   const [
     possibleCategories,
@@ -60,14 +55,14 @@ const run = async (args) => {
       names,
     });
 
-  await Promise.all([
-    Category.bulkCreate(categories),
-    User.bulkCreate(users),
-    Article.bulkCreate(notes),
-    Photo.bulkCreate(photos),
-    Comment.bulkCreate(comments),
-    ArticleCategory.bulkCreate(notesCategories),
-  ]);
+  await initdb(sequelize, {
+    comments,
+    notes,
+    photos,
+    categories,
+    notesCategories,
+    users,
+  });
 };
 
 module.exports = {
