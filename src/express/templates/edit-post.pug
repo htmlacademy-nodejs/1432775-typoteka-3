@@ -1,6 +1,10 @@
 extends layout.pug
 
+
+
 block content
+  - const categoryIds = article.categories.map((e) => e.id);
+
   main
     section
       .popup.popup--new-publication.popup--anti
@@ -27,7 +31,7 @@ block content
                   label
                     input#image-name-field(type='text' name='photo' value=`${article.photo ? article.photo.name : ``}` placeholder='Фотография' readonly='')
                   label.visually-hidden
-                    input#image-id-field(type='text' name='photoId' value=`${article.photo ? article.photo.id : ``}` readonly='')
+                    input#image-id-field(type='text' name='uniqueName' value=`${article.photo ? article.photo.uniqueName : ``}` readonly='')
                   .form__image-loader.form__image-loader--publication
                     label
                       input.visually-hidden(type='file' name='upload')
@@ -36,9 +40,9 @@ block content
                 .new-publication__category-wrapper
                   each category, i in categories
                     .new-publication__checkbox.new-publication__checkbox--auto
-                      input(type='checkbox' name=`category/${category}` id=`checkbox-${category}` checked=article.categories.includes(category))
-                      label(for=`checkbox-${category}`) #{category}
-                  a.new-publication__form-link.button.button--transparent(href='#') Добавить категорию
+                      input(type='checkbox' name=`category/${category.id}` id=`category-${category.id}` checked=categoryIds.includes(category.id))
+                      label(for=`category-${category.id}`) #{category.name}
+                  a.new-publication__form-link.button.button--transparent(href=`/categories`) Добавить категорию
               .form__wrapper.form__wrapper--text
                 .form__field.form__field--publication-text
                   label

@@ -7,6 +7,8 @@ const upload = require(`../../utils/multer`);
 const {adaptArticleToServer} = require(`../../utils/adapter`);
 const {asyncHandler} = require(`../../utils/util`);
 
+const ARTICLES_IN_CATEGORY_BY_PAGE = 8;
+
 const articlesRouter = new Router();
 
 articlesRouter.get(`/add`, async (_req, res) => {
@@ -32,15 +34,66 @@ articlesRouter.get(
     asyncHandler(async (req, res) => {
       const {id} = req.params;
 
-      const article = await api.getArticle(id);
-      const comments = await api.getCommentsToArticle(id);
-
-      res.render(`post-detail`, {article, comments});
+      const article = await api.getArticle(id, {comments: true});
+      res.render(`post-detail`, {article});
     })
 );
 
-articlesRouter.get(`/category/:id`, (_req, res) =>
-  res.render(`articles-by-category`)
+articlesRouter.get(
+    `/delete/:id`,
+    asyncHandler(async (req, res) => {
+      const {id} = req.params;
+
+      await api.deleteArticle(id);
+
+      res.redirect(`/my`);
+    })
+);
+
+articlesRouter.post(
+    `/:id/comments`,
+    asyncHandler(async (req, res) => {
+      const {id} = req.params;
+
+      await api.createComment(req.body, id);
+
+      res.redirect(`back`);
+    })
+);
+
+articlesRouter.get(
+    `/:articleId/comments/delete/:commentId`,
+    async (req, res) => {
+      const {commentId, articleId} = req.params;
+      await api.deleteComment(commentId, articleId);
+      res.redirect(`back`);
+    }
+);
+
+articlesRouter.get(
+    `/category/:id`,
+    asyncHandler(async (req, res) => {
+      const {id} = req.params;
+      const {page = 1} = req.query;
+
+      const offset = (page - 1) * ARTICLES_IN_CATEGORY_BY_PAGE;
+
+      const [categories, {count, rows: articles}] = await Promise.all([
+        api.getCategories(),
+        api.getArticles({limit: ARTICLES_IN_CATEGORY_BY_PAGE, offset, fromCategoryId: id, needCount: true}),
+      ]);
+
+      const chosenCategory = categories.find((e) => e.id === +id);
+      const totalPages = Math.ceil(count / ARTICLES_IN_CATEGORY_BY_PAGE);
+
+      return res.render(`articles-by-category`, {
+        categories,
+        articles,
+        chosenCategory,
+        page,
+        totalPages,
+      });
+    })
 );
 
 articlesRouter.get(
@@ -51,6 +104,7 @@ articlesRouter.get(
         api.getArticle(id),
         api.getCategories(),
       ]);
+
       res.render(`edit-post`, {article, categories});
     })
 );

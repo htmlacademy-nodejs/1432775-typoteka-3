@@ -6,6 +6,7 @@ const getValidationMiddleware = (schema, cb) => (req, res, next) => {
   const {error, value} = schema.validate(req.body);
 
   if (error) {
+    console.log(`VALIDATION ERR: ${error.message}`);
     return res.status(StatusCode.BAD_REQUEST).send(`Bad request: ${error.message}`);
   }
 

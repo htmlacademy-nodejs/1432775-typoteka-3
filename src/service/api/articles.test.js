@@ -1,65 +1,70 @@
 "use strict";
 
-const express = require(`express`);
 const request = require(`supertest`);
 
 const articles = require(`./articles`);
-
 const NoteService = require(`../data-service/NotesService`);
 const CommentService = require(`../data-service/CommentsService`);
+const CategoryService = require(`../data-service/Category`);
 
-const {testNotes, testComments} = require(`../testData`);
-const {StatusCode, COMMENT_ID_SIZE, NOTE_ID_SIZE} = require(`../../const`);
+const {StatusCode} = require(`../../const`);
+const {createTestApi} = require(`../../utils/util`);
 
-const noteService = new NoteService(testNotes, NOTE_ID_SIZE);
-const commentSerice = new CommentService(
-    testComments,
-    COMMENT_ID_SIZE,
-    noteService
-);
+const validToCreationArticle = {
+  title: `Вы никогда не видели таких писем, которые мы с Гарри получили о наших грушах`,
+  createdAt: `2021-12-22T07:08:37.646Z`,
+  categories: [1, 3, 6],
+  announce: `Не донимай молчащего вопросами! А вдруг он молчит про тебя? А вдруг нецензурно?`,
+  fullText: `План на завтра - составить план на послезавтра. Когда жители Урюпинска умирают, они попадают в рай или обратно в Урюпинск. Реальный показатель успешного человека - носки без дыр!`,
+  photo: {
+    name: `name`,
+    uniqueName: `SAidhgbjja7`,
+  },
+};
 
-const app = express();
-app.use(express.json());
-
-articles(app, noteService, commentSerice);
-
-const getValidArticle = () => {
-  const validArticle = JSON.parse(JSON.stringify(testNotes[0]));
-
-  delete validArticle.id;
-  delete validArticle.comments;
-
-  return validArticle;
+const vealidToCreationComment = {
+  text: `Давно не пользуюсь стационарными компьютерами. Ноутбуки победили.`,
 };
 
 describe(`/articles route works correctly with articles`, () => {
+  let app;
+
+  beforeAll(async () => {
+    app = await createTestApi(
+        articles,
+        NoteService,
+        CommentService,
+        CategoryService
+    );
+  });
+
   it(`Returns list of aricles`, async () => {
     const res = await request(app).get(`/articles`);
 
     expect(res.statusCode).toBe(StatusCode.OK);
-    expect(res.body.length).toBe(5);
+    expect(res.body.length).toBe(3);
   });
 
   describe(`Article creation works correctly`, () => {
     let validArticle;
     beforeEach(() => {
-      validArticle = getValidArticle();
+      validArticle = {...validToCreationArticle};
     });
 
     it(`Creates new article`, async () => {
       const res = await request(app).post(`/articles`).send(validArticle);
 
       expect(res.statusCode).toBe(StatusCode.CREATED);
-      expect(res.body.id.length).toBe(NOTE_ID_SIZE);
 
-      delete res.body.id;
-
-      expect(res.body).toEqual({...validArticle, comments: []});
+      expect(res.body.title).toBe(
+          `Вы никогда не видели таких писем, которые мы с Гарри получили о наших грушах`
+      );
     });
 
     it(`Should return 400 if one of required fields is missing`, async () => {
       // non required field
       delete validArticle.fullText;
+      delete validArticle.photo;
 
       await Promise.all(
           Object.keys(validArticle).map(async (key) => {
@@ -84,10 +89,10 @@ describe(`/articles route works correctly with articles`, () => {
 
   describe(`Returns article by id`, () => {
     it(`Returns correct article by id`, async () => {
-      const res = await request(app).get(`/articles/7BdzEYyBO_`);
+      const res = await request(app).get(`/articles/1`);
 
       expect(res.statusCode).toBe(StatusCode.OK);
-      expect(res.body).toEqual(testNotes[0]);
+      expect(res.body.id).toBe(1);
     });
 
     it(`Returns 404 if article with given id doesn't exist`, async () => {
@@ -100,17 +105,13 @@ describe(`/articles route works correctly with articles`, () => {
   describe(`Article update works correctly`, () => {
     let validUpdate;
     beforeEach(() => {
-      validUpdate = getValidArticle();
+      validUpdate = {...validToCreationArticle};
     });
 
     it(`Updates article if update is valid`, async () => {
-      const res = await request(app)
-        .put(`/articles/MKaCh4a7mF`)
-        .send(validUpdate);
+      const res = await request(app).put(`/articles/3`).send(validUpdate);
 
       expect(res.statusCode).toBe(StatusCode.OK);
-      expect(res.body.id).toBe(`MKaCh4a7mF`);
-      expect(res.body.title).toBe(validUpdate.title);
     });
 
     it(`Returns 404 if article with given id doesn't exist`, async () => {
@@ -121,9 +122,7 @@ describe(`/articles route works correctly with articles`, () => {
 
     it(`Returns 400 if article update is invalid`, async () => {
       validUpdate.unexpectedField = `some value`;
-      const res = await request(app)
-        .put(`/articles/MKaCh4a7mF`)
-        .send(validUpdate);
+      const res = await request(app).put(`/articles/3`).send(validUpdate);
 
       expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
     });
@@ -131,57 +130,48 @@ describe(`/articles route works correctly with articles`, () => {
 
   describe(`Article deletion works correctly`, () => {
     it(`Deletes article`, async () => {
-      const res = await request(app).delete(`/articles/Ew7HE_kkmO`);
-
+      const res = await request(app).delete(`/articles/3`);
       expect(res.statusCode).toBe(StatusCode.OK);
-      expect(noteService.findOne(`Ew7HE_kkmO`)).toBeUndefined();
+      expect(res.body).toBe(1);
+
+      const findRes = await request(app).get(`/articles/3`);
+      expect(findRes.statusCode).toBe(StatusCode.NOT_FOUND);
     });
 
-    it(`Returns 404 if article with given id doesn't exist`, async () => {
+    it(`Returns 0 in body if article with given id doesn't exist`, async () => {
       const res = await request(app).delete(`/articles/he nne`);
 
-      expect(res.statusCode).toBe(StatusCode.NOT_FOUND);
+      expect(res.statusCode).toBe(StatusCode.OK);
+      expect(res.body).toBe(0);
     });
   });
 });
 
 describe(`/articles route works correctly with comments`, () => {
-  describe(`Returns comments of given id article`, () => {
-    it(`Returns correct comments`, async () => {
-      const res = await request(app).get(`/articles/7BdzEYyBO_/comments`);
+  let app;
 
-      expect(res.statusCode).toBe(StatusCode.OK);
-      expect(res.body.length).toBe(6);
-      expect(res.body[0].noteId).toBe(`7BdzEYyBO_`);
-    });
-
-    it(`Returns 404 if given article doesn't exist`, async () => {
-      const res = await request(app).get(`/articles/ahs cy/comments`);
-
-      expect(res.statusCode).toBe(StatusCode.NOT_FOUND);
-    });
+  beforeAll(async () => {
+    app = await createTestApi(
+        articles,
+        NoteService,
+        CommentService,
+        CategoryService
+    );
   });
 
   describe(`Creates new comment for given id article`, () => {
     let validComment;
     beforeEach(() => {
-      validComment = JSON.parse(JSON.stringify(testComments[0]));
-      delete validComment.id;
-      delete validComment.noteId;
+      validComment = {...vealidToCreationComment};
     });
 
     it(`Creates new comment`, async () => {
       const res = await request(app)
-        .post(`/articles/7BdzEYyBO_/comments`)
+        .post(`/articles/2/comments`)
         .send(validComment);
 
       expect(res.statusCode).toBe(StatusCode.CREATED);
-      expect(res.body.noteId).toBe(`7BdzEYyBO_`);
-
-      const isCommentAddedToArticle = noteService
-        .findOne(`7BdzEYyBO_`)
-        .comments.includes(res.body.id);
-      expect(isCommentAddedToArticle).toBeTruthy();
+      expect(res.body.articleId).toBe(`2`);
     });
 
     it(`Returns 404 if given article doesn't exist`, async () => {
@@ -193,9 +183,7 @@ describe(`/articles route works correctly with comments`, () => {
     });
 
     it(`Returns 400 if not all required fields are presented`, async () => {
-      const res = await request(app)
-        .post(`/articles/7BdzEYyBO_/comments`)
-        .send({});
+      const res = await request(app).post(`/articles/2/comments`).send({});
 
       expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
     });
@@ -203,7 +191,7 @@ describe(`/articles route works correctly with comments`, () => {
     it(`Returns 400 if unexpected field is presented`, async () => {
       validComment.unexpectedField = 1456;
       const res = await request(app)
-        .post(`/articles/7BdzEYyBO_/comments`)
+        .post(`/articles/2/comments`)
         .send(validComment);
 
       expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
@@ -212,34 +200,28 @@ describe(`/articles route works correctly with comments`, () => {
 
   describe(`Deletes comment of given id article`, () => {
     it(`Deletes comment`, async () => {
+      const res = await request(app).delete(`/articles/1/comments/2`);
+
+      expect(res.statusCode).toBe(StatusCode.OK);
+      expect(res.body).toBe(1);
+    });
+
+    it(`Returns 0 in body if given article doesn't exist`, async () => {
       const res = await request(app).delete(
-          `/articles/7BdzEYyBO_/comments/dkVIP-MD8q`
+          `/articles/agd btg/comments/1`
       );
 
       expect(res.statusCode).toBe(StatusCode.OK);
-      expect(res.body.id).toBe(`dkVIP-MD8q`);
-
-      const isCommentAddedToArticle = noteService
-        .findOne(`7BdzEYyBO_`)
-        .comments.includes(`dkVIP-MD8q`);
-      expect(isCommentAddedToArticle).toBeFalsy();
+      expect(res.body).toBe(0);
     });
 
-    it(`Returns 404 if given article doesn't exist`, async () => {
+    it(`Returns 0 in body if given comment doesn't exist`, async () => {
       const res = await request(app).delete(
-          `/articles/agd btg/comments/dkVIP-MD8q`
+          `/articles/1/comments/ag shr`
       );
 
-      expect(res.statusCode).toBe(StatusCode.NOT_FOUND);
+      expect(res.statusCode).toBe(StatusCode.OK);
+      expect(res.body).toBe(0);
     });
-
-    it(`Returns 404 if given comment doesn't exist`, async () => {
-      const res = await request(app).delete(
-          `/articles/7BdzEYyBO_/comments/ag shr`
-      );
-
-      expect(res.statusCode).toBe(StatusCode.NOT_FOUND);
-    });
-
   });
 });

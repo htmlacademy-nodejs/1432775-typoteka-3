@@ -3,7 +3,6 @@
 const axios = require(`axios`);
 
 const {BACK_DEFAULT_PORT, TIMEOUT, StatusCode} = require(`../const`);
-const {adaptArticleToClient} = require(`../utils/adapter`);
 const {NotFoundErr} = require(`../utils/exceptions`);
 
 class Api {
@@ -16,13 +15,16 @@ class Api {
   }
 
   _setResponseInterceptors() {
-    this._axios.interceptors.response.use((res) => res, (err) => {
-      const {status} = err.response;
-      if (status === StatusCode.NOT_FOUND) {
-        throw new NotFoundErr();
-      }
-      Promise.reject(err.response);
-    });
+    this._axios.interceptors.response.use(
+        (res) => res,
+        (err) => {
+          const {status} = err.response;
+          if (status === StatusCode.NOT_FOUND) {
+            throw new NotFoundErr();
+          }
+          return Promise.reject(err.response);
+        }
+    );
   }
 
   async _request(url, options = {}) {
@@ -30,23 +32,12 @@ class Api {
     return res.data;
   }
 
-  async _requestArticles(url, options = {}) {
-    const articles = await this._request(url, options);
-    return Array.isArray(articles)
-      ? articles.map((article) => adaptArticleToClient(article))
-      : adaptArticleToClient(articles);
+  async getArticles(params) {
+    return this._request(`/articles`, {params});
   }
 
-  async getArticles() {
-    return this._requestArticles(`/articles`);
-  }
-
-  async getMyArticles() {
-    return this._requestArticles(`/articles`);
-  }
-
-  async getArticle(id) {
-    return this._requestArticles(`/articles/${id}`);
+  async getArticle(id, params) {
+    return this._request(`/articles/${id}`, {params});
   }
 
   async createArticle(data) {
@@ -57,20 +48,62 @@ class Api {
     return this._request(`/articles/${id}`, {method: `PUT`, data});
   }
 
+  async deleteArticle(id) {
+    return this._request(`/articles/${id}`, {method: `DELETE`});
+  }
+
   async getCommentsToArticle(id) {
     return this._request(`/articles/${id}/comments`);
+  }
+
+  async getMyArticles() {
+    return this._request(`/my`);
   }
 
   async getMyComments() {
     return this._request(`/my/comments`);
   }
 
-  async getCategories() {
-    return this._request(`/categories`);
+  async getLatestComments(params) {
+    return this._request(`/comments/latest`, {params});
+  }
+
+  async createComment(data, articleId) {
+    return this._request(`/articles/${articleId}/comments`, {
+      method: `POST`,
+      data,
+    });
+  }
+
+  async deleteComment(commentId, articleId) {
+    return this._request(`/articles/${articleId}/comments/${commentId}`, {
+      method: `DELETE`,
+    });
+  }
+
+  async getCategories(articleId) {
+    return this._request(
+        `${articleId ? `articles/${articleId}/categories` : `/categories`}`
+    );
+  }
+
+  async createCategory(data) {
+    return this._request(`/categories`, {
+      method: `POST`,
+      data,
+    });
+  }
+
+  async updateCategory(categoryId, data) {
+    return this._request(`/categories/${categoryId}`, {method: `PUT`, data});
+  }
+
+  async deleteCategory(categoryId) {
+    return this._request(`/categories/${categoryId}`, {method: `DELETE`});
   }
 
   async search(query) {
-    return this._requestArticles(`/search`, {params: {query}});
+    return this._request(`/search`, {params: {query}});
   }
 }
 

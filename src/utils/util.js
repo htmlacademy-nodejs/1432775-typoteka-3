@@ -1,5 +1,10 @@
 "use strict";
 
+const express = require(`express`);
+const Sequelize = require(`sequelize`);
+const {initdb} = require(`./sequelize`);
+const testData = require(`../service/testData`);
+
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -21,12 +26,17 @@ const shuffle = (someArray) => {
 
 const getFileNameFromPath = (path) => path.split(`/`).pop();
 
-const getCheckboxArray = (body, fieldPreffix) => {
+const getCheckboxArray = (
+    body,
+    fieldPreffix,
+    {isNumber = false} = {inNumber: false}
+) => {
   const checkboxes = [];
   for (const [key, value] of Object.entries(body)) {
     if (key.startsWith(fieldPreffix) && value === `on`) {
-      const fieldName = key.split(fieldPreffix);
-      checkboxes.push(fieldName.pop());
+      const fieldName = key.split(fieldPreffix).pop();
+      const prepearedName = isNumber ? +fieldName : fieldName;
+      checkboxes.push(prepearedName);
       delete body[key];
     }
   }
@@ -57,6 +67,21 @@ const getSQLStringFromArray = (arr) =>
     )
     .join(`,\n`);
 
+const createTestApi = async (routeDefiner, ...services) => {
+  const mockdb = new Sequelize(`sqlite::memory`, {logging: false});
+  await initdb(mockdb, testData);
+
+  const app = express();
+  app.use(express.json());
+
+  routeDefiner(
+      app,
+      ...services.map((Service) => new Service(mockdb))
+  );
+
+  return app;
+};
+
 module.exports = {
   getRandomInt,
   shuffle,
@@ -65,4 +90,5 @@ module.exports = {
   asyncHandler,
   getRandomDate,
   getSQLStringFromArray,
+  createTestApi,
 };

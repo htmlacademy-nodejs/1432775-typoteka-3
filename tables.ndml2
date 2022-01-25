@@ -415,6 +415,22 @@
                 "targetCardinality": "OneAndOnlyOneRelationship",
                 "comment": "",
                 "oldName": ""
+              },
+              {
+                "objectType": "ForeignKey_LOGICAL",
+                "name": "fk_comments_users_1",
+                "fields": [
+                  "userId"
+                ],
+                "referencedSchema": "Default",
+                "referencedTable": "users",
+                "referencedFields": [
+                  "id"
+                ],
+                "sourceCardinality": "ZeroOrManyRelationship",
+                "targetCardinality": "ZeroOrOneRelationship",
+                "comment": "",
+                "oldName": ""
               }
             ],
             "indexes": [],
@@ -904,6 +920,44 @@
             "x": 658,
             "y": 692,
             "width": 157,
+            "height": 40,
+            "fontName": "Arial Unicode MS",
+            "fontSize": 14,
+            "fontColor": {
+              "r": 51,
+              "g": 51,
+              "b": 51,
+              "a": 1
+            },
+            "isFontBold": false,
+            "isFontItalic": false,
+            "isVisible": false
+          }
+        },
+        {
+          "name": "fk_comments_users_1",
+          "sourceTableName": "comments",
+          "sourceSchemaName": "Default",
+          "lineWidth": 1,
+          "visible": true,
+          "vertices": [
+            {
+              "x": 920,
+              "y": 855
+            },
+            {
+              "x": 790,
+              "y": 1000
+            },
+            {
+              "x": 755,
+              "y": 1000
+            }
+          ],
+          "label": {
+            "x": 775,
+            "y": 795,
+            "width": 147,
             "height": 40,
             "fontName": "Arial Unicode MS",
             "fontSize": 14,

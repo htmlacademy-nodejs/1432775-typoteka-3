@@ -2,10 +2,10 @@
 
 const {StatusCode} = require(`../../const`);
 
-module.exports = (model, paramName) => (req, res, next) => {
+module.exports = (service, paramName) => async (req, res, next) => {
   const id = paramName ? req.params[paramName] : req.params.id;
 
-  const item = model.findOne(id);
+  const item = await service.findOne(id, req.query);
 
   if (!item) {
     return res.status(StatusCode.NOT_FOUND).send(`Not found with ${id}`);

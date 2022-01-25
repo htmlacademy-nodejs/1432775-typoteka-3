@@ -1,12 +1,13 @@
 "use strict";
 
 const {Router} = require(`express`);
+const {asyncHandler} = require(`../../utils/util`);
 
 const {api} = require(`../api`);
 
 const searchRouter = new Router();
 
-searchRouter.get(`/`, async (req, res) => {
+searchRouter.get(`/`, asyncHandler(async (req, res) => {
   const {query} = req.query;
 
   let found = [];
@@ -16,6 +17,6 @@ searchRouter.get(`/`, async (req, res) => {
   }
 
   res.render(`search`, {found, query});
-});
+}));
 
 module.exports = searchRouter;

@@ -23,7 +23,7 @@ const noteStructure = {
     .max(NoteTitleLength.MAX)
     .trim()
     .required(),
-  createdDate: Joi.date().iso().required(),
+  createdAt: Joi.date().iso().required(),
   categories: Joi.array().min(NOTE_MIN_CATEGORIES_NUMBER).required(),
   announce: Joi.string()
     .min(NoteAnnounceLength.MIN)
@@ -33,13 +33,13 @@ const noteStructure = {
   fullText: Joi.string().max(NOTE_MAX_FULL_TEXT_LENGTH).trim(),
   photo: Joi.object({
     name: Joi.string(),
-    id: Joi.string(),
+    uniqueName: Joi.string(),
   }),
 };
 
 const noteUpdateStructure = {
   title: Joi.string().min(NoteTitleLength.MIN).max(NoteTitleLength.MAX).trim(),
-  createdDate: Joi.date().iso(),
+  createdAt: Joi.date().iso(),
   categories: Joi.array().min(NOTE_MIN_CATEGORIES_NUMBER),
   announce: Joi.string()
     .min(NoteAnnounceLength.MIN)
@@ -48,7 +48,7 @@ const noteUpdateStructure = {
   fullText: Joi.string().max(NOTE_MAX_FULL_TEXT_LENGTH).trim(),
   photo: Joi.object({
     name: Joi.string(),
-    id: Joi.string(),
+    uniqueName: Joi.string(),
   }),
 };
 
@@ -57,10 +57,7 @@ const validateNoteUpdate = getValidationMeddleware(
 );
 
 const validateNewNote = getValidationMeddleware(
-    Joi.object(noteStructure),
-    (req, _res, _schema) => {
-      req.body.comments = [];
-    }
+    Joi.object(noteStructure)
 );
 
 module.exports = {

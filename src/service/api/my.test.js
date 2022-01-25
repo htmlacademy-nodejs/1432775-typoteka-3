@@ -1,6 +1,5 @@
 "use strict";
 
-const express = require(`express`);
 const request = require(`supertest`);
 
 const my = require(`./my`);
@@ -8,21 +7,31 @@ const my = require(`./my`);
 const CommentService = require(`../data-service/CommentsService`);
 const NotesService = require(`../data-service/NotesService`);
 
-const {testComments, testNotes} = require(`../testData`);
-const {StatusCode, NOTE_ID_SIZE, COMMENT_ID_SIZE} = require(`../../const`);
-
-const app = express();
-app.use(express.json());
-
-const noteService = new NotesService(testNotes, NOTE_ID_SIZE);
-const commentService = new CommentService(testComments, COMMENT_ID_SIZE, noteService);
-my(app, commentService);
+const {StatusCode} = require(`../../const`);
+const {createTestApi} = require(`../../utils/util`);
 
 describe(`/my route works correctly`, () => {
+  let app;
+
+  beforeAll(async () => {
+    app = await createTestApi(my, CommentService, NotesService);
+  });
+
   it(`Returns my comments list`, async () => {
     const res = await request(app).get(`/my/comments`);
 
     expect(res.statusCode).toBe(StatusCode.OK);
-    expect(res.body).toEqual(commentService.findMyCommentsWithTitles());
+
+    const isMy = res.body.every((comment) => comment.user.id === 1);
+    expect(isMy).toBeTruthy();
+  });
+
+  it(`Returns my articles list`, async () => {
+    const res = await request(app).get(`/my`);
+
+    expect(res.statusCode).toBe(StatusCode.OK);
+
+    const isMy = res.body.every((article) => article.userId === 1);
+    expect(isMy).toBeTruthy();
   });
 });
