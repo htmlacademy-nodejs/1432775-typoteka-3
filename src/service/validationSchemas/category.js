@@ -1,7 +1,7 @@
 "use strict";
 
 const Joi = require(`joi`);
-const messages = require(`./messages`);
+const messages = require(`./validationMessages`);
 
 const Field = {
   NAME: `Название категории`,

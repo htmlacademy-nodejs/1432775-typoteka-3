@@ -1,9 +1,12 @@
 "use strict";
 
 const {Router} = require(`express`);
-const {StatusCode} = require(`../../const`);
-const {newCategorySchema} = require(`../middlewares/validation/category`);
+
+const {newCategorySchema} = require(`../validationSchemas/category`);
 const validateBody = require(`../middlewares/validation/validateBody`);
+const validateParams = require(`../middlewares/validation/validateParams`);
+
+const {StatusCode} = require(`../../const`);
 
 const route = new Router();
 
@@ -20,13 +23,17 @@ module.exports = (app, categoryService) => {
     return res.status(StatusCode.CREATED).json(newCategory);
   });
 
-  route.put(`/:id`, validateBody(newCategorySchema), async (req, res) => {
-    const {id} = req.params;
-    const updatedCategory = await categoryService.update(id, req.body);
-    return res.status(StatusCode.OK).json(updatedCategory);
-  });
+  route.put(
+      `/:id`,
+      [validateParams, validateBody(newCategorySchema)],
+      async (req, res) => {
+        const {id} = req.params;
+        const updatedCategory = await categoryService.update(id, req.body);
+        return res.status(StatusCode.OK).json(updatedCategory);
+      }
+  );
 
-  route.delete(`/:id`, async (req, res) => {
+  route.delete(`/:id`, validateParams, async (req, res) => {
     const {id} = req.params;
     const isAtLeastOneRelationFound = await categoryService.findOneRelation(id);
     if (isAtLeastOneRelationFound) {
