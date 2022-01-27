@@ -1,5 +1,7 @@
 "use strict";
 
+const {Router} = require(`express`);
+
 const mainRouter = require(`./main`);
 const registerRouter = require(`./register`);
 const loginRouter = require(`./login`);
@@ -8,12 +10,14 @@ const articlesRouter = require(`./articles`);
 const searchRouter = require(`./search`);
 const categoriesRouter = require(`./categories`);
 
-module.exports = (app) => {
-  app.use(`/`, mainRouter);
-  app.use(`/register`, registerRouter);
-  app.use(`/login`, loginRouter);
-  app.use(`/my`, myRouter);
-  app.use(`/articles`, articlesRouter);
-  app.use(`/search`, searchRouter);
-  app.use(`/categories`, categoriesRouter);
-};
+const router = new Router();
+
+router.use(`/`, mainRouter);
+router.use(`/register`, registerRouter);
+router.use(`/login`, loginRouter);
+router.use(`/my`, myRouter);
+router.use(`/articles`, articlesRouter);
+router.use(`/search`, searchRouter);
+router.use(`/categories`, categoriesRouter);
+
+module.exports = router;
