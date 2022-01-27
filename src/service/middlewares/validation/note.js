@@ -1,8 +1,14 @@
 "use strict";
 
 const Joi = require(`joi`);
+const messages = require(`./messages`);
 
-const getValidationMeddleware = require(`./getValidationMiddleware`);
+const Field = {
+  TITLE: `Заголовок`,
+  CATEGORIES: `Категории`,
+  ANNOUNNCE: `Анонс`,
+  FULL_TEXT: `Текст статьи`,
+};
 
 const NoteTitleLength = {
   MIN: 30,
@@ -17,50 +23,97 @@ const NoteAnnounceLength = {
 const NOTE_MAX_FULL_TEXT_LENGTH = 1000;
 const NOTE_MIN_CATEGORIES_NUMBER = 1;
 
-const noteStructure = {
+const noteSchema = Joi.object({
   title: Joi.string()
     .min(NoteTitleLength.MIN)
     .max(NoteTitleLength.MAX)
     .trim()
-    .required(),
+    .required()
+    .messages({
+      "string.min": messages.string.min(Field.TITLE, NoteTitleLength.MIN),
+      "string.max": messages.string.max(Field.TITLE, NoteTitleLength.MAX),
+      "any.required": messages.any.required(Field.TITLE),
+    }),
   createdAt: Joi.date().iso().required(),
-  categories: Joi.array().min(NOTE_MIN_CATEGORIES_NUMBER).required(),
+  categories: Joi.array()
+    .items(Joi.number().integer().positive())
+    .min(NOTE_MIN_CATEGORIES_NUMBER)
+    .required()
+    .messages({
+      "array.min": messages.array.min(Field.CATEGORIES, NOTE_MIN_CATEGORIES_NUMBER),
+      "any.required": messages.any.required(Field.CATEGORIES),
+    }),
   announce: Joi.string()
     .min(NoteAnnounceLength.MIN)
     .max(NoteAnnounceLength.MAX)
     .trim()
-    .required(),
-  fullText: Joi.string().max(NOTE_MAX_FULL_TEXT_LENGTH).trim(),
+    .required()
+    .messages({
+      "string.min": messages.string.min(
+          Field.ANNOUNNCE,
+          NoteAnnounceLength.MIN
+      ),
+      "string.max": messages.string.max(
+          Field.ANNOUNNCE,
+          NoteAnnounceLength.Max
+      ),
+      "any.required": messages.any.required(Field.ANNOUNNCE),
+    }),
+  fullText: Joi.string()
+    .max(NOTE_MAX_FULL_TEXT_LENGTH)
+    .trim()
+    .messages({
+      "string.max": messages.string.max(Field.FULL_TEXT, NoteTitleLength.MAX),
+    }),
   photo: Joi.object({
     name: Joi.string(),
     uniqueName: Joi.string(),
   }),
-};
+});
 
-const noteUpdateStructure = {
-  title: Joi.string().min(NoteTitleLength.MIN).max(NoteTitleLength.MAX).trim(),
+const noteUpdateSchema = Joi.object({
+  title: Joi.string()
+    .min(NoteTitleLength.MIN)
+    .max(NoteTitleLength.MAX)
+    .trim()
+    .messages({
+      "string.min": messages.string.min(Field.TITLE, NoteTitleLength.MIN),
+      "string.max": messages.string.max(Field.TITLE, NoteTitleLength.MAX),
+    }),
   createdAt: Joi.date().iso(),
-  categories: Joi.array().min(NOTE_MIN_CATEGORIES_NUMBER),
+  categories: Joi.array()
+    .items(Joi.number().integer().positive())
+    .min(NOTE_MIN_CATEGORIES_NUMBER)
+    .messages({
+      "array.min": messages.array.min(Field.CATEGORIES),
+    }),
   announce: Joi.string()
     .min(NoteAnnounceLength.MIN)
     .max(NoteAnnounceLength.MAX)
-    .trim(),
-  fullText: Joi.string().max(NOTE_MAX_FULL_TEXT_LENGTH).trim(),
+    .trim()
+    .messages({
+      "string.min": messages.string.min(
+          Field.ANNOUNNCE,
+          NoteAnnounceLength.MIN
+      ),
+      "string.max": messages.string.max(
+          Field.ANNOUNNCE,
+          NoteAnnounceLength.Max
+      ),
+    }),
+  fullText: Joi.string()
+    .max(NOTE_MAX_FULL_TEXT_LENGTH)
+    .trim()
+    .messages({
+      "string.max": messages.string.max(Field.FULL_TEXT, NoteTitleLength.MAX),
+    }),
   photo: Joi.object({
     name: Joi.string(),
     uniqueName: Joi.string(),
   }),
-};
-
-const validateNoteUpdate = getValidationMeddleware(
-    Joi.object(noteUpdateStructure)
-);
-
-const validateNewNote = getValidationMeddleware(
-    Joi.object(noteStructure)
-);
+});
 
 module.exports = {
-  validateNoteUpdate,
-  validateNewNote,
+  noteSchema,
+  noteUpdateSchema,
 };

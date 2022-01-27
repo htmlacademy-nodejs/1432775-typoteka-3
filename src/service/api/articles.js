@@ -3,10 +3,12 @@
 const {Router} = require(`express`);
 
 const {
-  validateNewNote,
-  validateNoteUpdate,
+  noteSchema,
+  noteUpdateSchema
 } = require(`../middlewares/validation/note`);
-const {validateNewComment} = require(`../middlewares/validation/comment`);
+const {commentSchema} = require(`../middlewares/validation/comment`);
+const validateBody = require(`../middlewares/validation/validateBody`);
+
 const checkExistance = require(`../middlewares/checkExistance`);
 
 const {StatusCode} = require(`../../const`);
@@ -38,7 +40,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
     return res.status(StatusCode.OK).json(notes);
   });
 
-  route.post(`/`, validateNewNote, async (req, res) => {
+  route.post(`/`, validateBody(noteSchema), async (req, res) => {
     const newNote = await notesService.create(req.body);
     return res.status(StatusCode.CREATED).json(newNote);
   });
@@ -50,7 +52,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
 
   route.put(
       `/:id`,
-      [checkExistance(notesService), validateNoteUpdate],
+      [checkExistance(notesService), validateBody(noteUpdateSchema)],
       async (req, res) => {
         const {id} = req.params;
         const updatedNote = await notesService.update(id, req.body);
@@ -66,7 +68,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
 
   route.post(
       `/:id/comments`,
-      [checkExistance(notesService), validateNewComment],
+      [checkExistance(notesService), validateBody(commentSchema)],
       async (req, res) => {
         const {id} = req.params;
         const newComment = await commentsService.create(req.body, id);
