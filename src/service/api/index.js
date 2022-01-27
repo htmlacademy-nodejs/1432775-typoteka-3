@@ -11,10 +11,10 @@ const search = require(`./search`);
 const my = require(`./my`);
 const comments = require(`./comments`);
 
-const NoteService = require(`../data-service/NotesService`);
-const CommentService = require(`../data-service/CommentsService`);
-const CategoryService = require(`../data-service/Category`);
-const SearchService = require(`../data-service/SearchService`);
+const NoteService = require(`../data-service/notesService`);
+const CommentService = require(`../data-service/commentsService`);
+const CategoryService = require(`../data-service/category`);
+const SearchService = require(`../data-service/searchService`);
 
 const app = new Router();
 
