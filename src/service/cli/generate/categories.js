@@ -1,7 +1,6 @@
 "use strict";
 
-const getCategories = (categories) => categories.map((category, i) => ({
-  id: i,
+const getCategories = (categories) => categories.map((category) => ({
   name: category,
 }));
 

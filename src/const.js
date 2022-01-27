@@ -26,17 +26,20 @@ const StatusCode = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
-const UPLOAD_DIR = `upload`;
-const PUBLIC_DIR = `public`;
+const ClientDir = {
+  UPLOAD: `upload`,
+  PUBLIC: `public`,
+};
 
-const LOGS_FILE_PATH = `./logs/apiLogs.log`;
-const FRONT_LOGS_FILE_PATH = `./logs/frontLogs.log`;
+const LOG_DIR = `logs/`;
 
-const MOCK_NOTES_FILE_NAME = `notes.json`;
-const MOCK_COMMENTS_FILE_NAME = `comments.json`;
+const LogPath = {
+  API: LOG_DIR + `apiLogs.log`,
+  FRONT: LOG_DIR + `frontLogs.log`
+};
+
 const FILL_DB_QUERY_FILE_NAME = `fill-db.sql`;
 const FAKE_DATA_PATH = `data/`;
-
 
 const MockFileName = {
   NOTE_SENTENCES: `sentences.txt`,
@@ -56,9 +59,6 @@ const MockСomprisingPath = {
   NAMES: FAKE_DATA_PATH + MockFileName.NAMES
 };
 
-const NOTE_ID_SIZE = 10;
-const COMMENT_ID_SIZE = 10;
-
 module.exports = {
   FRONT_DEFAULT_PORT,
   TIMEOUT,
@@ -67,16 +67,10 @@ module.exports = {
   Env,
   ExitCode,
   StatusCode,
-  UPLOAD_DIR,
-  PUBLIC_DIR,
-  LOGS_FILE_PATH,
-  FRONT_LOGS_FILE_PATH,
-  MOCK_NOTES_FILE_NAME,
-  MOCK_COMMENTS_FILE_NAME,
   FILL_DB_QUERY_FILE_NAME,
   FAKE_DATA_PATH,
+  ClientDir,
+  LogPath,
   MockFileName,
   MockСomprisingPath,
-  NOTE_ID_SIZE,
-  COMMENT_ID_SIZE,
 };

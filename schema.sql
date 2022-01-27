@@ -22,7 +22,7 @@ CREATE TABLE users (
 CREATE TABLE articles (
   id SERIAL PRIMARY KEY,
   title VARCHAR(250) NOT NULL,
-  createdDate TIMESTAMP DEFAULT current_timestamp,
+  createdAt TIMESTAMP DEFAULT current_timestamp,
   announce VARCHAR(250) NOT NULL,
   fullText VARCHAR(1000),
   userId INTEGER NOT NULL,
@@ -34,9 +34,10 @@ CREATE TABLE articles (
 CREATE INDEX ON articles(title);
 
 CREATE TABLE photos (
-  id VARCHAR(20) NOT NULL,
+  id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
-  articleId INTEGER PRIMARY KEY,
+  uniqueName VARCHAR(20) NOT NULL,
+  articleId INTEGER NOT NULL,
   FOREIGN KEY (articleId) REFERENCES articles (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -45,7 +46,7 @@ CREATE TABLE photos (
 CREATE TABLE comments (
   id SERIAL PRIMARY KEY,
   text VARCHAR(1000) NOT NULL,
-  createdDate TIMESTAMP DEFAULT current_timestamp,
+  createdAt TIMESTAMP DEFAULT current_timestamp,
   userId INTEGER NOT NULL,
   articleId INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)

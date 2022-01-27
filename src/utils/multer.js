@@ -4,11 +4,11 @@ const multer = require(`multer`);
 const {nanoid} = require(`nanoid`);
 const path = require(`path`);
 
-const {UPLOAD_DIR} = require(`../const`);
+const {ClientDir} = require(`../const`);
 
 const IMG_ID_LENGTH = 10;
 
-const absolutePath = path.resolve(__dirname, `../express/${UPLOAD_DIR}/img`);
+const absolutePath = path.resolve(__dirname, `../express/${ClientDir.UPLOAD}/img`);
 
 const storage = multer.diskStorage({
   destination: absolutePath,

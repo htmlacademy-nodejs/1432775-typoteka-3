@@ -4,7 +4,7 @@ const express = require(`express`);
 
 const {StatusCode, BACK_DEFAULT_PORT, ExitCode} = require(`../../const`);
 const routes = require(`../api`);
-const sequelize = require(`../../utils/sequelize`);
+const {sequelize} = require(`../../utils/sequelize`);
 
 const {getLogger} = require(`../../utils/logger`);
 const logRequest = require(`../middlewares/logRequest`);
