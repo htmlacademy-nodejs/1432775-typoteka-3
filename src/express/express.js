@@ -9,7 +9,7 @@ const {
   FRONT_DEFAULT_PORT,
   ClientDir,
 } = require(`../const`);
-const defineRoutes = require(`./routes`);
+const router = require(`./routes`);
 const {getFrontLogger} = require(`../utils/logger`);
 const {NotFoundErr} = require(`../utils/exceptions`);
 
@@ -20,7 +20,7 @@ const port = process.env.FRONT_PORT || FRONT_DEFAULT_PORT;
 
 app.use(express.urlencoded({extended: false}));
 
-defineRoutes(app);
+app.use(router);
 
 app.use(express.static(path.resolve(__dirname, ClientDir.PUBLIC)));
 app.use(express.static(path.resolve(__dirname, ClientDir.UPLOAD)));
