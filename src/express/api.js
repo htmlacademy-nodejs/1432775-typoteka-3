@@ -2,7 +2,7 @@
 
 const axios = require(`axios`);
 
-const {BACK_DEFAULT_PORT, TIMEOUT, StatusCode} = require(`../const`);
+const {BACK_DEFAULT_PORT, TIMEOUT, StatusCode, HttpMethod} = require(`../const`);
 const {NotFoundErr} = require(`../utils/exceptions`);
 
 class Api {
@@ -41,15 +41,15 @@ class Api {
   }
 
   async createArticle(data) {
-    return this._request(`/articles`, {method: `POST`, data});
+    return this._request(`/articles`, {method: HttpMethod.POST, data});
   }
 
   async updateArticle(id, data) {
-    return this._request(`/articles/${id}`, {method: `PUT`, data});
+    return this._request(`/articles/${id}`, {method: HttpMethod.PUT, data});
   }
 
   async deleteArticle(id) {
-    return this._request(`/articles/${id}`, {method: `DELETE`});
+    return this._request(`/articles/${id}`, {method: HttpMethod.DELETE});
   }
 
   async getCommentsToArticle(id) {
@@ -70,14 +70,14 @@ class Api {
 
   async createComment(data, articleId) {
     return this._request(`/articles/${articleId}/comments`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data,
     });
   }
 
   async deleteComment(commentId, articleId) {
     return this._request(`/articles/${articleId}/comments/${commentId}`, {
-      method: `DELETE`,
+      method: HttpMethod.DELETE,
     });
   }
 
@@ -89,17 +89,17 @@ class Api {
 
   async createCategory(data) {
     return this._request(`/categories`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data,
     });
   }
 
   async updateCategory(categoryId, data) {
-    return this._request(`/categories/${categoryId}`, {method: `PUT`, data});
+    return this._request(`/categories/${categoryId}`, {method: HttpMethod.PUT, data});
   }
 
   async deleteCategory(categoryId) {
-    return this._request(`/categories/${categoryId}`, {method: `DELETE`});
+    return this._request(`/categories/${categoryId}`, {method: HttpMethod.DELETE});
   }
 
   async search(query) {

@@ -7,6 +7,11 @@
     return `${year}-${month}-${day}`;
   }
 
+mixin errorMessages(errors)
+  if errors
+    each error of errors
+      .server-error= error
+
 mixin pagination(page, totalPages, width, resource)
   if totalPages > 1
     -
