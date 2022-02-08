@@ -42,6 +42,8 @@ const newUserSchema = Joi.object({
     .messages({
       "any.only": messages.any.only(Field.REPEATED_PASSWORD, Field.PASSWORD),
     }),
+
+  avatar: Joi.string(),
 });
 
 module.exports = {

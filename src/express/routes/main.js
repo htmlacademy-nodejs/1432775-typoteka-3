@@ -2,7 +2,8 @@
 
 const {Router} = require(`express`);
 const {prepareErrors} = require(`../../utils/util`);
-
+const upload = require(`../../utils/multer`);
+const {adaptUserToServer} = require(`../../utils/adapter`);
 const {api} = require(`../api`);
 
 const ARTICLES_PER_MAIN_PAGE = 8;
@@ -45,16 +46,18 @@ mainRouter.get(`/`, async (req, res) => {
 
 mainRouter.get(`/register`, (_req, res) => res.render(`register`));
 
-mainRouter.post(`/register`, async (req, res) => {
-  try {
-    await api.createUser(req.body);
-    return req.redirect(`/login`);
-  } catch (err) {
-    console.log(`ERROR!!!`);
-    console.log(err);
-    const validationMessages = prepareErrors(err);
-    return res.render(`register`, {validationMessages});
-  }
-});
+mainRouter.post(
+    `/register`,
+    [upload.single(`upload`), adaptUserToServer],
+    async (req, res) => {
+      try {
+        await api.createUser(req.body);
+        return res.redirect(`/login`);
+      } catch (err) {
+        const validationMessages = prepareErrors(err);
+        return res.render(`register`, {validationMessages});
+      }
+    }
+);
 
 module.exports = mainRouter;
