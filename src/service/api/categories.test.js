@@ -3,7 +3,7 @@
 const request = require(`supertest`);
 
 const categories = require(`./categories`);
-const CategoryService = require(`../data-service/Category`);
+const CategoryService = require(`../data-service/category`);
 const {StatusCode} = require(`../../const`);
 const {createTestApi} = require(`../../utils/util`);
 

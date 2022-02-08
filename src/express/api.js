@@ -2,7 +2,12 @@
 
 const axios = require(`axios`);
 
-const {BACK_DEFAULT_PORT, TIMEOUT, StatusCode, HttpMethod} = require(`../const`);
+const {
+  BACK_DEFAULT_PORT,
+  TIMEOUT,
+  StatusCode,
+  HttpMethod,
+} = require(`../const`);
 const {NotFoundErr} = require(`../utils/exceptions`);
 
 class Api {
@@ -95,11 +100,20 @@ class Api {
   }
 
   async updateCategory(categoryId, data) {
-    return this._request(`/categories/${categoryId}`, {method: HttpMethod.PUT, data});
+    return this._request(`/categories/${categoryId}`, {
+      method: HttpMethod.PUT,
+      data,
+    });
   }
 
   async deleteCategory(categoryId) {
-    return this._request(`/categories/${categoryId}`, {method: HttpMethod.DELETE});
+    return this._request(`/categories/${categoryId}`, {
+      method: HttpMethod.DELETE,
+    });
+  }
+
+  async createUser(data) {
+    return this._request(`/users`, {method: HttpMethod.POST, data});
   }
 
   async search(query) {

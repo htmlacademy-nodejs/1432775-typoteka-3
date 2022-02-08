@@ -3,7 +3,7 @@
 const request = require(`supertest`);
 
 const comments = require(`./comments`);
-const CommentService = require(`../data-service/CommentsService`);
+const CommentService = require(`../data-service/comments-service`);
 
 const {StatusCode} = require(`../../const`);
 const {createTestApi} = require(`../../utils/util`);

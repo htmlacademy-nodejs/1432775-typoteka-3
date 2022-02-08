@@ -7,10 +7,14 @@
     return `${year}-${month}-${day}`;
   }
 
-mixin errorMessages(errors)
+mixin errorMessages(errors, message)
   if errors
-    each error of errors
-      .server-error= error
+    .form__validation-error
+      if message
+        p(class="form__error-message")
+      ul(class="form__errors")
+        each error of errors
+          li(class="form__error") #{error}
 
 mixin pagination(page, totalPages, width, resource)
   if totalPages > 1

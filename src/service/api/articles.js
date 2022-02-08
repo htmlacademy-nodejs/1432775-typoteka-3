@@ -2,10 +2,7 @@
 
 const {Router} = require(`express`);
 
-const {
-  noteSchema,
-  noteUpdateSchema,
-} = require(`../validationSchemas/note`);
+const {noteSchema, noteUpdateSchema} = require(`../validationSchemas/note`);
 const {commentSchema} = require(`../validationSchemas/comment`);
 
 const validateBody = require(`../middlewares/validation/validateBody`);
@@ -48,8 +45,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
 
   route.get(
       `/:id`,
-      validateParams,
-      checkExistance(notesService),
+      [validateParams, checkExistance(notesService)],
       (_req, res) => {
         const note = res.locals.foundItem;
         return res.status(StatusCode.OK).json(note);
