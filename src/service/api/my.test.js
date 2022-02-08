@@ -4,8 +4,8 @@ const request = require(`supertest`);
 
 const my = require(`./my`);
 
-const CommentService = require(`../data-service/CommentsService`);
-const NotesService = require(`../data-service/NotesService`);
+const CommentService = require(`../data-service/comments-service`);
+const NotesService = require(`../data-service/notes-service`);
 
 const {StatusCode} = require(`../../const`);
 const {createTestApi} = require(`../../utils/util`);

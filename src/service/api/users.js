@@ -11,6 +11,6 @@ module.exports = (app, usersService) => {
 
   route.post(`/`, validateNewUser(usersService), async (req, res) => {
     const isUserCreated = !!(await usersService.create(req.body));
-    return res.status(StatusCode.CREATED).json(isUserCreated);
+    return res.status(StatusCode.CREATED).send(isUserCreated);
   });
 };
