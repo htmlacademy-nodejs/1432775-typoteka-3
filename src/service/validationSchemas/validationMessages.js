@@ -7,8 +7,7 @@ module.exports = {
 
     email: (name) => `Поле ${name} не является валидным email адресом`,
 
-    // TODO: username should contain...
-    userName: () => `Имя пользователя должно содержать ...`
+    userName: () => `Имя пользователя не должно содержать цифры и символы`
   },
 
   array: {

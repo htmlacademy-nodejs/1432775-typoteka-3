@@ -83,7 +83,6 @@ const createTestApi = async (routeDefiner, ...services) => {
 };
 
 const prepareErrors = (err) => {
-  console.log(err);
   return err.data.split(`\n`);
 };
 
