@@ -82,7 +82,10 @@ const createTestApi = async (routeDefiner, ...services) => {
   return app;
 };
 
-const prepareErrors = (err) => err.data.split(`\n`);
+const prepareErrors = (err) => {
+  console.log(err);
+  return err.data.split(`\n`);
+};
 
 module.exports = {
   getRandomInt,

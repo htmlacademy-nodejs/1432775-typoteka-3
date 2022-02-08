@@ -2,10 +2,11 @@
 
 const {StatusCode} = require(`../../../const`);
 
-const validateBody = (schema, cb) => (req, res, next) => {
-  const {error, value} = schema.validate(req.body, {abortEarly: false});
+const validateBody = (schema, cb) => async (req, res, next) => {
+  const {error, value} = await schema.validateAsync(req.body, {abortEarly: false});
 
   if (error) {
+    console.log(`error in validate body!!!`);
     return res
       .status(StatusCode.BAD_REQUEST)
       .send(error.details.map((err) => err.message).join(`\n`));
@@ -14,7 +15,7 @@ const validateBody = (schema, cb) => (req, res, next) => {
   req.body = value;
 
   if (cb) {
-    cb(req, res, schema);
+    await cb(req, res, schema);
   }
 
   return next();

@@ -12,10 +12,10 @@ const my = require(`./my`);
 const comments = require(`./comments`);
 const users = require(`./users`);
 
-const NoteService = require(`../data-service/notesService`);
-const CommentService = require(`../data-service/commentsService`);
+const NoteService = require(`../data-service/notes-service`);
+const CommentService = require(`../data-service/comments-service`);
 const CategoryService = require(`../data-service/category`);
-const SearchService = require(`../data-service/searchService`);
+const SearchService = require(`../data-service/search-service`);
 const UsersService = require(`../data-service/user`);
 
 const app = new Router();

@@ -4,6 +4,11 @@ module.exports = {
   string: {
     min: (name, number) => `${name} содержит меньше ${number} символов`,
     max: (name, number) => `${name} содержит больше ${number} символов`,
+
+    email: (name) => `Поле ${name} не является валидным email адресом`,
+
+    // TODO: username should contain...
+    userName: () => `Имя пользователя должен содержать ...`
   },
 
   array: {
@@ -13,5 +18,6 @@ module.exports = {
 
   any: {
     required: (name) => `${name} - обязательное поле`,
+    only: (name, originalName) => `Поле ${name} не совпадает с полем ${originalName}`
   },
 };
