@@ -8,7 +8,7 @@ const {
   StatusCode,
   HttpMethod,
 } = require(`../const`);
-const {NotFoundErr} = require(`../utils/exceptions`);
+const {NotFoundErr, ValidationErr} = require(`../utils/exceptions`);
 
 class Api {
   constructor(baseUrl, timeout) {
@@ -17,6 +17,26 @@ class Api {
 
     this._axios = axios.create({baseURL: baseUrl, timeout});
     this._setResponseInterceptors();
+
+    this.getCategories = this.getCategories.bind(this);
+    this.getArticle = this.getArticle.bind(this);
+    this.getArticles = this.getArticles.bind(this);
+    this.createArticle = this.createArticle.bind(this);
+    this.updateArticle = this.updateArticle.bind(this);
+    this.deleteArticle = this.deleteArticle.bind(this);
+    this.getCommentsToArticle = this.getCommentsToArticle.bind(this);
+    this.getMyArticles = this.getMyArticles.bind(this);
+    this.getMyComments = this.getMyComments.bind(this);
+    this.getLatestComments = this.getLatestComments.bind(this);
+    this.createComment = this.createComment.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
+    this.getCategories = this.getCategories.bind(this);
+    this.createCategory = this.createCategory.bind(this);
+    this.updateCategory = this.updateCategory.bind(this);
+    this.deleteCategory = this.deleteCategory.bind(this);
+    this.createUser = this.createUser.bind(this);
+    this.login = this.login.bind(this);
+    this.search = this.search.bind(this);
   }
 
   _setResponseInterceptors() {
@@ -24,8 +44,11 @@ class Api {
         (res) => res,
         (err) => {
           const {status} = err.response;
-          if (status === StatusCode.NOT_FOUND) {
-            throw new NotFoundErr();
+          switch (status) {
+            case StatusCode.NOT_FOUND:
+              throw new NotFoundErr();
+            case StatusCode.BAD_REQUEST:
+              throw new ValidationErr(err);
           }
           return Promise.reject(err.response);
         }
@@ -114,6 +137,10 @@ class Api {
 
   async createUser(data) {
     return this._request(`/users`, {method: HttpMethod.POST, data});
+  }
+
+  async login(data) {
+    return this._request(`/users/auth`, {method: HttpMethod.POST, data});
   }
 
   async search(query) {

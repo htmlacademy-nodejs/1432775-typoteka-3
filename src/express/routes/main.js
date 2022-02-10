@@ -1,10 +1,10 @@
 "use strict";
 
 const {Router} = require(`express`);
-const {prepareErrors} = require(`../../utils/util`);
 const upload = require(`../../utils/multer`);
 const {adaptUserToServer} = require(`../../utils/adapter`);
 const {api} = require(`../api`);
+const withValidation = require(`../middlewares/withValidation`);
 
 const ARTICLES_PER_MAIN_PAGE = 8;
 const MOST_COMMENTED_ARTICLES_NUMBER = 4;
@@ -49,15 +49,21 @@ mainRouter.get(`/register`, (_req, res) => res.render(`register`));
 mainRouter.post(
     `/register`,
     [upload.single(`upload`), adaptUserToServer],
-    async (req, res) => {
-      try {
-        await api.createUser(req.body);
-        return res.redirect(`/login`);
-      } catch (err) {
-        const validationMessages = prepareErrors(err);
-        return res.render(`register`, {validationMessages});
-      }
-    }
+    withValidation(async (req, res) => {
+      await api.createUser(req.body);
+      return res.redirect(`/login`);
+    }, `register`)
 );
+
+mainRouter.get(`/login`, (_, res) => res.render(`login`));
+
+mainRouter.post(
+    `/login`,
+    withValidation(async (req, res) => {
+      await api.login(req.body);
+      return res.redirect(`/`);
+    }, `login`)
+);
+
 
 module.exports = mainRouter;
