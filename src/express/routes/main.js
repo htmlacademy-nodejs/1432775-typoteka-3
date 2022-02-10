@@ -60,7 +60,8 @@ mainRouter.get(`/login`, (_, res) => res.render(`login`));
 mainRouter.post(
     `/login`,
     withValidation(async (req, res) => {
-      await api.login(req.body);
+      const tokens = await api.login(req.body);
+      console.log(tokens);
       return res.redirect(`/`);
     }, `login`)
 );

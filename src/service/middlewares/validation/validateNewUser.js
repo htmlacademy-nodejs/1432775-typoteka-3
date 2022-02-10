@@ -5,8 +5,7 @@ const {newUserSchema} = require(`../../validationSchemas/user`);
 
 const {StatusCode} = require(`../../../const`);
 const {hash} = require(`../../../utils/hash`);
-
-const USER_EXISTS_MESSAGE = `Пользователь уже существует`;
+const errorMessages = require(`../../../utils/error-messages`);
 
 const validateNewUser = (userService) =>
   // eslint-disable-next-line consistent-return
@@ -14,7 +13,7 @@ const validateNewUser = (userService) =>
     const user = await userService.findByEmail(req.body.email);
 
     if (user) {
-      return res.status(StatusCode.BAD_REQUEST).send(USER_EXISTS_MESSAGE);
+      return res.status(StatusCode.BAD_REQUEST).send(errorMessages.user.userExists);
     }
 
     req.body.passwordHash = await hash(req.body.password);
