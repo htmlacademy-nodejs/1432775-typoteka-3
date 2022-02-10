@@ -3,9 +3,9 @@
 const request = require(`supertest`);
 
 const articles = require(`./articles`);
-const NoteService = require(`../data-service/NotesService`);
-const CommentService = require(`../data-service/CommentsService`);
-const CategoryService = require(`../data-service/Category`);
+const NoteService = require(`../data-service/notes-service`);
+const CommentService = require(`../data-service/comments-service`);
+const CategoryService = require(`../data-service/category`);
 
 const {StatusCode} = require(`../../const`);
 const {createTestApi} = require(`../../utils/util`);
@@ -96,9 +96,15 @@ describe(`/articles route works correctly with articles`, () => {
     });
 
     it(`Returns 404 if article with given id doesn't exist`, async () => {
-      const res = await request(app).get(`/articles/abc`);
+      const res = await request(app).get(`/articles/4235235`);
 
       expect(res.statusCode).toBe(StatusCode.NOT_FOUND);
+    });
+
+    it(`Returns 400 if id is invalid`, async () => {
+      const res = await request(app).get(`/articles/asd`);
+
+      expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
     });
   });
 
@@ -115,9 +121,15 @@ describe(`/articles route works correctly with articles`, () => {
     });
 
     it(`Returns 404 if article with given id doesn't exist`, async () => {
-      const res = await request(app).put(`/articles/ab cd`).send(validUpdate);
+      const res = await request(app).put(`/articles/52362`).send(validUpdate);
 
       expect(res.statusCode).toBe(StatusCode.NOT_FOUND);
+    });
+
+    it(`Returns 404 if id is invalid`, async () => {
+      const res = await request(app).put(`/articles/gsr`).send(validUpdate);
+
+      expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
     });
 
     it(`Returns 400 if article update is invalid`, async () => {
@@ -176,7 +188,7 @@ describe(`/articles route works correctly with comments`, () => {
 
     it(`Returns 404 if given article doesn't exist`, async () => {
       const res = await request(app)
-        .post(`/articles/as gs/comments`)
+        .post(`/articles/52367/comments`)
         .send(validComment);
 
       expect(res.statusCode).toBe(StatusCode.NOT_FOUND);
@@ -206,9 +218,15 @@ describe(`/articles route works correctly with comments`, () => {
       expect(res.body).toBe(1);
     });
 
+    it(`Returns 404 if id is invalid`, async () => {
+      const res = await request(app).delete(`/articles/1/comments/hsys`);
+
+      expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
+    });
+
     it(`Returns 0 in body if given article doesn't exist`, async () => {
       const res = await request(app).delete(
-          `/articles/agd btg/comments/1`
+          `/articles/236236/comments/1`
       );
 
       expect(res.statusCode).toBe(StatusCode.OK);
@@ -217,7 +235,7 @@ describe(`/articles route works correctly with comments`, () => {
 
     it(`Returns 0 in body if given comment doesn't exist`, async () => {
       const res = await request(app).delete(
-          `/articles/1/comments/ag shr`
+          `/articles/1/comments/432363`
       );
 
       expect(res.statusCode).toBe(StatusCode.OK);

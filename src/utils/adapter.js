@@ -32,3 +32,12 @@ exports.adaptArticleToServer = (req, _res, next) => {
 
   next();
 };
+
+exports.adaptUserToServer = (req, _res, next) => {
+  const {body, file} = req;
+  if (file) {
+    body.avatar = file.filename;
+  }
+
+  next();
+};

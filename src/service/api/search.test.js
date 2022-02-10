@@ -3,7 +3,7 @@
 const request = require(`supertest`);
 
 const search = require(`./search`);
-const SearchService = require(`../data-service/SearchService`);
+const SearchService = require(`../data-service/search-service`);
 
 const {StatusCode} = require(`../../const`);
 const {createTestApi} = require(`../../utils/util`);
