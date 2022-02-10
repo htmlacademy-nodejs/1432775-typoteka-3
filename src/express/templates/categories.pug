@@ -4,6 +4,7 @@ block content
   main.main-page.main-page--padding
     section(class='main-page__category category')
       h1(class='category__title') Категории
+      +errorMessages(validationMessages)
       div(class='category__add-form')
         form(action=`/categories` method='POST')
           input#add-form-add-category(type='text' name='name' placeholder='Новая категория')

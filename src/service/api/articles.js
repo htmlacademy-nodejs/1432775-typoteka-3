@@ -3,11 +3,14 @@
 const {Router} = require(`express`);
 
 const {
-  validateNewNote,
-  validateNoteUpdate,
-} = require(`../middlewares/validation/note`);
-const {validateNewComment} = require(`../middlewares/validation/comment`);
+  noteSchema,
+  noteUpdateSchema,
+} = require(`../validationSchemas/note`);
+const {commentSchema} = require(`../validationSchemas/comment`);
+
+const validateBody = require(`../middlewares/validation/validateBody`);
 const checkExistance = require(`../middlewares/checkExistance`);
+const validateParams = require(`../middlewares/validation/validateParams`);
 
 const {StatusCode} = require(`../../const`);
 
@@ -33,24 +36,33 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
       offset,
       limit,
       fromCategoryId,
-      needCount
+      needCount,
     });
     return res.status(StatusCode.OK).json(notes);
   });
 
-  route.post(`/`, validateNewNote, async (req, res) => {
+  route.post(`/`, validateBody(noteSchema), async (req, res) => {
     const newNote = await notesService.create(req.body);
     return res.status(StatusCode.CREATED).json(newNote);
   });
 
-  route.get(`/:id`, checkExistance(notesService), (_req, res) => {
-    const note = res.locals.foundItem;
-    return res.status(StatusCode.OK).json(note);
-  });
+  route.get(
+      `/:id`,
+      validateParams,
+      checkExistance(notesService),
+      (_req, res) => {
+        const note = res.locals.foundItem;
+        return res.status(StatusCode.OK).json(note);
+      }
+  );
 
   route.put(
       `/:id`,
-      [checkExistance(notesService), validateNoteUpdate],
+      [
+        validateParams,
+        checkExistance(notesService),
+        validateBody(noteUpdateSchema),
+      ],
       async (req, res) => {
         const {id} = req.params;
         const updatedNote = await notesService.update(id, req.body);
@@ -66,7 +78,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
 
   route.post(
       `/:id/comments`,
-      [checkExistance(notesService), validateNewComment],
+      [validateParams, checkExistance(notesService), validateBody(commentSchema)],
       async (req, res) => {
         const {id} = req.params;
         const newComment = await commentsService.create(req.body, id);
@@ -74,13 +86,17 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
       }
   );
 
-  route.delete(`/:articleId/comments/:commentId`, async (req, res) => {
-    const {commentId, articleId} = req.params;
-    const deletedComment = await commentsService.drop(commentId, articleId);
-    return res.status(StatusCode.OK).json(deletedComment);
-  });
+  route.delete(
+      `/:articleId/comments/:commentId`,
+      validateParams,
+      async (req, res) => {
+        const {commentId, articleId} = req.params;
+        const deletedComment = await commentsService.drop(commentId, articleId);
+        return res.status(StatusCode.OK).json(deletedComment);
+      }
+  );
 
-  route.get(`/:articleId/categories`, async (req, res) => {
+  route.get(`/:articleId/categories`, validateParams, async (req, res) => {
     const {articleId} = req.params;
     const articleCategories = await categoriesService.findAll({
       where: {articleId},

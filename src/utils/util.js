@@ -82,6 +82,8 @@ const createTestApi = async (routeDefiner, ...services) => {
   return app;
 };
 
+const prepareErrors = (err) => err.data.split(`\n`);
+
 module.exports = {
   getRandomInt,
   shuffle,
@@ -91,4 +93,5 @@ module.exports = {
   getRandomDate,
   getSQLStringFromArray,
   createTestApi,
+  prepareErrors,
 };

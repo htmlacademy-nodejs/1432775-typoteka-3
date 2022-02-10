@@ -26,6 +26,13 @@ const StatusCode = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
+const HttpMethod = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`,
+};
+
 const ClientDir = {
   UPLOAD: `upload`,
   PUBLIC: `public`,
@@ -67,6 +74,7 @@ module.exports = {
   Env,
   ExitCode,
   StatusCode,
+  HttpMethod,
   FILL_DB_QUERY_FILE_NAME,
   FAKE_DATA_PATH,
   ClientDir,

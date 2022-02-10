@@ -5,7 +5,7 @@ const {Router} = require(`express`);
 const {api} = require(`../api`);
 const upload = require(`../../utils/multer`);
 const {adaptArticleToServer} = require(`../../utils/adapter`);
-const {asyncHandler} = require(`../../utils/util`);
+const {asyncHandler, prepareErrors} = require(`../../utils/util`);
 
 const ARTICLES_IN_CATEGORY_BY_PAGE = 8;
 
@@ -24,7 +24,9 @@ articlesRouter.post(
         await api.createArticle(req.body);
         res.redirect(`/my`);
       } catch (err) {
-        res.redirect(`back`);
+        const validationMessages = prepareErrors(err);
+        const categories = await api.getCategories();
+        res.render(`new-post`, {categories, validationMessages});
       }
     }
 );
@@ -55,9 +57,15 @@ articlesRouter.post(
     asyncHandler(async (req, res) => {
       const {id} = req.params;
 
-      await api.createComment(req.body, id);
+      try {
+        await api.createComment(req.body, id);
 
-      res.redirect(`back`);
+        res.redirect(`/articles/${id}`);
+      } catch (err) {
+        const article = await api.getArticle(id, {comments: true});
+        const validationMessages = prepareErrors(err);
+        res.render(`post-detail`, {article, validationMessages});
+      }
     })
 );
 
@@ -80,7 +88,12 @@ articlesRouter.get(
 
       const [categories, {count, rows: articles}] = await Promise.all([
         api.getCategories(),
-        api.getArticles({limit: ARTICLES_IN_CATEGORY_BY_PAGE, offset, fromCategoryId: id, needCount: true}),
+        api.getArticles({
+          limit: ARTICLES_IN_CATEGORY_BY_PAGE,
+          offset,
+          fromCategoryId: id,
+          needCount: true,
+        }),
       ]);
 
       const chosenCategory = categories.find((e) => e.id === +id);
@@ -118,7 +131,13 @@ articlesRouter.post(
         await api.updateArticle(id, req.body);
         res.redirect(`/my`);
       } catch (err) {
-        res.redirect(`back`);
+        const [article, categories] = await Promise.all([
+          api.getArticle(id),
+          api.getCategories(),
+        ]);
+
+        const validationMessages = prepareErrors(err);
+        res.render(`edit-post`, {article, categories, validationMessages});
       }
     }
 );
