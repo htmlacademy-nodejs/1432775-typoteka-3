@@ -6,4 +6,11 @@ class NotFoundErr extends Error {
   }
 }
 
-module.exports = {NotFoundErr};
+class ValidationErr extends Error {
+  constructor(err) {
+    super(`ValidationErr`);
+    this.data = err.response.data;
+  }
+}
+
+module.exports = {NotFoundErr, ValidationErr};

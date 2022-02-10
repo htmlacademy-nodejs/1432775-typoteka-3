@@ -1,9 +1,12 @@
 "use strict";
 
 const {Router} = require(`express`);
-const {asyncHandler, prepareErrors} = require(`../../utils/util`);
+
 const {api} = require(`../api`);
 const {StatusCode} = require(`../../const`);
+
+const asyncHandler = require(`../middlewares/asyncHandler`);
+const withValidation = require(`../middlewares/withValidation`);
 
 const categoriesRouter = new Router();
 
@@ -15,30 +18,29 @@ categoriesRouter.get(
     })
 );
 
-categoriesRouter.post(`/`, async (req, res) => {
-  try {
-    await api.createCategory(req.body);
-    return res.redirect(`/categories`);
-  } catch (err) {
-    const categories = await api.getCategories();
-    const validationMessages = prepareErrors(err);
-    return res.render(`categories`, {categories, validationMessages});
-  }
-});
+categoriesRouter.post(
+    `/`,
+    withValidation(
+        async (req, res) => {
+          await api.createCategory(req.body);
+          return res.redirect(`/categories`);
+        },
+        `categories`,
+        {categories: api.getCategories}
+    )
+);
 
 categoriesRouter.post(
     `/edit/:id`,
-    async (req, res) => {
-      const {id} = req.params;
-      try {
-        await api.updateCategory(id, req.body);
-        return res.redirect(`/categories`);
-      } catch (err) {
-        const categories = await api.getCategories();
-        const validationMessages = prepareErrors(err);
-        return res.render(`categories`, {categories, validationMessages});
-      }
-    }
+    withValidation(
+        async (req, res) => {
+          const {id} = req.params;
+          await api.updateCategory(id, req.body);
+          return res.redirect(`/categories`);
+        },
+        `categories`,
+        {categories: api.getCategories}
+    )
 );
 
 categoriesRouter.get(

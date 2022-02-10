@@ -8,6 +8,7 @@ const deineCategory = require(`./category`);
 const deineComment = require(`./comment`);
 const deinePhoto = require(`./photo`);
 const deineUser = require(`./user`);
+const defineToken = require(`./token`);
 
 const ForeignKey = {
   ARTICLE: `articleId`,
@@ -23,6 +24,7 @@ module.exports = (sequelize) => {
   const Comment = deineComment(sequelize);
   const Photo = deinePhoto(sequelize);
   const User = deineUser(sequelize);
+  const Token = defineToken(sequelize);
 
   class ArticleCategory extends Model {}
   ArticleCategory.init({}, {sequelize, timestamps: false, tableName: Aliase.ARTICLES_CATEGORIES});
@@ -45,6 +47,9 @@ module.exports = (sequelize) => {
 
   User.hasMany(Comment, {as: Aliase.COMMENTS, foreignKey: ForeignKey.USER});
   Comment.belongsTo(User, {foreignKey: ForeignKey.USER});
+
+  User.hasOne(Token, {as: Aliase.TOKEN, foreignKey: ForeignKey.USER});
+  Token.belongsTo(User, {foreignKey: ForeignKey.USER});
 
   return {
     Article,

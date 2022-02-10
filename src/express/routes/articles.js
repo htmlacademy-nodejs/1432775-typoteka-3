@@ -5,7 +5,9 @@ const {Router} = require(`express`);
 const {api} = require(`../api`);
 const upload = require(`../../utils/multer`);
 const {adaptArticleToServer} = require(`../../utils/adapter`);
-const {asyncHandler, prepareErrors} = require(`../../utils/util`);
+
+const asyncHandler = require(`../middlewares/asyncHandler`);
+const withValidation = require(`../middlewares/withValidation`);
 
 const ARTICLES_IN_CATEGORY_BY_PAGE = 8;
 
@@ -19,16 +21,14 @@ articlesRouter.get(`/add`, async (_req, res) => {
 articlesRouter.post(
     `/add`,
     [upload.single(`upload`), adaptArticleToServer],
-    async (req, res) => {
-      try {
-        await api.createArticle(req.body);
-        res.redirect(`/my`);
-      } catch (err) {
-        const validationMessages = prepareErrors(err);
-        const categories = await api.getCategories();
-        res.render(`new-post`, {categories, validationMessages});
-      }
-    }
+    withValidation(
+        async (req, res) => {
+          await api.createArticle(req.body);
+          res.redirect(`/my`);
+        },
+        `new-post`,
+        {categories: api.getCategories()}
+    )
 );
 
 articlesRouter.get(
@@ -54,19 +54,17 @@ articlesRouter.get(
 
 articlesRouter.post(
     `/:id/comments`,
-    asyncHandler(async (req, res) => {
-      const {id} = req.params;
-
-      try {
-        await api.createComment(req.body, id);
-
-        res.redirect(`/articles/${id}`);
-      } catch (err) {
-        const article = await api.getArticle(id, {comments: true});
-        const validationMessages = prepareErrors(err);
-        res.render(`post-detail`, {article, validationMessages});
-      }
-    })
+    withValidation(
+        async (req, res) => {
+          const {id} = req.params;
+          await api.createComment(req.body, id);
+          res.redirect(`/articles/${id}`);
+        },
+        `post-detail`,
+        (req) => ({
+          article: api.getArticle.bind(null, req.params.id, {comments: true}),
+        })
+    )
 );
 
 articlesRouter.get(
@@ -125,21 +123,18 @@ articlesRouter.get(
 articlesRouter.post(
     `/edit/:id`,
     [upload.single(`upload`), adaptArticleToServer],
-    async (req, res) => {
-      const {id} = req.params;
-      try {
-        await api.updateArticle(id, req.body);
-        res.redirect(`/my`);
-      } catch (err) {
-        const [article, categories] = await Promise.all([
-          api.getArticle(id),
-          api.getCategories(),
-        ]);
-
-        const validationMessages = prepareErrors(err);
-        res.render(`edit-post`, {article, categories, validationMessages});
-      }
-    }
+    withValidation(
+        async (req, res) => {
+          const {id} = req.params;
+          await api.updateArticle(id, req.body);
+          res.redirect(`/my`);
+        },
+        `edit-post`,
+        (req) => ({
+          article: api.getArticle.bind(null, req.params.id),
+          categories: api.getCategories,
+        })
+    )
 );
 
 module.exports = articlesRouter;

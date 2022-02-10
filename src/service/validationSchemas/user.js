@@ -46,6 +46,19 @@ const newUserSchema = Joi.object({
   avatar: Joi.string(),
 });
 
+const loginSchema = Joi.object({
+  email: Joi.string()
+    .trim()
+    .email()
+    .required()
+    .messages({
+      "string.email": messages.string.email(Field.EMAIL),
+    }),
+
+  password: Joi.string().required(),
+});
+
 module.exports = {
   newUserSchema,
+  loginSchema,
 };

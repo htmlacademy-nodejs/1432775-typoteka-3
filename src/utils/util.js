@@ -43,14 +43,6 @@ const getCheckboxArray = (
   return checkboxes;
 };
 
-const asyncHandler =
-  (fn) =>
-    (...args) => {
-      const fnReturn = fn(...args);
-      const next = args[args.length - 1];
-      return Promise.resolve(fnReturn).catch(next);
-    };
-
 const getRandomDate = (pastPediodTime) => {
   const currentDate = +new Date();
   const minCreationData = currentDate - pastPediodTime;
@@ -82,16 +74,12 @@ const createTestApi = async (routeDefiner, ...services) => {
   return app;
 };
 
-const prepareErrors = (err) => err.data.split(`\n`);
-
 module.exports = {
   getRandomInt,
   shuffle,
   getFileNameFromPath,
   getCheckboxArray,
-  asyncHandler,
   getRandomDate,
   getSQLStringFromArray,
   createTestApi,
-  prepareErrors,
 };

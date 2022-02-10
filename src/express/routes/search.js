@@ -1,7 +1,7 @@
 "use strict";
 
 const {Router} = require(`express`);
-const {asyncHandler} = require(`../../utils/util`);
+const asyncHandler = require(`../middlewares/asyncHandler`);
 
 const {api} = require(`../api`);
 

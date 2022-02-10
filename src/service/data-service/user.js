@@ -10,7 +10,9 @@ class User {
   }
 
   async findByEmail(email) {
-    return await this._User.findOne({where: {email}});
+    return await this._User.findOne({
+      where: {email},
+    });
   }
 }
 
