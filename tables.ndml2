@@ -537,6 +537,78 @@
           },
           {
             "objectType": "Table_LOGICAL",
+            "name": "tokens",
+            "comment": "",
+            "oldName": "",
+            "fields": [
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "id",
+                "type": "INTEGER",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "id"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "refreshToken",
+                "type": "CHAR VARYING",
+                "length": 255,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "refreshToken"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "userId",
+                "type": "INTEGER",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "userId"
+              }
+            ],
+            "foreignKeys": [
+              {
+                "objectType": "ForeignKey_LOGICAL",
+                "name": "fk_tokens_users_1",
+                "fields": [
+                  "userId"
+                ],
+                "referencedSchema": "Default",
+                "referencedTable": "users",
+                "referencedFields": [
+                  "id"
+                ],
+                "sourceCardinality": "ZeroOrOneRelationship",
+                "targetCardinality": "OneAndOnlyOneRelationship",
+                "comment": "",
+                "oldName": ""
+              }
+            ],
+            "indexes": [],
+            "uniques": [],
+            "primaryKey": {
+              "objectType": "PrimaryKey_LOGICAL",
+              "name": "",
+              "fields": [
+                "id"
+              ],
+              "oldName": ""
+            }
+          },
+          {
+            "objectType": "Table_LOGICAL",
             "name": "photos",
             "comment": "",
             "oldName": "",
@@ -544,7 +616,7 @@
               {
                 "objectType": "TableField_LOGICAL",
                 "name": "id",
-                "type": "CHAR VARYING",
+                "type": "INTEGER",
                 "length": 15,
                 "decimals": 0,
                 "isNullable": false,
@@ -576,6 +648,18 @@
                 "defaultValue": "",
                 "comment": "",
                 "oldName": "articleId"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "uniqueName",
+                "type": "CHAR VARYING",
+                "length": 32,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "uniqueName"
               }
             ],
             "foreignKeys": [
@@ -710,6 +794,22 @@
           "schemaName": "Default",
           "tableName": "users",
           "x": 540,
+          "y": 900,
+          "width": 200,
+          "height": 200,
+          "isBold": false,
+          "titleColor": {
+            "r": 55,
+            "g": 131,
+            "b": 192,
+            "a": 1
+          }
+        },
+        {
+          "type": "table",
+          "schemaName": "Default",
+          "tableName": "tokens",
+          "x": 230,
           "y": 900,
           "width": 200,
           "height": 200,
@@ -958,6 +1058,48 @@
             "x": 775,
             "y": 795,
             "width": 147,
+            "height": 40,
+            "fontName": "Arial Unicode MS",
+            "fontSize": 14,
+            "fontColor": {
+              "r": 51,
+              "g": 51,
+              "b": 51,
+              "a": 1
+            },
+            "isFontBold": false,
+            "isFontItalic": false,
+            "isVisible": false
+          }
+        },
+        {
+          "name": "fk_tokens_users_1",
+          "sourceTableName": "tokens",
+          "sourceSchemaName": "Default",
+          "lineWidth": 1,
+          "visible": true,
+          "vertices": [
+            {
+              "x": 445,
+              "y": 1000
+            },
+            {
+              "x": 485,
+              "y": 1000
+            },
+            {
+              "x": 485,
+              "y": 1000
+            },
+            {
+              "x": 525,
+              "y": 1000
+            }
+          ],
+          "label": {
+            "x": 435,
+            "y": 952,
+            "width": 125,
             "height": 40,
             "fontName": "Arial Unicode MS",
             "fontSize": 14,

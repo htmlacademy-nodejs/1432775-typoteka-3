@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS articles_categories;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS photos;
 DROP TABLE IF EXISTS articles;
+DROP TABLE IF EXISTS tokens;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS categories;
 
@@ -17,6 +18,15 @@ CREATE TABLE users (
   lastName VARCHAR(30) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
   passwordHash VARCHAR(32) NOT NULL
+);
+
+CREATE TABLE tokens (
+  id SERIAL PRIMARY KEY,
+  refreshToken VARCHAR(250) NOT NULL,
+  userId INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCS users (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE articles (
