@@ -7,6 +7,7 @@ const {StatusCode} = require(`../../const`);
 
 const asyncHandler = require(`../middlewares/asyncHandler`);
 const withValidation = require(`../middlewares/withValidation`);
+const withAuth = require(`../middlewares/withAuth`);
 
 const categoriesRouter = new Router();
 
@@ -20,6 +21,7 @@ categoriesRouter.get(
 
 categoriesRouter.post(
     `/`,
+    withAuth,
     withValidation(
         async (req, res) => {
           await api.createCategory(req.body);

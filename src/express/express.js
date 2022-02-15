@@ -2,6 +2,7 @@
 
 require(`dotenv`).config();
 const express = require(`express`);
+const cookieParser = require(`cookie-parser`);
 const path = require(`path`);
 
 const {
@@ -11,7 +12,7 @@ const {
 } = require(`../const`);
 const router = require(`./routes`);
 const {getFrontLogger} = require(`../utils/logger`);
-const {NotFoundErr} = require(`../utils/exceptions`);
+const {NotFoundErr, UnauthorizedErr} = require(`../utils/exceptions`);
 
 const logger = getFrontLogger({name: `express`});
 
@@ -19,6 +20,7 @@ const app = express();
 const port = process.env.FRONT_PORT || FRONT_DEFAULT_PORT;
 
 app.use(express.urlencoded({extended: false}));
+app.use(cookieParser());
 
 app.use(router);
 
@@ -32,6 +34,10 @@ app.use((_, res) => res.status(StatusCode.NOT_FOUND).render(`404`));
 app.use((err, _req, res, _next) => {
   if (err instanceof NotFoundErr) {
     return res.status(StatusCode.NOT_FOUND).render(`404`);
+  }
+
+  if (err instanceof UnauthorizedErr) {
+    return res.status(StatusCode.UNAUTHORIZED).redirect(`/login`);
   }
 
   logger.error(`Error 500: ${err.message}`);

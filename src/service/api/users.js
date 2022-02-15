@@ -1,9 +1,11 @@
 "use strict";
 
 const {Router} = require(`express`);
+
 const {StatusCode} = require(`../../const`);
 const errorMessages = require(`../../utils/error-messages`);
 const hash = require(`../../utils/hash`);
+const jwt = require(`../../utils/jwt`);
 
 const validateNewUser = require(`../middlewares/validation/validateNewUser`);
 const validateBody = require(`../middlewares/validation/validateBody`);
@@ -40,6 +42,19 @@ module.exports = (app, usersService, tokensService) => {
 
     const tokens = await tokensService.create(user.id, {id: user.id});
 
+    return res.status(StatusCode.OK).json(tokens);
+  });
+
+  route.post(`/refresh`, async (req, res) => {
+    let userData;
+
+    try {
+      userData = jwt.verify(req.body.token, process.env.JWT_REFRESH_SECRET);
+    } catch (e) {
+      return res.sendStatus(StatusCode.UNAUTHORIZED);
+    }
+
+    const tokens = await tokensService.create(userData.id, {id: userData.id});
     return res.status(StatusCode.OK).json(tokens);
   });
 };

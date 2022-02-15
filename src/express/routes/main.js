@@ -1,9 +1,13 @@
 "use strict";
 
 const {Router} = require(`express`);
+
+const {api} = require(`../api`);
+
 const upload = require(`../../utils/multer`);
 const {adaptUserToServer} = require(`../../utils/adapter`);
-const {api} = require(`../api`);
+const {setTokens} = require(`../../utils/util`);
+
 const withValidation = require(`../middlewares/withValidation`);
 
 const ARTICLES_PER_MAIN_PAGE = 8;
@@ -61,10 +65,11 @@ mainRouter.post(
     `/login`,
     withValidation(async (req, res) => {
       const tokens = await api.login(req.body);
-      console.log(tokens);
+
+      setTokens(res, tokens);
+
       return res.redirect(`/`);
     }, `login`)
 );
-
 
 module.exports = mainRouter;

@@ -16,10 +16,10 @@ class Token {
     });
 
     if (oldToken) {
-      return await oldToken.update({refreshToken});
+      await oldToken.update({refreshToken});
+    } else {
+      await this._Token.create({userId, refreshToken});
     }
-
-    await this._Token.create({userId, refreshToken});
 
     return {
       accessToken,

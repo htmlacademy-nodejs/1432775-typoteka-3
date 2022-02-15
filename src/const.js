@@ -19,6 +19,7 @@ const ExitCode = {
 const StatusCode = {
   OK: 200,
   CREATED: 201,
+  TOKEN_REFRESH: 204,
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
@@ -66,6 +67,13 @@ const MockСomprisingPath = {
   NAMES: FAKE_DATA_PATH + MockFileName.NAMES
 };
 
+const Cookie = {
+  ACCESS_TOKEN: `accessToken`,
+  REFRESH_TOKEN: `refreshToken`,
+};
+
+const COOKIE_MAX_AGE = 1000 * 60 * 60 * 24 * 7;
+
 module.exports = {
   FRONT_DEFAULT_PORT,
   TIMEOUT,
@@ -81,4 +89,6 @@ module.exports = {
   LogPath,
   MockFileName,
   MockСomprisingPath,
+  Cookie,
+  COOKIE_MAX_AGE,
 };

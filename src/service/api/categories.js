@@ -5,6 +5,7 @@ const {Router} = require(`express`);
 const {newCategorySchema} = require(`../validationSchemas/category`);
 const validateBody = require(`../middlewares/validation/validateBody`);
 const validateParams = require(`../middlewares/validation/validateParams`);
+const authJwt = require(`../middlewares/auth-jwt`);
 
 const {StatusCode} = require(`../../const`);
 
@@ -18,7 +19,7 @@ module.exports = (app, categoryService) => {
     return res.status(StatusCode.OK).json(categories);
   });
 
-  route.post(`/`, validateBody(newCategorySchema), async (req, res) => {
+  route.post(`/`, authJwt, validateBody(newCategorySchema), async (req, res) => {
     const newCategory = await categoryService.create(req.body);
     return res.status(StatusCode.CREATED).json(newCategory);
   });
