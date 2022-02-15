@@ -41,6 +41,7 @@ block content
             div(class='comments__footer comments__footer--user')
               +errorMessages(validationMessages)
               form(action=`/articles/${article.id}/comments` method='POST' enctype="application/x-www-form-urlencoded")
+                input(type="hidden" name="_csrf" value=csrf)
                 div(class='comments__avatar avatar')
                   img(src='/img/avatar-2.png' alt='аватар пользователя')
                 label

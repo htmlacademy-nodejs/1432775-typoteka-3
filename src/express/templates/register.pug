@@ -11,6 +11,7 @@ block content
         h2(class='popup__title') Регистрация
         div(class='popup__form popup__form--active form form--register')
           form(action='/register' method='POST' enctype="multipart/form-data")
+            input(type="hidden" name="_csrf" value=csrf)
             div(class='form__field')
               label
                 input(type='email' name='email' placeholder='Электронная почта' required='')

@@ -4,6 +4,7 @@ const {Router} = require(`express`);
 
 const {api} = require(`../api`);
 const {StatusCode} = require(`../../const`);
+const csrfProtection = require(`../../utils/csrf-protection`);
 
 const asyncHandler = require(`../middlewares/asyncHandler`);
 const withValidation = require(`../middlewares/withValidation`);
@@ -13,16 +14,16 @@ const categoriesRouter = new Router();
 
 categoriesRouter.get(
     `/`,
-    withAuth,
-    asyncHandler(async (_req, res) => {
+    [withAuth, csrfProtection],
+    asyncHandler(async (req, res) => {
       const categories = await api.getCategories();
-      return res.render(`categories`, {categories});
+      return res.render(`categories`, {categories, csrf: req.csrfToken()});
     })
 );
 
 categoriesRouter.post(
     `/`,
-    withAuth,
+    [withAuth, csrfProtection],
     withValidation(
         async (req, res) => {
           await api.createCategory(req.body);
@@ -35,7 +36,7 @@ categoriesRouter.post(
 
 categoriesRouter.post(
     `/edit/:id`,
-    withAuth,
+    [withAuth, csrfProtection],
     withValidation(
         async (req, res) => {
           const {id} = req.params;

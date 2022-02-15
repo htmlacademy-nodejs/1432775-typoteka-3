@@ -9,36 +9,39 @@ const {adaptArticleToServer} = require(`../../utils/adapter`);
 const asyncHandler = require(`../middlewares/asyncHandler`);
 const withValidation = require(`../middlewares/withValidation`);
 const withAuth = require(`../middlewares/withAuth`);
+const csrfProtection = require(`../../utils/csrf-protection`);
 
 const ARTICLES_IN_CATEGORY_BY_PAGE = 8;
 
 const articlesRouter = new Router();
 
-articlesRouter.get(`/add`, withAuth, async (_req, res) => {
+articlesRouter.get(`/add`, [withAuth, csrfProtection], async (req, res) => {
   const categories = await api.getCategories();
-  res.render(`new-post`, {categories});
+  res.render(`new-post`, {categories, csrf: req.csrfToken()});
 });
 
 articlesRouter.post(
     `/add`,
-    [withAuth, upload.single(`upload`), adaptArticleToServer],
+    [withAuth, upload.single(`upload`), csrfProtection, adaptArticleToServer],
     withValidation(
         async (req, res) => {
+          console.log(req.body);
           await api.createArticle(req.body);
           res.redirect(`/my`);
         },
         `new-post`,
-        {categories: api.getCategories()}
+        (req) => ({categories: api.getCategories, csrf: req.csrfToken})
     )
 );
 
 articlesRouter.get(
     `/:id`,
+    csrfProtection,
     asyncHandler(async (req, res) => {
       const {id} = req.params;
 
       const article = await api.getArticle(id, {comments: true});
-      res.render(`post-detail`, {article});
+      res.render(`post-detail`, {article, csrf: req.csrfToken()});
     })
 );
 
@@ -57,6 +60,7 @@ articlesRouter.get(
 articlesRouter.post(
     `/:id/comments`,
     withAuth,
+    csrfProtection,
     withValidation(
         async (req, res) => {
           const {id} = req.params;
@@ -66,6 +70,7 @@ articlesRouter.post(
         `post-detail`,
         (req) => ({
           article: api.getArticle.bind(null, req.params.id, {comments: true}),
+          csrf: req.csrfToken,
         })
     )
 );
@@ -113,7 +118,7 @@ articlesRouter.get(
 
 articlesRouter.get(
     `/edit/:id`,
-    withAuth,
+    [withAuth, csrfProtection],
     asyncHandler(async (req, res) => {
       const {id} = req.params;
       const [article, categories] = await Promise.all([
@@ -121,13 +126,13 @@ articlesRouter.get(
         api.getCategories(),
       ]);
 
-      res.render(`edit-post`, {article, categories});
+      res.render(`edit-post`, {article, categories, csrf: req.csrfToken()});
     })
 );
 
 articlesRouter.post(
     `/edit/:id`,
-    [withAuth, upload.single(`upload`), adaptArticleToServer],
+    [withAuth, upload.single(`upload`), csrfProtection, adaptArticleToServer],
     withValidation(
         async (req, res) => {
           const {id} = req.params;
@@ -138,6 +143,7 @@ articlesRouter.post(
         (req) => ({
           article: api.getArticle.bind(null, req.params.id),
           categories: api.getCategories,
+          csrf: req.csrfToken,
         })
     )
 );

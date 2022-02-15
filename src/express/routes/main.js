@@ -9,6 +9,7 @@ const {adaptUserToServer} = require(`../../utils/adapter`);
 const {setTokens} = require(`../../utils/util`);
 
 const withValidation = require(`../middlewares/withValidation`);
+const csrfProtection = require(`../../utils/csrf-protection`);
 
 const ARTICLES_PER_MAIN_PAGE = 8;
 const MOST_COMMENTED_ARTICLES_NUMBER = 4;
@@ -48,28 +49,45 @@ mainRouter.get(`/`, async (req, res) => {
   });
 });
 
-mainRouter.get(`/register`, (_req, res) => res.render(`register`));
+mainRouter.get(`/register`, csrfProtection, (req, res) =>
+  res.render(`register`, {csrf: req.csrfToken})
+);
 
 mainRouter.post(
     `/register`,
-    [upload.single(`upload`), adaptUserToServer],
-    withValidation(async (req, res) => {
-      await api.createUser(req.body);
-      return res.redirect(`/login`);
-    }, `register`)
+    [upload.single(`upload`), csrfProtection, adaptUserToServer],
+    withValidation(
+        async (req, res) => {
+          await api.createUser(req.body);
+          return res.redirect(`/login`);
+        },
+        `register`,
+        (req) => ({
+          csrf: req.csrfToken,
+        })
+    )
 );
 
-mainRouter.get(`/login`, (_, res) => res.render(`login`));
+mainRouter.get(`/login`, csrfProtection, (req, res) =>
+  res.render(`login`, {csrf: req.csrfToken})
+);
 
 mainRouter.post(
     `/login`,
-    withValidation(async (req, res) => {
-      const tokens = await api.login(req.body);
+    csrfProtection,
+    withValidation(
+        async (req, res) => {
+          const tokens = await api.login(req.body);
 
-      setTokens(res, tokens);
+          setTokens(res, tokens);
 
-      return res.redirect(`/`);
-    }, `login`)
+          return res.redirect(`/`);
+        },
+        `login`,
+        (req) => ({
+          csrf: req.csrfToken,
+        })
+    )
 );
 
 module.exports = mainRouter;
