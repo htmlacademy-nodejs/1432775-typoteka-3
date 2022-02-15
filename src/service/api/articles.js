@@ -10,6 +10,7 @@ const checkExistance = require(`../middlewares/checkExistance`);
 const validateParams = require(`../middlewares/validation/validateParams`);
 
 const {StatusCode} = require(`../../const`);
+const authJwt = require(`../middlewares/auth-jwt`);
 
 const route = new Router();
 
@@ -38,7 +39,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
     return res.status(StatusCode.OK).json(notes);
   });
 
-  route.post(`/`, validateBody(noteSchema), async (req, res) => {
+  route.post(`/`, authJwt, validateBody(noteSchema), async (req, res) => {
     const newNote = await notesService.create(req.body);
     return res.status(StatusCode.CREATED).json(newNote);
   });
@@ -55,6 +56,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
   route.put(
       `/:id`,
       [
+        authJwt,
         validateParams,
         checkExistance(notesService),
         validateBody(noteUpdateSchema),
@@ -66,7 +68,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
       }
   );
 
-  route.delete(`/:id`, async (req, res) => {
+  route.delete(`/:id`, authJwt, async (req, res) => {
     const {id} = req.params;
     const deletedNote = await notesService.drop(id);
     return res.status(StatusCode.OK).json(deletedNote);
@@ -74,7 +76,12 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
 
   route.post(
       `/:id/comments`,
-      [validateParams, checkExistance(notesService), validateBody(commentSchema)],
+      [
+        authJwt,
+        validateParams,
+        checkExistance(notesService),
+        validateBody(commentSchema),
+      ],
       async (req, res) => {
         const {id} = req.params;
         const newComment = await commentsService.create(req.body, id);
@@ -84,7 +91,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
 
   route.delete(
       `/:articleId/comments/:commentId`,
-      validateParams,
+      [authJwt, validateParams],
       async (req, res) => {
         const {commentId, articleId} = req.params;
         const deletedComment = await commentsService.drop(commentId, articleId);

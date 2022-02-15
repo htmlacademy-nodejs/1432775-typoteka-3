@@ -19,14 +19,19 @@ module.exports = (app, categoryService) => {
     return res.status(StatusCode.OK).json(categories);
   });
 
-  route.post(`/`, authJwt, validateBody(newCategorySchema), async (req, res) => {
-    const newCategory = await categoryService.create(req.body);
-    return res.status(StatusCode.CREATED).json(newCategory);
-  });
+  route.post(
+      `/`,
+      authJwt,
+      validateBody(newCategorySchema),
+      async (req, res) => {
+        const newCategory = await categoryService.create(req.body);
+        return res.status(StatusCode.CREATED).json(newCategory);
+      }
+  );
 
   route.put(
       `/:id`,
-      [validateParams, validateBody(newCategorySchema)],
+      [authJwt, validateParams, validateBody(newCategorySchema)],
       async (req, res) => {
         const {id} = req.params;
         const updatedCategory = await categoryService.update(id, req.body);
@@ -34,7 +39,7 @@ module.exports = (app, categoryService) => {
       }
   );
 
-  route.delete(`/:id`, validateParams, async (req, res) => {
+  route.delete(`/:id`, [authJwt, validateParams], async (req, res) => {
     const {id} = req.params;
     const isAtLeastOneRelationFound = await categoryService.findOneRelation(id);
     if (isAtLeastOneRelationFound) {

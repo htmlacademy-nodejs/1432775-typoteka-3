@@ -3,15 +3,16 @@
 const {Router} = require(`express`);
 
 const {api} = require(`../api`);
+const withAuth = require(`../middlewares/withAuth`);
 
 const myRouter = new Router();
 
-myRouter.get(`/`, async (_req, res) => {
+myRouter.get(`/`, withAuth, async (_req, res) => {
   const myArticles = await api.getMyArticles();
   res.render(`my`, {myArticles});
 });
 
-myRouter.get(`/comments`, async (_req, res) => {
+myRouter.get(`/comments`, withAuth, async (_req, res) => {
   const comments = await api.getMyComments();
   res.render(`comments`, {comments});
 });

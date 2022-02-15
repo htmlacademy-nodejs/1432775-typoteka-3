@@ -13,6 +13,7 @@ const categoriesRouter = new Router();
 
 categoriesRouter.get(
     `/`,
+    withAuth,
     asyncHandler(async (_req, res) => {
       const categories = await api.getCategories();
       return res.render(`categories`, {categories});
@@ -34,6 +35,7 @@ categoriesRouter.post(
 
 categoriesRouter.post(
     `/edit/:id`,
+    withAuth,
     withValidation(
         async (req, res) => {
           const {id} = req.params;
@@ -47,6 +49,7 @@ categoriesRouter.post(
 
 categoriesRouter.get(
     `/delete/:id`,
+    withAuth,
     asyncHandler(async (req, res) => {
       const {id} = req.params;
       try {
