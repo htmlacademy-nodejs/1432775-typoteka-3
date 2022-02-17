@@ -4,7 +4,6 @@ const express = require(`express`);
 const Sequelize = require(`sequelize`);
 const {initdb} = require(`./sequelize`);
 const testData = require(`../service/testData`);
-const {Cookie, COOKIE_MAX_AGE} = require(`../const`);
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -72,17 +71,6 @@ const createTestApi = async (routeDefiner, ...services) => {
   return app;
 };
 
-const setTokens = (res, {accessToken, refreshToken}) => {
-  res.cookie(Cookie.ACCESS_TOKEN, accessToken, {
-    httpOnly: true,
-    maxAge: COOKIE_MAX_AGE,
-  });
-  res.cookie(Cookie.REFRESH_TOKEN, refreshToken, {
-    httpOnly: true,
-    maxAge: COOKIE_MAX_AGE,
-  });
-};
-
 module.exports = {
   getRandomInt,
   shuffle,
@@ -91,5 +79,4 @@ module.exports = {
   getRandomDate,
   getSQLStringFromArray,
   createTestApi,
-  setTokens,
 };

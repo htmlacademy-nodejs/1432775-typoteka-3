@@ -16,7 +16,7 @@ searchRouter.get(`/`, asyncHandler(async (req, res) => {
     found = await api.search(query);
   }
 
-  res.render(`search`, {found, query});
+  res.render(`search`, {found, query, user: res.user});
 }));
 
 module.exports = searchRouter;

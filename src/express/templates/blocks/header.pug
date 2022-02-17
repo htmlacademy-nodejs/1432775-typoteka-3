@@ -4,10 +4,22 @@ html
       a(class='header__logo logo' href='/')
         img(class='logo__image' src='/img/icons/logo-image-only.svg' alt='логотип Тайпотеки')
         span(class='logo__name') Типотека
-      nav(class='header__nav')
-        ul(class='header__nav-list')
-          li(class='header__list-item')
-            a(class='header__registration' href='/register') Регистрация
-          li(class='header__list-item')
-            a(class='header__enter' href='/login') Вход с паролем
-      a(class='header__search button button--search' href='#' aria-label='поиск по сайту')
+      if user
+
+        nav.header__nav
+          ul.header__nav-list
+            li.header__list-item
+              p #{`${user.firstName} ${user.lastName}`}
+            li.header__list-item
+              a.header__exit(href='/logout') Выйти
+        a.header__avatar.avatar
+          img(src=`/img/${user.avatar}` class='header__user-avatar' alt='аватар пользователя')
+
+      else
+        nav(class='header__nav')
+          ul(class='header__nav-list')
+            li(class='header__list-item')
+              a(class='header__registration' href='/register') Регистрация
+            li(class='header__list-item')
+              a(class='header__enter' href='/login') Вход с паролем
+        a(class='header__search button button--search' href='#' aria-label='поиск по сайту')

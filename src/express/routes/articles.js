@@ -17,7 +17,7 @@ const articlesRouter = new Router();
 
 articlesRouter.get(`/add`, [withAuth, csrfProtection], async (req, res) => {
   const categories = await api.getCategories();
-  res.render(`new-post`, {categories, csrf: req.csrfToken()});
+  res.render(`new-post`, {categories, csrf: req.csrfToken(), user: res.user});
 });
 
 articlesRouter.post(
@@ -30,7 +30,11 @@ articlesRouter.post(
           res.redirect(`/my`);
         },
         `new-post`,
-        (req) => ({categories: api.getCategories, csrf: req.csrfToken})
+        (req, res) => ({
+          categories: api.getCategories,
+          csrf: req.csrfToken,
+          user: res.user,
+        })
     )
 );
 
@@ -41,7 +45,11 @@ articlesRouter.get(
       const {id} = req.params;
 
       const article = await api.getArticle(id, {comments: true});
-      res.render(`post-detail`, {article, csrf: req.csrfToken()});
+      res.render(`post-detail`, {
+        article,
+        csrf: req.csrfToken(),
+        user: res.user,
+      });
     })
 );
 
@@ -68,9 +76,10 @@ articlesRouter.post(
           res.redirect(`/articles/${id}`);
         },
         `post-detail`,
-        (req) => ({
+        (req, res) => ({
           article: api.getArticle.bind(null, req.params.id, {comments: true}),
           csrf: req.csrfToken,
+          user: res.user,
         })
     )
 );
@@ -112,6 +121,7 @@ articlesRouter.get(
         chosenCategory,
         page,
         totalPages,
+        user: res.user,
       });
     })
 );
@@ -126,7 +136,12 @@ articlesRouter.get(
         api.getCategories(),
       ]);
 
-      res.render(`edit-post`, {article, categories, csrf: req.csrfToken()});
+      res.render(`edit-post`, {
+        article,
+        categories,
+        csrf: req.csrfToken(),
+        user: res.user,
+      });
     })
 );
 
@@ -140,10 +155,11 @@ articlesRouter.post(
           res.redirect(`/my`);
         },
         `edit-post`,
-        (req) => ({
+        (req, res) => ({
           article: api.getArticle.bind(null, req.params.id),
           categories: api.getCategories,
           csrf: req.csrfToken,
+          user: res.user,
         })
     )
 );

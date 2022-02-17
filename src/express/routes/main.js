@@ -6,7 +6,7 @@ const {api} = require(`../api`);
 
 const upload = require(`../../utils/multer`);
 const {adaptUserToServer} = require(`../../utils/adapter`);
-const {setTokens} = require(`../../utils/util`);
+const {setCookie, clearCookie} = require(`../../utils/cookie`);
 
 const withValidation = require(`../middlewares/withValidation`);
 const csrfProtection = require(`../../utils/csrf-protection`);
@@ -46,6 +46,7 @@ mainRouter.get(`/`, async (req, res) => {
     latestComments,
     totalPages,
     page,
+    user: res.user,
   });
 });
 
@@ -69,7 +70,7 @@ mainRouter.post(
 );
 
 mainRouter.get(`/login`, csrfProtection, (req, res) =>
-  res.render(`login`, {csrf: req.csrfToken})
+  res.render(`login`, {csrf: req.csrfToken()})
 );
 
 mainRouter.post(
@@ -77,9 +78,9 @@ mainRouter.post(
     csrfProtection,
     withValidation(
         async (req, res) => {
-          const tokens = await api.login(req.body);
+          const {tokens, user} = await api.login(req.body);
 
-          setTokens(res, tokens);
+          setCookie(res, tokens, user);
 
           return res.redirect(`/`);
         },
@@ -89,5 +90,10 @@ mainRouter.post(
         })
     )
 );
+
+mainRouter.get(`/logout`, async (req, res) => {
+  clearCookie(res);
+  res.redirect(`back`);
+});
 
 module.exports = mainRouter;

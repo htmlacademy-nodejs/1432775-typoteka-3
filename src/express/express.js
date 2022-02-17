@@ -13,6 +13,7 @@ const {
 const router = require(`./routes`);
 const {getFrontLogger} = require(`../utils/logger`);
 const {NotFoundErr, UnauthorizedErr} = require(`../utils/exceptions`);
+const pinUserObj = require(`./middlewares/pin-user-obj`);
 
 const logger = getFrontLogger({name: `express`});
 
@@ -21,6 +22,7 @@ const port = process.env.FRONT_PORT || FRONT_DEFAULT_PORT;
 
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(pinUserObj);
 
 app.use(router);
 

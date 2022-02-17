@@ -40,21 +40,29 @@ module.exports = (app, usersService, tokensService) => {
         .send(errorMessages.user.wrongPassword);
     }
 
-    const tokens = await tokensService.create(user.id, {id: user.id});
+    const {id, firstName, lastName, avatar} = user;
+    const clientUserData = {id, firstName, lastName, avatar};
 
-    return res.status(StatusCode.OK).json(tokens);
+    const tokens = await tokensService.create(id, clientUserData);
+
+    return res
+      .status(StatusCode.OK)
+      .json({tokens, user: clientUserData});
   });
 
   route.post(`/refresh`, async (req, res) => {
     let userData;
 
+
     try {
       userData = jwt.verify(req.body.token, process.env.JWT_REFRESH_SECRET);
+      delete userData.iat;
+      delete userData.exp;
     } catch (e) {
       return res.sendStatus(StatusCode.UNAUTHORIZED);
     }
 
-    const tokens = await tokensService.create(userData.id, {id: userData.id});
-    return res.status(StatusCode.OK).json(tokens);
+    const tokens = await tokensService.create(userData.id, userData);
+    return res.status(StatusCode.OK).json({tokens, user: userData});
   });
 };

@@ -1,6 +1,6 @@
 "use strict";
 
-const {Cookie} = require(`../../const`);
+const {Cookie} = require(`../../utils/cookie`);
 const {api} = require(`../api`);
 const {UnauthorizedErr} = require(`../../utils/exceptions`);
 

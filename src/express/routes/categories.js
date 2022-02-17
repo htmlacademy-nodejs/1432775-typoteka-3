@@ -17,7 +17,11 @@ categoriesRouter.get(
     [withAuth, csrfProtection],
     asyncHandler(async (req, res) => {
       const categories = await api.getCategories();
-      return res.render(`categories`, {categories, csrf: req.csrfToken()});
+      return res.render(`categories`, {
+        categories,
+        csrf: req.csrfToken(),
+        user: res.user,
+      });
     })
 );
 
@@ -30,7 +34,11 @@ categoriesRouter.post(
           return res.redirect(`/categories`);
         },
         `categories`,
-        {categories: api.getCategories}
+        (req, res) => ({
+          categories: api.getCategories,
+          csrf: req.csrfToken,
+          user: res.user,
+        })
     )
 );
 
@@ -44,7 +52,11 @@ categoriesRouter.post(
           return res.redirect(`/categories`);
         },
         `categories`,
-        {categories: api.getCategories}
+        (req, res) => ({
+          categories: api.getCategories,
+          csrf: req.csrfToken,
+          user: res.user,
+        })
     )
 );
 

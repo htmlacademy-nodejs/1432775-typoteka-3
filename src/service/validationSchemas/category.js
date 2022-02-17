@@ -20,7 +20,7 @@ const newCategorySchema = Joi.object({
     .messages({
       "string.min": messages.string.min(Field.NAME, CategoryNameLength.MIN),
       "string.max": messages.string.max(Field.NAME, CategoryNameLength.MAX),
-      "any.required": messages.any.required(Field.NAME),
+      "string.empty": messages.any.required(Field.NAME),
     }),
 });
 

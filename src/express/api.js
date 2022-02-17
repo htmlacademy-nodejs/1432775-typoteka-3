@@ -9,7 +9,7 @@ const {
   HttpMethod,
 } = require(`../const`);
 const {NotFoundErr, ValidationErr, UnauthorizedErr} = require(`../utils/exceptions`);
-const {setTokens} = require(`../utils/util`);
+const {setCookie} = require(`../utils/cookie`);
 
 class Api {
   constructor(baseUrl, timeout) {
@@ -65,8 +65,8 @@ class Api {
 
           if (res.status === StatusCode.TOKEN_REFRESH) {
             try {
-              const tokens = await this.refreshToken({token: this._tokens.refreshToken});
-              setTokens(this._res, tokens);
+              const {tokens, user} = await this.refreshToken({token: this._tokens.refreshToken});
+              setCookie(this._res, tokens, user);
               this._tokens = tokens;
               return this._axios.request(res.config);
             } catch (e) {

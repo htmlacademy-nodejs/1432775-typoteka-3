@@ -67,13 +67,6 @@ const MockСomprisingPath = {
   NAMES: FAKE_DATA_PATH + MockFileName.NAMES
 };
 
-const Cookie = {
-  ACCESS_TOKEN: `accessToken`,
-  REFRESH_TOKEN: `refreshToken`,
-};
-
-const COOKIE_MAX_AGE = 1000 * 60 * 60 * 24 * 7;
-
 module.exports = {
   FRONT_DEFAULT_PORT,
   TIMEOUT,
@@ -89,6 +82,4 @@ module.exports = {
   LogPath,
   MockFileName,
   MockСomprisingPath,
-  Cookie,
-  COOKIE_MAX_AGE,
 };
