@@ -18,7 +18,7 @@ module.exports = (req, res, next) => {
   }
 
   try {
-    req.user = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    res.user = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
   } catch (e) {
     return res.sendStatus(StatusCode.TOKEN_REFRESH);
   }

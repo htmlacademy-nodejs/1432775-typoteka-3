@@ -40,7 +40,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
   });
 
   route.post(`/`, authJwt, validateBody(noteSchema), async (req, res) => {
-    const newNote = await notesService.create(req.body);
+    const newNote = await notesService.create(res.user.id, req.body);
     return res.status(StatusCode.CREATED).json(newNote);
   });
 
@@ -84,7 +84,11 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
       ],
       async (req, res) => {
         const {id} = req.params;
-        const newComment = await commentsService.create(req.body, id);
+        const newComment = await commentsService.create(
+            req.body,
+            id,
+            res.user.id
+        );
         return res.status(StatusCode.CREATED).json(newComment);
       }
   );
@@ -93,9 +97,15 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
       `/:articleId/comments/:commentId`,
       [authJwt, validateParams],
       async (req, res) => {
-        const {commentId, articleId} = req.params;
-        const deletedComment = await commentsService.drop(commentId, articleId);
-        return res.status(StatusCode.OK).json(deletedComment);
+        const {commentId} = req.params;
+        const comment = await commentsService.findOne(commentId);
+
+        if (comment.userId !== res.user.id) {
+          return res.sendStatus(StatusCode.FORBIDDEN);
+        }
+
+        await comment.destroy();
+        return res.sendStatus(StatusCode.OK);
       }
   );
 

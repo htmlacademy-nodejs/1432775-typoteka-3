@@ -161,9 +161,8 @@ class NotesService {
     });
   }
 
-  async create(article) {
-    // TODO: userId must be recieved from client
-    const validArticle = {...article, userId: 1};
+  async create(userId, article) {
+    const validArticle = {...article, userId};
     const createdArtcle = await this._Article.create(validArticle);
     await Promise.all([
       createdArtcle.addCategories(validArticle.categories),

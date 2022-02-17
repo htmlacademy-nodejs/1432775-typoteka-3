@@ -25,7 +25,6 @@ articlesRouter.post(
     [withAuth, upload.single(`upload`), csrfProtection, adaptArticleToServer],
     withValidation(
         async (req, res) => {
-          console.log(req.body);
           await api.createArticle(req.body);
           res.redirect(`/my`);
         },
@@ -87,11 +86,11 @@ articlesRouter.post(
 articlesRouter.get(
     `/:articleId/comments/delete/:commentId`,
     withAuth,
-    async (req, res) => {
+    asyncHandler(async (req, res) => {
       const {commentId, articleId} = req.params;
       await api.deleteComment(commentId, articleId);
       res.redirect(`back`);
-    }
+    })
 );
 
 articlesRouter.get(

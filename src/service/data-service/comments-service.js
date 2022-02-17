@@ -9,18 +9,21 @@ class CommentsService {
     this._User = sequelize.models.User;
   }
 
-  async create(comment, articleId) {
-    const validComment = {...comment, userId: 1, articleId};
+  async create(comment, articleId, userId) {
+    const validComment = {...comment, userId, articleId};
     return await this._Comment.create(validComment);
   }
 
-  async drop(id, articleId) {
+  async drop(id) {
     return await this._Comment.destroy({
       where: {
         id,
-        articleId,
       },
     });
+  }
+
+  async findOne(id) {
+    return await this._Comment.findOne({where: {id}});
   }
 
   async findLatestComments({limit = 5} = {limit: 5}) {

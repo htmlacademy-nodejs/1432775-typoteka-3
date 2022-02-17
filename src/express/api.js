@@ -8,7 +8,11 @@ const {
   StatusCode,
   HttpMethod,
 } = require(`../const`);
-const {NotFoundErr, ValidationErr, UnauthorizedErr} = require(`../utils/exceptions`);
+const {
+  NotFoundErr,
+  ValidationErr,
+  UnauthorizedErr,
+} = require(`../utils/exceptions`);
 const {setCookie} = require(`../utils/cookie`);
 
 class Api {
@@ -62,10 +66,11 @@ class Api {
   _setResponseInterceptors() {
     this._axios.interceptors.response.use(
         async (res) => {
-
           if (res.status === StatusCode.TOKEN_REFRESH) {
             try {
-              const {tokens, user} = await this.refreshToken({token: this._tokens.refreshToken});
+              const {tokens, user} = await this.refreshToken({
+                token: this._tokens.refreshToken,
+              });
               setCookie(this._res, tokens, user);
               this._tokens = tokens;
               return this._axios.request(res.config);
@@ -86,6 +91,9 @@ class Api {
               throw new ValidationErr(err);
 
             case StatusCode.UNAUTHORIZED:
+              throw new UnauthorizedErr();
+
+            case StatusCode.FORBIDDEN:
               throw new UnauthorizedErr();
           }
           return Promise.reject(err);
