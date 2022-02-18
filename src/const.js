@@ -34,6 +34,10 @@ const HttpMethod = {
   DELETE: `DELETE`,
 };
 
+const Role = {
+  ADMIN: `admin`,
+};
+
 const ClientDir = {
   UPLOAD: `upload`,
   PUBLIC: `public`,
@@ -76,6 +80,7 @@ module.exports = {
   ExitCode,
   StatusCode,
   HttpMethod,
+  Role,
   FILL_DB_QUERY_FILE_NAME,
   FAKE_DATA_PATH,
   ClientDir,

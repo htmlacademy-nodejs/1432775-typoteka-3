@@ -1,7 +1,9 @@
+DROP TABLE IF EXISTS users_roles;
 DROP TABLE IF EXISTS articles_categories;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS photos;
 DROP TABLE IF EXISTS articles;
+DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS tokens;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS categories;
@@ -24,9 +26,14 @@ CREATE TABLE tokens (
   id SERIAL PRIMARY KEY,
   refreshToken VARCHAR(250) NOT NULL,
   userId INTEGER NOT NULL,
-  FOREIGN KEY (userId) REFERENCS users (id)
+  FOREIGN KEY (userId) REFERENCES users (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
+);
+
+CREATE TABLE roles (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100)
 );
 
 CREATE TABLE articles (
@@ -75,6 +82,18 @@ CREATE TABLE articles_categories (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   FOREIGN KEY (categoryId) REFERENCES categories (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE users_roles (
+  userId INTEGER NOT NULL,
+  roleId INTEGER NOT NULL,
+  CONSTRAINT users_roles_pk PRIMARY KEY (userId, roleId),
+  FOREIGN KEY (userId) REFERENCES users (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (roleId) REFERENCES roles (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

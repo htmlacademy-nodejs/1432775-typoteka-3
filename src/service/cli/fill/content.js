@@ -9,6 +9,7 @@ module.exports = ({
   categories,
   notesCategories,
   users,
+  roles,
 }) =>
   `ALTER TABLE categories DISABLE TRIGGER ALL;
 INSERT INTO categories (name) VALUES
@@ -19,6 +20,11 @@ ALTER TABLE users DISABLE TRIGGER ALL;
 INSERT INTO users (avatar, firstName, lastName, email, passwordHash) VALUES
 ${getSQLStringFromArray(users)};
 ALTER TABLE users ENABLE TRIGGER ALL;
+
+ALTER TABLE roles DISABLE TRIGGER ALL;
+INSERT INTO roles (name) VALUES
+${getSQLStringFromArray(roles)};
+ALTER TABLE roles ENABLE TRIGGER ALL;
 
 ALTER TABLE articles DISABLE TRIGGER ALL;
 INSERT INTO articles (title, createdAt, announce, fullText, userId) VALUES

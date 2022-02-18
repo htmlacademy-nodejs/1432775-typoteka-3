@@ -690,6 +690,126 @@
               ],
               "oldName": ""
             }
+          },
+          {
+            "objectType": "Table_LOGICAL",
+            "name": "users_roles",
+            "comment": "",
+            "oldName": "",
+            "fields": [
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "userId",
+                "type": "INTEGER",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "userId"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "roleId",
+                "type": "INTEGER",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "roleId"
+              }
+            ],
+            "foreignKeys": [
+              {
+                "objectType": "ForeignKey_LOGICAL",
+                "name": "fk_users_roles_users_1",
+                "fields": [
+                  "userId"
+                ],
+                "referencedSchema": "Default",
+                "referencedTable": "users",
+                "referencedFields": [
+                  "id"
+                ],
+                "sourceCardinality": "ZeroOrManyRelationship",
+                "targetCardinality": "OneAndOnlyOneRelationship",
+                "comment": "",
+                "oldName": ""
+              },
+              {
+                "objectType": "ForeignKey_LOGICAL",
+                "name": "fk_users_roles_roles_1",
+                "fields": [
+                  "roleId"
+                ],
+                "referencedSchema": "Default",
+                "referencedTable": "roles",
+                "referencedFields": [
+                  "id"
+                ],
+                "sourceCardinality": "ManyRelationship",
+                "targetCardinality": "OneAndOnlyOneRelationship",
+                "comment": "",
+                "oldName": ""
+              }
+            ],
+            "indexes": [],
+            "uniques": [],
+            "primaryKey": {
+              "objectType": "PrimaryKey_LOGICAL",
+              "name": "",
+              "fields": [
+                "userId",
+                "roleId"
+              ],
+              "oldName": ""
+            }
+          },
+          {
+            "objectType": "Table_LOGICAL",
+            "name": "roles",
+            "comment": "",
+            "oldName": "",
+            "fields": [
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "id",
+                "type": "INTEGER",
+                "length": 0,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "id"
+              },
+              {
+                "objectType": "TableField_LOGICAL",
+                "name": "name",
+                "type": "CHAR VARYING",
+                "length": 255,
+                "decimals": 0,
+                "isNullable": false,
+                "defaultType": "None",
+                "defaultValue": "",
+                "comment": "",
+                "oldName": "name"
+              }
+            ],
+            "foreignKeys": [],
+            "indexes": [],
+            "uniques": [],
+            "primaryKey": {
+              "objectType": "PrimaryKey_LOGICAL",
+              "name": "",
+              "fields": [
+                "id"
+              ],
+              "oldName": ""
+            }
           }
         ]
       }
@@ -761,8 +881,8 @@
           "type": "table",
           "schemaName": "Default",
           "tableName": "photos",
-          "x": 230,
-          "y": 640,
+          "x": 250,
+          "y": 370,
           "width": 200,
           "height": 200,
           "isBold": false,
@@ -809,8 +929,40 @@
           "type": "table",
           "schemaName": "Default",
           "tableName": "tokens",
-          "x": 230,
+          "x": 890,
           "y": 900,
+          "width": 200,
+          "height": 200,
+          "isBold": false,
+          "titleColor": {
+            "r": 55,
+            "g": 131,
+            "b": 192,
+            "a": 1
+          }
+        },
+        {
+          "type": "table",
+          "schemaName": "Default",
+          "tableName": "users_roles",
+          "x": 250,
+          "y": 900,
+          "width": 200,
+          "height": 200,
+          "isBold": false,
+          "titleColor": {
+            "r": 55,
+            "g": 131,
+            "b": 192,
+            "a": 1
+          }
+        },
+        {
+          "type": "table",
+          "schemaName": "Default",
+          "tableName": "roles",
+          "x": 250,
+          "y": 640,
           "width": 200,
           "height": 200,
           "isBold": false,
@@ -916,15 +1068,15 @@
           "visible": true,
           "vertices": [
             {
-              "x": 445,
-              "y": 740
+              "x": 465,
+              "y": 550
             },
             {
-              "x": 435,
-              "y": 740
+              "x": 490,
+              "y": 550
             },
             {
-              "x": 435,
+              "x": 490,
               "y": 740
             },
             {
@@ -933,8 +1085,8 @@
             }
           ],
           "label": {
-            "x": 435,
-            "y": 692,
+            "x": 455,
+            "y": 502,
             "width": 136,
             "height": 40,
             "fontName": "Arial Unicode MS",
@@ -1080,7 +1232,49 @@
           "visible": true,
           "vertices": [
             {
-              "x": 445,
+              "x": 875,
+              "y": 1040
+            },
+            {
+              "x": 850,
+              "y": 1040
+            },
+            {
+              "x": 800,
+              "y": 1040
+            },
+            {
+              "x": 755,
+              "y": 1040
+            }
+          ],
+          "label": {
+            "x": 825,
+            "y": 992,
+            "width": 125,
+            "height": 40,
+            "fontName": "Arial Unicode MS",
+            "fontSize": 14,
+            "fontColor": {
+              "r": 51,
+              "g": 51,
+              "b": 51,
+              "a": 1
+            },
+            "isFontBold": false,
+            "isFontItalic": false,
+            "isVisible": false
+          }
+        },
+        {
+          "name": "fk_users_roles_users_1",
+          "sourceTableName": "users_roles",
+          "sourceSchemaName": "Default",
+          "lineWidth": 1,
+          "visible": true,
+          "vertices": [
+            {
+              "x": 465,
               "y": 1000
             },
             {
@@ -1097,9 +1291,51 @@
             }
           ],
           "label": {
-            "x": 435,
+            "x": 455,
             "y": 952,
-            "width": 125,
+            "width": 156,
+            "height": 40,
+            "fontName": "Arial Unicode MS",
+            "fontSize": 14,
+            "fontColor": {
+              "r": 51,
+              "g": 51,
+              "b": 51,
+              "a": 1
+            },
+            "isFontBold": false,
+            "isFontItalic": false,
+            "isVisible": false
+          }
+        },
+        {
+          "name": "fk_users_roles_roles_1",
+          "sourceTableName": "users_roles",
+          "sourceSchemaName": "Default",
+          "lineWidth": 1,
+          "visible": true,
+          "vertices": [
+            {
+              "x": 350,
+              "y": 885
+            },
+            {
+              "x": 350,
+              "y": 870
+            },
+            {
+              "x": 350,
+              "y": 870
+            },
+            {
+              "x": 350,
+              "y": 855
+            }
+          ],
+          "label": {
+            "x": 358,
+            "y": 855,
+            "width": 152,
             "height": 40,
             "fontName": "Arial Unicode MS",
             "fontSize": 14,

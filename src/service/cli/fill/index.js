@@ -6,6 +6,7 @@ const {readContentByLines, writeToTextFile} = require(`../../../utils/fs`);
 const {
   MockСomprisingPath,
   FILL_DB_QUERY_FILE_NAME,
+  Role,
 } = require(`../../../const`);
 const {getDbFillData} = require(`../generate/mockNotes`);
 const getFillContent = require(`./content`);
@@ -43,6 +44,7 @@ const run = async (args) => {
     commentSentences,
     possiblePhotos,
     names,
+    possibleRoles: Object.values(Role),
   });
 
   const content = getFillContent(fillDbQueryData);
