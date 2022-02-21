@@ -10,9 +10,9 @@ const defineModels = require(`../service/models`);
 
 const initdb = async (
     sequelize,
-    {categories, users, notes, photos, comments, notesCategories, roles}
+    {categories, users, notes, photos, comments, notesCategories, roles, usersRoles = []}
 ) => {
-  const {Article, Category, Comment, Photo, User, ArticleCategory, Role} =
+  const {Article, Category, Comment, Photo, User, ArticleCategory, Role, UserRole} =
     defineModels(sequelize);
   await sequelize.sync({force: true});
 
@@ -24,6 +24,7 @@ const initdb = async (
     Comment.bulkCreate(comments),
     ArticleCategory.bulkCreate(notesCategories),
     Role.bulkCreate(roles),
+    UserRole.bulkCreate(usersRoles)
   ]);
 };
 

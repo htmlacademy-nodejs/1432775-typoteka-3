@@ -3,7 +3,7 @@
 const {Router} = require(`express`);
 
 const {api} = require(`../api`);
-const {StatusCode} = require(`../../const`);
+const {StatusCode, Role} = require(`../../const`);
 const csrfProtection = require(`../../utils/csrf-protection`);
 
 const asyncHandler = require(`../middlewares/asyncHandler`);
@@ -14,7 +14,7 @@ const categoriesRouter = new Router();
 
 categoriesRouter.get(
     `/`,
-    [withAuth, csrfProtection],
+    [withAuth(Role.ADMIN), csrfProtection],
     asyncHandler(async (req, res) => {
       const categories = await api.getCategories();
       return res.render(`categories`, {
@@ -27,7 +27,7 @@ categoriesRouter.get(
 
 categoriesRouter.post(
     `/`,
-    [withAuth, csrfProtection],
+    [csrfProtection],
     withValidation(
         async (req, res) => {
           await api.createCategory(req.body);
@@ -44,7 +44,7 @@ categoriesRouter.post(
 
 categoriesRouter.post(
     `/edit/:id`,
-    [withAuth, csrfProtection],
+    [csrfProtection],
     withValidation(
         async (req, res) => {
           const {id} = req.params;
@@ -62,7 +62,6 @@ categoriesRouter.post(
 
 categoriesRouter.get(
     `/delete/:id`,
-    withAuth,
     asyncHandler(async (req, res) => {
       const {id} = req.params;
       try {

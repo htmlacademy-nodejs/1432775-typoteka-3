@@ -44,7 +44,7 @@ const run = async (args) => {
     readContentByLines(MockСomprisingPath.NAMES),
   ]);
 
-  const {comments, notes, photos, categories, notesCategories, users, roles} =
+  const {comments, notes, photos, categories, notesCategories, users, roles, usersRoles} =
     getDbFillData(notesNum, {
       possibleCategories,
       sentences,
@@ -63,6 +63,7 @@ const run = async (args) => {
     notesCategories,
     users,
     roles,
+    usersRoles,
   });
 };
 

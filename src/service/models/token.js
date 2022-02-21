@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 "use strict";
 
 const {Model, DataTypes} = require(`sequelize`);
@@ -8,7 +9,7 @@ module.exports = (sequelize) =>
   Token.init(
       {
         refreshToken: {
-          type: DataTypes.STRING,
+          type: DataTypes.STRING(1000),
           allowNull: false,
         },
       },

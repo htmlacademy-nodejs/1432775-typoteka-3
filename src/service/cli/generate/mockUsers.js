@@ -8,7 +8,7 @@ const HASH_LENGTH = 32;
 const MOCK_AVATARS_NUMBER = 5;
 
 const getMockUsers = (usersNum, names) => {
-  return Array(usersNum)
+  const users = Array(usersNum)
     .fill()
     .map(() => {
       const name = names[getRandomInt(0, names.length - 1)].split(` `);
@@ -20,6 +20,16 @@ const getMockUsers = (usersNum, names) => {
         passwordHash: nanoid(HASH_LENGTH),
       };
     });
+
+  users.unshift({
+    avatar: `avatar-${getRandomInt(1, MOCK_AVATARS_NUMBER)}.png`,
+    firstName: `admin`,
+    lastName: `admin`,
+    email: `ad@ty.com`,
+    passwordHash: `$2b$10$DqcnSUgKdYMTzwh.pCAg7O9llJSSWjZRQkecYQ5C0QamBJlaLGKui`,
+  });
+
+  return users;
 };
 
 module.exports = getMockUsers;

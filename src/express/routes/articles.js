@@ -10,19 +10,28 @@ const asyncHandler = require(`../middlewares/asyncHandler`);
 const withValidation = require(`../middlewares/withValidation`);
 const withAuth = require(`../middlewares/withAuth`);
 const csrfProtection = require(`../../utils/csrf-protection`);
+const {Role} = require(`../../const`);
 
 const ARTICLES_IN_CATEGORY_BY_PAGE = 8;
 
 const articlesRouter = new Router();
 
-articlesRouter.get(`/add`, [withAuth, csrfProtection], async (req, res) => {
-  const categories = await api.getCategories();
-  res.render(`new-post`, {categories, csrf: req.csrfToken(), user: res.user});
-});
+articlesRouter.get(
+    `/add`,
+    [withAuth(Role.ADMIN), csrfProtection],
+    async (req, res) => {
+      const categories = await api.getCategories();
+      res.render(`new-post`, {
+        categories,
+        csrf: req.csrfToken(),
+        user: res.user,
+      });
+    }
+);
 
 articlesRouter.post(
     `/add`,
-    [withAuth, upload.single(`upload`), csrfProtection, adaptArticleToServer],
+    [upload.single(`upload`), csrfProtection, adaptArticleToServer],
     withValidation(
         async (req, res) => {
           await api.createArticle(req.body);
@@ -54,7 +63,7 @@ articlesRouter.get(
 
 articlesRouter.get(
     `/delete/:id`,
-    withAuth,
+    withAuth(),
     asyncHandler(async (req, res) => {
       const {id} = req.params;
 
@@ -66,7 +75,7 @@ articlesRouter.get(
 
 articlesRouter.post(
     `/:id/comments`,
-    withAuth,
+    withAuth(),
     csrfProtection,
     withValidation(
         async (req, res) => {
@@ -85,7 +94,7 @@ articlesRouter.post(
 
 articlesRouter.get(
     `/:articleId/comments/delete/:commentId`,
-    withAuth,
+    withAuth(),
     asyncHandler(async (req, res) => {
       const {commentId, articleId} = req.params;
       await api.deleteComment(commentId, articleId);
@@ -127,7 +136,7 @@ articlesRouter.get(
 
 articlesRouter.get(
     `/edit/:id`,
-    [withAuth, csrfProtection],
+    [withAuth(Role.ADMIN), csrfProtection],
     asyncHandler(async (req, res) => {
       const {id} = req.params;
       const [article, categories] = await Promise.all([
@@ -146,7 +155,7 @@ articlesRouter.get(
 
 articlesRouter.post(
     `/edit/:id`,
-    [withAuth, upload.single(`upload`), csrfProtection, adaptArticleToServer],
+    [upload.single(`upload`), csrfProtection, adaptArticleToServer],
     withValidation(
         async (req, res) => {
           const {id} = req.params;

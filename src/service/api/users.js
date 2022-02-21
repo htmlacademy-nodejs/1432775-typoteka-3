@@ -40,8 +40,8 @@ module.exports = (app, usersService, tokensService) => {
         .send(errorMessages.user.wrongPassword);
     }
 
-    const {id, firstName, lastName, avatar} = user;
-    const clientUserData = {id, firstName, lastName, avatar};
+    const {id, firstName, lastName, avatar, roles} = user;
+    const clientUserData = {id, firstName, lastName, avatar, roles};
 
     const tokens = await tokensService.create(id, clientUserData);
 

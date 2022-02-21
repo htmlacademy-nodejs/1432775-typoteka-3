@@ -67,6 +67,9 @@ const getDbFillData = (notesNum, {possibleCategories, sentences, titles, comment
 
   const roles = getRoles(possibleRoles);
 
+  // admin role for first user
+  const usersRoles = [{userId: 1, roleId: 1}];
+
   const notes = Array(notesNum)
     .fill()
     .map((_item, i) => {
@@ -101,6 +104,7 @@ const getDbFillData = (notesNum, {possibleCategories, sentences, titles, comment
     notesCategories,
     users,
     roles,
+    usersRoles,
   };
 };
 

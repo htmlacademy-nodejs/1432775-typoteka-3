@@ -51,7 +51,7 @@ mainRouter.get(`/`, async (req, res) => {
 });
 
 mainRouter.get(`/register`, csrfProtection, (req, res) =>
-  res.render(`register`, {csrf: req.csrfToken})
+  res.render(`register`, {csrf: req.csrfToken()})
 );
 
 mainRouter.post(
