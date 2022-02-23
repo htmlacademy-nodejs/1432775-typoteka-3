@@ -101,7 +101,10 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
         const comment = await commentsService.findOne(commentId);
 
         if (comment.userId !== res.user.id) {
-          return res.sendStatus(StatusCode.FORBIDDEN);
+          const isAdmin = res.user.roles.some((role) => role.name === Role.ADMIN);
+          if (!isAdmin) {
+            return res.sendStatus(StatusCode.FORBIDDEN);
+          }
         }
 
         await comment.destroy();

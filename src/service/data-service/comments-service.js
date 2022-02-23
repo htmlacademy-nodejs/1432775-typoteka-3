@@ -65,6 +65,25 @@ class CommentsService {
 
     return comments.map((comment) => ({...comment.get(), user}));
   }
+
+  async findAll() {
+    return await this._Comment.findAll({
+      include: [
+        {
+          model: this._Article,
+          as: Aliase.ARTICLE,
+          attributes: [`id`, `title`],
+        },
+        {
+          model: this._User,
+          as: Aliase.USER,
+          attributes: [`id`, `firstName`, `lastName`, `avatar`],
+        }
+      ],
+      attributes: [`id`, `createdAt`, `text`],
+      order: [[`createdAt`, `DESC`]],
+    });
+  }
 }
 
 module.exports = CommentsService;

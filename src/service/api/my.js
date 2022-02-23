@@ -17,7 +17,7 @@ module.exports = (app, commentService, articleService) => {
   });
 
   route.get(`/comments`, async (_req, res) => {
-    const myComments = await commentService.findMyComments(res.user.id);
+    const myComments = await commentService.findAll();
     res.status(StatusCode.OK).json(myComments);
   });
 };
