@@ -12,7 +12,7 @@ module.exports = (...allowedRoles) => (req, res, next) => {
     next(new UnauthorizedErr());
   }
 
-  if (allowedRoles) {
+  if (allowedRoles.length) {
     const user = req.cookies[Cookie.USER];
     const userRoles = user.roles;
 

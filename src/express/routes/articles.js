@@ -31,7 +31,12 @@ articlesRouter.get(
 
 articlesRouter.post(
     `/add`,
-    [upload.single(`upload`), csrfProtection, adaptArticleToServer],
+    [
+      withAuth(Role.ADMIN),
+      upload.single(`upload`),
+      csrfProtection,
+      adaptArticleToServer,
+    ],
     withValidation(
         async (req, res) => {
           await api.createArticle(req.body);
@@ -63,7 +68,7 @@ articlesRouter.get(
 
 articlesRouter.get(
     `/delete/:id`,
-    withAuth(),
+    withAuth(Role.ADMIN),
     asyncHandler(async (req, res) => {
       const {id} = req.params;
 
@@ -155,7 +160,12 @@ articlesRouter.get(
 
 articlesRouter.post(
     `/edit/:id`,
-    [upload.single(`upload`), csrfProtection, adaptArticleToServer],
+    [
+      withAuth(Role.ADMIN),
+      upload.single(`upload`),
+      csrfProtection,
+      adaptArticleToServer,
+    ],
     withValidation(
         async (req, res) => {
           const {id} = req.params;

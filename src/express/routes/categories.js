@@ -27,7 +27,7 @@ categoriesRouter.get(
 
 categoriesRouter.post(
     `/`,
-    [csrfProtection],
+    [withAuth(Role.ADMIN), csrfProtection],
     withValidation(
         async (req, res) => {
           await api.createCategory(req.body);
@@ -44,7 +44,7 @@ categoriesRouter.post(
 
 categoriesRouter.post(
     `/edit/:id`,
-    [csrfProtection],
+    [withAuth(Role.ADMIN), csrfProtection],
     withValidation(
         async (req, res) => {
           const {id} = req.params;
@@ -62,6 +62,7 @@ categoriesRouter.post(
 
 categoriesRouter.get(
     `/delete/:id`,
+    withAuth(Role.ADMIN),
     asyncHandler(async (req, res) => {
       const {id} = req.params;
       try {

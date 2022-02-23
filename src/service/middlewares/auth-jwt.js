@@ -25,7 +25,7 @@ module.exports =
         return res.sendStatus(StatusCode.TOKEN_REFRESH);
       }
 
-      if (allowedRoles) {
+      if (allowedRoles.length) {
         const userRoles = res.user.roles;
         const isAllowed = userRoles.every((role) =>
           allowedRoles.includes(role.name)

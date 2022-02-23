@@ -77,7 +77,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
   route.post(
       `/:id/comments`,
       [
-        authJwt,
+        authJwt(),
         validateParams,
         checkExistance(notesService),
         validateBody(commentSchema),
@@ -95,7 +95,7 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
 
   route.delete(
       `/:articleId/comments/:commentId`,
-      [authJwt, validateParams],
+      [authJwt(), validateParams, checkExistance(commentsService, `commentId`)],
       async (req, res) => {
         const {commentId} = req.params;
         const comment = await commentsService.findOne(commentId);

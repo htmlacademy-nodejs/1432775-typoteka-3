@@ -153,6 +153,13 @@ exports.notesCategories = [
 
 exports.users = [
   {
+    avatar: `avatar-1.png`,
+    firstName: `admin`,
+    lastName: `admin`,
+    email: `admin@typoteka.com`,
+    passwordHash: `$2b$10$ZYFQrAqEkkHn7RB/97MLguvmwmK58BNcH54G4.1w1/J3cl6DUZfXG`,
+  },
+  {
     avatar: `avatar-5.png`,
     firstName: `Alex`,
     lastName: `Hunt`,
@@ -160,3 +167,7 @@ exports.users = [
     passwordHash: `IITPbZFrrWTimWQE8UcbwDJ3zF03_S4r`,
   },
 ];
+
+exports.roles = [{name: `admin`}];
+
+exports.usersRoles = [{userId: 1, roleId: 1}];

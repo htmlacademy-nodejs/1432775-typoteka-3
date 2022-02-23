@@ -1,14 +1,17 @@
 "use strict";
 
-const request = require(`supertest`);
+require(`dotenv`).config();
+const stdRequest = require(`supertest`);
 
 const articles = require(`./articles`);
 const NoteService = require(`../data-service/notes-service`);
 const CommentService = require(`../data-service/comments-service`);
 const CategoryService = require(`../data-service/category`);
 
-const {StatusCode} = require(`../../const`);
+const {StatusCode, HttpMethod} = require(`../../const`);
 const {createTestApi} = require(`../../utils/util`);
+
+const configRequest = require(`../../utils/supertest`);
 
 const validToCreationArticle = {
   title: `Вы никогда не видели таких писем, которые мы с Гарри получили о наших грушах`,
@@ -28,6 +31,7 @@ const vealidToCreationComment = {
 
 describe(`/articles route works correctly with articles`, () => {
   let app;
+  let request;
 
   beforeAll(async () => {
     app = await createTestApi(
@@ -36,10 +40,16 @@ describe(`/articles route works correctly with articles`, () => {
         CommentService,
         CategoryService
     );
+
+    const res = await stdRequest(app)
+      .post(`/users/auth`)
+      .send({email: `admin@typoteka.com`, password: `12341234`});
+
+    request = configRequest(app, res.body.tokens.accessToken);
   });
 
   it(`Returns list of aricles`, async () => {
-    const res = await request(app).get(`/articles`);
+    const res = await request(HttpMethod.GET, `/articles`);
 
     expect(res.statusCode).toBe(StatusCode.OK);
     expect(res.body.length).toBe(3);
@@ -52,7 +62,9 @@ describe(`/articles route works correctly with articles`, () => {
     });
 
     it(`Creates new article`, async () => {
-      const res = await request(app).post(`/articles`).send(validArticle);
+      const res = await request(HttpMethod.POST, `/articles`).send(
+          validArticle
+      );
 
       expect(res.statusCode).toBe(StatusCode.CREATED);
 
@@ -71,7 +83,9 @@ describe(`/articles route works correctly with articles`, () => {
             const invalidArticle = Object.assign({}, validArticle);
             delete invalidArticle[key];
 
-            const res = await request(app).post(`/articles`).send(invalidArticle);
+            const res = await request(HttpMethod.POST, `/articles`).send(
+                invalidArticle
+            );
 
             expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
           })
@@ -81,7 +95,9 @@ describe(`/articles route works correctly with articles`, () => {
     it(`Should return 400 if there is an unexpected field`, async () => {
       validArticle.unexpectedField = `some value`;
 
-      const res = await request(app).post(`/articles`).send(validArticle);
+      const res = await request(HttpMethod.POST, `/articles`).send(
+          validArticle
+      );
 
       expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
     });
@@ -89,20 +105,20 @@ describe(`/articles route works correctly with articles`, () => {
 
   describe(`Returns article by id`, () => {
     it(`Returns correct article by id`, async () => {
-      const res = await request(app).get(`/articles/1`);
+      const res = await request(HttpMethod.GET, `/articles/1`);
 
       expect(res.statusCode).toBe(StatusCode.OK);
       expect(res.body.id).toBe(1);
     });
 
     it(`Returns 404 if article with given id doesn't exist`, async () => {
-      const res = await request(app).get(`/articles/4235235`);
+      const res = await request(HttpMethod.GET, `/articles/67356`);
 
       expect(res.statusCode).toBe(StatusCode.NOT_FOUND);
     });
 
     it(`Returns 400 if id is invalid`, async () => {
-      const res = await request(app).get(`/articles/asd`);
+      const res = await request(HttpMethod.GET, `/articles/asd`);
 
       expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
     });
@@ -115,26 +131,34 @@ describe(`/articles route works correctly with articles`, () => {
     });
 
     it(`Updates article if update is valid`, async () => {
-      const res = await request(app).put(`/articles/3`).send(validUpdate);
+      const res = await request(HttpMethod.PUT, `/articles/3`).send(
+          validUpdate
+      );
 
       expect(res.statusCode).toBe(StatusCode.OK);
     });
 
     it(`Returns 404 if article with given id doesn't exist`, async () => {
-      const res = await request(app).put(`/articles/52362`).send(validUpdate);
+      const res = await request(HttpMethod.PUT, `/articles/3425`).send(
+          validUpdate
+      );
 
       expect(res.statusCode).toBe(StatusCode.NOT_FOUND);
     });
 
     it(`Returns 404 if id is invalid`, async () => {
-      const res = await request(app).put(`/articles/gsr`).send(validUpdate);
+      const res = await request(HttpMethod.PUT, `/articles/gad`).send(
+          validUpdate
+      );
 
       expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
     });
 
     it(`Returns 400 if article update is invalid`, async () => {
       validUpdate.unexpectedField = `some value`;
-      const res = await request(app).put(`/articles/3`).send(validUpdate);
+      const res = await request(HttpMethod.PUT, `/articles/3`).send(
+          validUpdate
+      );
 
       expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
     });
@@ -142,16 +166,16 @@ describe(`/articles route works correctly with articles`, () => {
 
   describe(`Article deletion works correctly`, () => {
     it(`Deletes article`, async () => {
-      const res = await request(app).delete(`/articles/3`);
+      const res = await request(HttpMethod.DELETE, `/articles/3`);
       expect(res.statusCode).toBe(StatusCode.OK);
       expect(res.body).toBe(1);
 
-      const findRes = await request(app).get(`/articles/3`);
+      const findRes = await request(HttpMethod.GET, `/articles/3`);
       expect(findRes.statusCode).toBe(StatusCode.NOT_FOUND);
     });
 
     it(`Returns 0 in body if article with given id doesn't exist`, async () => {
-      const res = await request(app).delete(`/articles/he nne`);
+      const res = await request(HttpMethod.DELETE, `/articles/2342`);
 
       expect(res.statusCode).toBe(StatusCode.OK);
       expect(res.body).toBe(0);
@@ -161,6 +185,7 @@ describe(`/articles route works correctly with articles`, () => {
 
 describe(`/articles route works correctly with comments`, () => {
   let app;
+  let request;
 
   beforeAll(async () => {
     app = await createTestApi(
@@ -169,6 +194,12 @@ describe(`/articles route works correctly with comments`, () => {
         CommentService,
         CategoryService
     );
+
+    const res = await stdRequest(app)
+      .post(`/users/auth`)
+      .send({email: `admin@typoteka.com`, password: `12341234`});
+
+    request = configRequest(app, res.body.tokens.accessToken);
   });
 
   describe(`Creates new comment for given id article`, () => {
@@ -178,33 +209,36 @@ describe(`/articles route works correctly with comments`, () => {
     });
 
     it(`Creates new comment`, async () => {
-      const res = await request(app)
-        .post(`/articles/2/comments`)
-        .send(validComment);
+      const res = await request(HttpMethod.POST, `/articles/2/comments`).send(
+          validComment
+      );
 
       expect(res.statusCode).toBe(StatusCode.CREATED);
       expect(res.body.articleId).toBe(`2`);
     });
 
     it(`Returns 404 if given article doesn't exist`, async () => {
-      const res = await request(app)
-        .post(`/articles/52367/comments`)
-        .send(validComment);
+      const res = await request(
+          HttpMethod.POST,
+          `/articles/2235/comments`
+      ).send(validComment);
 
       expect(res.statusCode).toBe(StatusCode.NOT_FOUND);
     });
 
     it(`Returns 400 if not all required fields are presented`, async () => {
-      const res = await request(app).post(`/articles/2/comments`).send({});
+      const res = await request(HttpMethod.POST, `/articles/2/comments`).send(
+          {}
+      );
 
       expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
     });
 
     it(`Returns 400 if unexpected field is presented`, async () => {
       validComment.unexpectedField = 1456;
-      const res = await request(app)
-        .post(`/articles/2/comments`)
-        .send(validComment);
+      const res = await request(HttpMethod.POST, `/articles/2/comments`).send(
+          validComment
+      );
 
       expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
     });
@@ -212,34 +246,20 @@ describe(`/articles route works correctly with comments`, () => {
 
   describe(`Deletes comment of given id article`, () => {
     it(`Deletes comment`, async () => {
-      const res = await request(app).delete(`/articles/1/comments/2`);
-
+      const res = await request(HttpMethod.DELETE, `/articles/1/comments/2`);
       expect(res.statusCode).toBe(StatusCode.OK);
-      expect(res.body).toBe(1);
     });
 
-    it(`Returns 404 if id is invalid`, async () => {
-      const res = await request(app).delete(`/articles/1/comments/hsys`);
+    it(`Returns 400 if id is invalid`, async () => {
+      const res = await await request(HttpMethod.DELETE, `/articles/1/comments/adga`);
 
       expect(res.statusCode).toBe(StatusCode.BAD_REQUEST);
     });
 
-    it(`Returns 0 in body if given article doesn't exist`, async () => {
-      const res = await request(app).delete(
-          `/articles/236236/comments/1`
-      );
+    it(`Returns 404 in body if given comment doesn't exist`, async () => {
+      const res = await await request(HttpMethod.DELETE, `/articles/1/comments/3473`);
 
-      expect(res.statusCode).toBe(StatusCode.OK);
-      expect(res.body).toBe(0);
-    });
-
-    it(`Returns 0 in body if given comment doesn't exist`, async () => {
-      const res = await request(app).delete(
-          `/articles/1/comments/432363`
-      );
-
-      expect(res.statusCode).toBe(StatusCode.OK);
-      expect(res.body).toBe(0);
+      expect(res.statusCode).toBe(StatusCode.NOT_FOUND);
     });
   });
 });
