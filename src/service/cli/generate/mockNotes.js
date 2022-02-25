@@ -4,6 +4,7 @@ const {getRandomInt, shuffle, getRandomDate} = require(`../../../utils/util`);
 const {getDbComments} = require(`./mockComments`);
 const getMockUsers = require(`./mockUsers`);
 const getCategories = require(`./categories`);
+const getRoles = require(`./roles`);
 
 const MAX_MONTHS_AGO_CREATED = 3;
 const MAX_ANNOUNCE_SENTENCES = 2;
@@ -53,7 +54,7 @@ const getRandomPhoto = (photos, photosArr, articleId) => {
   return photo;
 };
 
-const getDbFillData = (notesNum, {possibleCategories, sentences, titles, commentSentences, possiblePhotos, names}) => {
+const getDbFillData = (notesNum, {possibleCategories, sentences, titles, commentSentences, possiblePhotos, names, possibleRoles}) => {
   const photos = [];
 
   const categories = getCategories(possibleCategories);
@@ -63,6 +64,11 @@ const getDbFillData = (notesNum, {possibleCategories, sentences, titles, comment
   const users = getMockUsers(usersNumber, names);
 
   const comments = getDbComments(notesNum, usersNumber, commentSentences);
+
+  const roles = getRoles(possibleRoles);
+
+  // admin role for first user
+  const usersRoles = [{userId: 1, roleId: 1}];
 
   const notes = Array(notesNum)
     .fill()
@@ -96,7 +102,9 @@ const getDbFillData = (notesNum, {possibleCategories, sentences, titles, comment
     photos,
     categories,
     notesCategories,
-    users
+    users,
+    roles,
+    usersRoles,
   };
 };
 

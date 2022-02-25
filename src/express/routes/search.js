@@ -1,7 +1,7 @@
 "use strict";
 
 const {Router} = require(`express`);
-const {asyncHandler} = require(`../../utils/util`);
+const asyncHandler = require(`../middlewares/asyncHandler`);
 
 const {api} = require(`../api`);
 
@@ -16,7 +16,7 @@ searchRouter.get(`/`, asyncHandler(async (req, res) => {
     found = await api.search(query);
   }
 
-  res.render(`search`, {found, query});
+  res.render(`search`, {found, query, user: res.user});
 }));
 
 module.exports = searchRouter;

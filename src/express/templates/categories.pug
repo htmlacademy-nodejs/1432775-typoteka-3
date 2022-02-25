@@ -7,6 +7,7 @@ block content
       +errorMessages(validationMessages)
       div(class='category__add-form')
         form(action=`/categories` method='POST')
+          input(type="hidden" name="_csrf" value=csrf)
           input#add-form-add-category(type='text' name='name' placeholder='Новая категория')
           label(for='add-form-add-category')
             span.visually-hidden Добавить категорию
@@ -15,6 +16,7 @@ block content
         each category of categories
           li(class='category__list-item')
             form(action=`/categories/edit/${category.id}` method='POST')
+              input(type="hidden" name="_csrf" value=csrf)
               input(type='text' name='name' value=category.name id=`modify-form-category-${category.id}`)
               label(for=`modify-form-category-${category.id}`)
                 span.visually-hidden Редактировать категорию

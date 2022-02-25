@@ -1,48 +1,68 @@
 "use strict";
 
 const {Router} = require(`express`);
-const {asyncHandler, prepareErrors} = require(`../../utils/util`);
+
 const {api} = require(`../api`);
-const {StatusCode} = require(`../../const`);
+const {StatusCode, Role} = require(`../../const`);
+const csrfProtection = require(`../../utils/csrf-protection`);
+
+const asyncHandler = require(`../middlewares/asyncHandler`);
+const withValidation = require(`../middlewares/withValidation`);
+const withAuth = require(`../middlewares/withAuth`);
 
 const categoriesRouter = new Router();
 
 categoriesRouter.get(
     `/`,
-    asyncHandler(async (_req, res) => {
+    [withAuth(Role.ADMIN), csrfProtection],
+    asyncHandler(async (req, res) => {
       const categories = await api.getCategories();
-      return res.render(`categories`, {categories});
+      return res.render(`categories`, {
+        categories,
+        csrf: req.csrfToken(),
+        user: res.user,
+      });
     })
 );
 
-categoriesRouter.post(`/`, async (req, res) => {
-  try {
-    await api.createCategory(req.body);
-    return res.redirect(`/categories`);
-  } catch (err) {
-    const categories = await api.getCategories();
-    const validationMessages = prepareErrors(err);
-    return res.render(`categories`, {categories, validationMessages});
-  }
-});
+categoriesRouter.post(
+    `/`,
+    [withAuth(Role.ADMIN), csrfProtection],
+    withValidation(
+        async (req, res) => {
+          await api.createCategory(req.body);
+          return res.redirect(`/categories`);
+        },
+        `categories`,
+        (req, res) => ({
+          categories: api.getCategories,
+          csrf: req.csrfToken,
+          user: res.user,
+        })
+    )
+);
 
 categoriesRouter.post(
     `/edit/:id`,
-    async (req, res) => {
-      const {id} = req.params;
-      try {
-        await api.updateCategory(id, req.body);
-        return res.redirect(`/categories`);
-      } catch (err) {
-        const categories = await api.getCategories();
-        const validationMessages = prepareErrors(err);
-        return res.render(`categories`, {categories, validationMessages});
-      }
-    }
+    [withAuth(Role.ADMIN), csrfProtection],
+    withValidation(
+        async (req, res) => {
+          const {id} = req.params;
+          await api.updateCategory(id, req.body);
+          return res.redirect(`/categories`);
+        },
+        `categories`,
+        (req, res) => ({
+          categories: api.getCategories,
+          csrf: req.csrfToken,
+          user: res.user,
+        })
+    )
 );
 
 categoriesRouter.get(
     `/delete/:id`,
+    withAuth(Role.ADMIN),
     asyncHandler(async (req, res) => {
       const {id} = req.params;
       try {

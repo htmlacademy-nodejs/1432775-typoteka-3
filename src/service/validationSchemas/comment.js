@@ -20,7 +20,7 @@ const commentSchema = Joi.object({
     .messages({
       "string.min": messages.string.min(Field.TEXT, CommentLength.MIN),
       "string.max": messages.string.max(Field.TEXT, CommentLength.MAX),
-      "any.required": messages.any.required(Field.TEXT),
+      "string.empty": messages.any.required(Field.TEXT),
     }),
 });
 

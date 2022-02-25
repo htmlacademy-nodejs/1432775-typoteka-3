@@ -1,10 +1,15 @@
 "use strict";
 
 const {Router} = require(`express`);
-const {prepareErrors} = require(`../../utils/util`);
+
+const {api} = require(`../api`);
+
 const upload = require(`../../utils/multer`);
 const {adaptUserToServer} = require(`../../utils/adapter`);
-const {api} = require(`../api`);
+const {setCookie, clearCookie} = require(`../../utils/cookie`);
+
+const withValidation = require(`../middlewares/withValidation`);
+const csrfProtection = require(`../../utils/csrf-protection`);
 
 const ARTICLES_PER_MAIN_PAGE = 8;
 const MOST_COMMENTED_ARTICLES_NUMBER = 4;
@@ -41,23 +46,54 @@ mainRouter.get(`/`, async (req, res) => {
     latestComments,
     totalPages,
     page,
+    user: res.user,
   });
 });
 
-mainRouter.get(`/register`, (_req, res) => res.render(`register`));
+mainRouter.get(`/register`, csrfProtection, (req, res) =>
+  res.render(`register`, {csrf: req.csrfToken()})
+);
 
 mainRouter.post(
     `/register`,
-    [upload.single(`upload`), adaptUserToServer],
-    async (req, res) => {
-      try {
-        await api.createUser(req.body);
-        return res.redirect(`/login`);
-      } catch (err) {
-        const validationMessages = prepareErrors(err);
-        return res.render(`register`, {validationMessages});
-      }
-    }
+    [upload.single(`upload`), csrfProtection, adaptUserToServer],
+    withValidation(
+        async (req, res) => {
+          await api.createUser(req.body);
+          return res.redirect(`/login`);
+        },
+        `register`,
+        (req) => ({
+          csrf: req.csrfToken,
+        })
+    )
 );
+
+mainRouter.get(`/login`, csrfProtection, (req, res) =>
+  res.render(`login`, {csrf: req.csrfToken()})
+);
+
+mainRouter.post(
+    `/login`,
+    csrfProtection,
+    withValidation(
+        async (req, res) => {
+          const {tokens, user} = await api.login(req.body);
+
+          setCookie(res, tokens, user);
+
+          return res.redirect(`/`);
+        },
+        `login`,
+        (req) => ({
+          csrf: req.csrfToken,
+        })
+    )
+);
+
+mainRouter.get(`/logout`, async (req, res) => {
+  clearCookie(res);
+  res.redirect(`back`);
+});
 
 module.exports = mainRouter;

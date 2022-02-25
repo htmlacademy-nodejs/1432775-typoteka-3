@@ -17,6 +17,7 @@ const CommentService = require(`../data-service/comments-service`);
 const CategoryService = require(`../data-service/category`);
 const SearchService = require(`../data-service/search-service`);
 const UsersService = require(`../data-service/user`);
+const TokensService = require(`../data-service/token`);
 
 const app = new Router();
 
@@ -28,13 +29,14 @@ defineModels(sequelize);
   const categoriesService = new CategoryService(sequelize);
   const searchService = new SearchService(sequelize);
   const usersService = new UsersService(sequelize);
+  const tokensService = new TokensService(sequelize);
 
   articles(app, noteService, commentService, categoriesService);
   categories(app, categoriesService);
   search(app, searchService);
   my(app, commentService, noteService);
   comments(app, commentService);
-  users(app, usersService);
+  users(app, usersService, tokensService);
 })();
 
 module.exports = app;

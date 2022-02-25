@@ -8,26 +8,95 @@ const {
   StatusCode,
   HttpMethod,
 } = require(`../const`);
-const {NotFoundErr} = require(`../utils/exceptions`);
+const {
+  NotFoundErr,
+  ValidationErr,
+  UnauthorizedErr,
+} = require(`../utils/exceptions`);
+const {setCookie} = require(`../utils/cookie`);
 
 class Api {
   constructor(baseUrl, timeout) {
     this._baseUrl = baseUrl;
     this._timeout = timeout;
+    this._tokens = {
+      refreshToken: null,
+      accessToken: null,
+    };
+    this._res = null;
 
-    this._axios = axios.create({baseURL: baseUrl, timeout});
+    this._axios = axios.create({
+      baseURL: baseUrl,
+      timeout,
+    });
+
     this._setResponseInterceptors();
+    this._setRequestInterceptors();
+
+    this.getCategories = this.getCategories.bind(this);
+    this.getArticle = this.getArticle.bind(this);
+    this.getArticles = this.getArticles.bind(this);
+    this.createArticle = this.createArticle.bind(this);
+    this.updateArticle = this.updateArticle.bind(this);
+    this.deleteArticle = this.deleteArticle.bind(this);
+    this.getCommentsToArticle = this.getCommentsToArticle.bind(this);
+    this.getMyArticles = this.getMyArticles.bind(this);
+    this.getMyComments = this.getMyComments.bind(this);
+    this.getLatestComments = this.getLatestComments.bind(this);
+    this.createComment = this.createComment.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
+    this.getCategories = this.getCategories.bind(this);
+    this.createCategory = this.createCategory.bind(this);
+    this.updateCategory = this.updateCategory.bind(this);
+    this.deleteCategory = this.deleteCategory.bind(this);
+    this.createUser = this.createUser.bind(this);
+    this.login = this.login.bind(this);
+    this.search = this.search.bind(this);
+    this.refreshToken = this.refreshToken.bind(this);
+    this.prepareRequest = this.prepareRequest.bind(this);
+  }
+
+  _setRequestInterceptors() {
+    this._axios.interceptors.request.use((config) => {
+      config.headers.authorization = `Bearer ` + this._tokens.accessToken;
+      return config;
+    });
   }
 
   _setResponseInterceptors() {
     this._axios.interceptors.response.use(
-        (res) => res,
-        (err) => {
-          const {status} = err.response;
-          if (status === StatusCode.NOT_FOUND) {
-            throw new NotFoundErr();
+        async (res) => {
+          if (res.status === StatusCode.TOKEN_REFRESH) {
+            try {
+              const {tokens, user} = await this.refreshToken({
+                token: this._tokens.refreshToken,
+              });
+              setCookie(this._res, tokens, user);
+              this._tokens = tokens;
+              return this._axios.request(res.config);
+            } catch (e) {
+              throw new UnauthorizedErr();
+            }
           }
-          return Promise.reject(err.response);
+
+          return res;
+        },
+        async (err) => {
+          const {status} = err.response;
+          switch (status) {
+            case StatusCode.NOT_FOUND:
+              throw new NotFoundErr();
+
+            case StatusCode.BAD_REQUEST:
+              throw new ValidationErr(err);
+
+            case StatusCode.UNAUTHORIZED:
+              throw new UnauthorizedErr();
+
+            case StatusCode.FORBIDDEN:
+              throw new UnauthorizedErr();
+          }
+          return Promise.reject(err);
         }
     );
   }
@@ -116,8 +185,21 @@ class Api {
     return this._request(`/users`, {method: HttpMethod.POST, data});
   }
 
+  async login(data) {
+    return this._request(`/users/auth`, {method: HttpMethod.POST, data});
+  }
+
   async search(query) {
     return this._request(`/search`, {params: {query}});
+  }
+
+  async refreshToken(data) {
+    return this._request(`/users/refresh`, {method: HttpMethod.POST, data});
+  }
+
+  prepareRequest(tokens, res) {
+    this._tokens = tokens;
+    this._res = res;
   }
 }
 

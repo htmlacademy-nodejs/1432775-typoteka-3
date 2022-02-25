@@ -32,7 +32,7 @@ const noteSchema = Joi.object({
     .messages({
       "string.min": messages.string.min(Field.TITLE, NoteTitleLength.MIN),
       "string.max": messages.string.max(Field.TITLE, NoteTitleLength.MAX),
-      "any.required": messages.any.required(Field.TITLE),
+      "string.empty": messages.any.required(Field.TITLE),
     }),
   createdAt: Joi.date().iso().required(),
   categories: Joi.array()
@@ -57,7 +57,7 @@ const noteSchema = Joi.object({
           Field.ANNOUNNCE,
           NoteAnnounceLength.Max
       ),
-      "any.required": messages.any.required(Field.ANNOUNNCE),
+      "string.empty": messages.any.required(Field.ANNOUNNCE),
     }),
   fullText: Joi.string()
     .max(NOTE_MAX_FULL_TEXT_LENGTH)
