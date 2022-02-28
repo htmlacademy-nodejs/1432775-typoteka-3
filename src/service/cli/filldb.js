@@ -2,12 +2,11 @@
 
 const chalk = require(`chalk`);
 
-const {readContentByLines} = require(`../../utils/fs`);
-const {ExitCode, MockСomprisingPath} = require(`../../const`);
+const {ExitCode, MockСomprisingPath, Role} = require(`../../const`);
 const {getDbFillData} = require(`./generate/mockNotes`);
 const {getLogger} = require(`../../utils/logger`);
-
 const {sequelize, initdb} = require(`../../utils/sequelize`);
+const {readContentByLines} = require(`../../utils/fs`);
 
 const logger = getLogger({name: `filldb`});
 
@@ -45,7 +44,7 @@ const run = async (args) => {
     readContentByLines(MockСomprisingPath.NAMES),
   ]);
 
-  const {comments, notes, photos, categories, notesCategories, users} =
+  const {comments, notes, photos, categories, notesCategories, users, roles, usersRoles} =
     getDbFillData(notesNum, {
       possibleCategories,
       sentences,
@@ -53,6 +52,7 @@ const run = async (args) => {
       commentSentences,
       possiblePhotos,
       names,
+      possibleRoles: Object.values(Role),
     });
 
   await initdb(sequelize, {
@@ -62,6 +62,8 @@ const run = async (args) => {
     categories,
     notesCategories,
     users,
+    roles,
+    usersRoles,
   });
 };
 

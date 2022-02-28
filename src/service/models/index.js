@@ -9,13 +9,15 @@ const deineComment = require(`./comment`);
 const deinePhoto = require(`./photo`);
 const deineUser = require(`./user`);
 const defineToken = require(`./token`);
+const defuneRole = require(`./roles`);
 
 const ForeignKey = {
   ARTICLE: `articleId`,
   CATEGORY: `categoryId`,
   PHOTO: `photoId`,
   COMMENT: `commentId`,
-  USER: `userId`
+  USER: `userId`,
+  ROLE: `roleId`,
 };
 
 module.exports = (sequelize) => {
@@ -25,9 +27,13 @@ module.exports = (sequelize) => {
   const Photo = deinePhoto(sequelize);
   const User = deineUser(sequelize);
   const Token = defineToken(sequelize);
+  const Role = defuneRole(sequelize);
 
   class ArticleCategory extends Model {}
   ArticleCategory.init({}, {sequelize, timestamps: false, tableName: Aliase.ARTICLES_CATEGORIES});
+
+  class UserRole extends Model {}
+  UserRole.init({}, {sequelize, timestamps: false, tableName: Aliase.USERS_ROLES});
 
   Article.hasMany(Comment, {as: Aliase.COMMENTS, foreignKey: ForeignKey.ARTICLE, onDelete: `cascade`});
   Comment.belongsTo(Article, {foreignKey: ForeignKey.ARTICLE});
@@ -51,6 +57,13 @@ module.exports = (sequelize) => {
   User.hasOne(Token, {as: Aliase.TOKEN, foreignKey: ForeignKey.USER});
   Token.belongsTo(User, {foreignKey: ForeignKey.USER});
 
+  User.belongsToMany(Role, {through: UserRole, as: Aliase.ROLES, foreignKey: ForeignKey.USER});
+  Role.belongsToMany(User, {through: UserRole, as: Aliase.USERS, foreignKey: ForeignKey.ROLE});
+  User.hasMany(UserRole, {as: Aliase.USERS_ROLES, foreignKey: ForeignKey.USER});
+  UserRole.belongsTo(User, {foreignKey: ForeignKey.USER});
+  Role.hasMany(UserRole, {as: Aliase.USERS_ROLES, foreignKey: ForeignKey.ROLE});
+  UserRole.belongsTo(Role, {foreignKey: ForeignKey.ROLE});
+
   return {
     Article,
     Category,
@@ -58,5 +71,7 @@ module.exports = (sequelize) => {
     Photo,
     User,
     ArticleCategory,
+    Role,
+    UserRole,
   };
 };

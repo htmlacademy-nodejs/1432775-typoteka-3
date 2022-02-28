@@ -1,5 +1,6 @@
 "use strict";
 
+require(`dotenv`).config();
 const request = require(`supertest`);
 
 const search = require(`./search`);

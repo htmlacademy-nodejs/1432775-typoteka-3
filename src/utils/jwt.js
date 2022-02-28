@@ -17,4 +17,6 @@ module.exports = {
     jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
       expiresIn: TokenExpires.REFRESH,
     }),
+
+  verify: jwt.verify,
 };

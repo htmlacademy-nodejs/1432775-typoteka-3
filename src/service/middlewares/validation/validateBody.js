@@ -4,6 +4,7 @@ const {StatusCode} = require(`../../../const`);
 
 const validateBody = (schema, cb) => async (req, res, next) => {
   try {
+    delete req.body._csrf;
     const value = await schema.validateAsync(req.body, {abortEarly: false});
     req.body = value;
   } catch (error) {

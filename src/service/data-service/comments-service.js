@@ -9,18 +9,21 @@ class CommentsService {
     this._User = sequelize.models.User;
   }
 
-  async create(comment, articleId) {
-    const validComment = {...comment, userId: 1, articleId};
+  async create(comment, articleId, userId) {
+    const validComment = {...comment, userId, articleId};
     return await this._Comment.create(validComment);
   }
 
-  async drop(id, articleId) {
+  async drop(id) {
     return await this._Comment.destroy({
       where: {
         id,
-        articleId,
       },
     });
+  }
+
+  async findOne(id) {
+    return await this._Comment.findOne({where: {id}});
   }
 
   async findLatestComments({limit = 5} = {limit: 5}) {
@@ -61,6 +64,25 @@ class CommentsService {
     ]);
 
     return comments.map((comment) => ({...comment.get(), user}));
+  }
+
+  async findAll() {
+    return await this._Comment.findAll({
+      include: [
+        {
+          model: this._Article,
+          as: Aliase.ARTICLE,
+          attributes: [`id`, `title`],
+        },
+        {
+          model: this._User,
+          as: Aliase.USER,
+          attributes: [`id`, `firstName`, `lastName`, `avatar`],
+        }
+      ],
+      attributes: [`id`, `createdAt`, `text`],
+      order: [[`createdAt`, `DESC`]],
+    });
   }
 }
 

@@ -5,8 +5,9 @@ const {Router} = require(`express`);
 const {newCategorySchema} = require(`../validationSchemas/category`);
 const validateBody = require(`../middlewares/validation/validateBody`);
 const validateParams = require(`../middlewares/validation/validateParams`);
+const authJwt = require(`../middlewares/auth-jwt`);
 
-const {StatusCode} = require(`../../const`);
+const {StatusCode, Role} = require(`../../const`);
 
 const route = new Router();
 
@@ -18,14 +19,19 @@ module.exports = (app, categoryService) => {
     return res.status(StatusCode.OK).json(categories);
   });
 
-  route.post(`/`, validateBody(newCategorySchema), async (req, res) => {
-    const newCategory = await categoryService.create(req.body);
-    return res.status(StatusCode.CREATED).json(newCategory);
-  });
+  route.post(
+      `/`,
+      authJwt(Role.ADMIN),
+      validateBody(newCategorySchema),
+      async (req, res) => {
+        const newCategory = await categoryService.create(req.body);
+        return res.status(StatusCode.CREATED).json(newCategory);
+      }
+  );
 
   route.put(
       `/:id`,
-      [validateParams, validateBody(newCategorySchema)],
+      [authJwt(Role.ADMIN), validateParams, validateBody(newCategorySchema)],
       async (req, res) => {
         const {id} = req.params;
         const updatedCategory = await categoryService.update(id, req.body);
@@ -33,7 +39,7 @@ module.exports = (app, categoryService) => {
       }
   );
 
-  route.delete(`/:id`, validateParams, async (req, res) => {
+  route.delete(`/:id`, [authJwt(Role.ADMIN), validateParams], async (req, res) => {
     const {id} = req.params;
     const isAtLeastOneRelationFound = await categoryService.findOneRelation(id);
     if (isAtLeastOneRelationFound) {

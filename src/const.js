@@ -19,6 +19,7 @@ const ExitCode = {
 const StatusCode = {
   OK: 200,
   CREATED: 201,
+  TOKEN_REFRESH: 204,
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
@@ -27,10 +28,14 @@ const StatusCode = {
 };
 
 const HttpMethod = {
-  GET: `GET`,
-  POST: `POST`,
-  PUT: `PUT`,
-  DELETE: `DELETE`,
+  GET: `get`,
+  POST: `post`,
+  PUT: `put`,
+  DELETE: `delete`,
+};
+
+const Role = {
+  ADMIN: `admin`,
 };
 
 const ClientDir = {
@@ -75,6 +80,7 @@ module.exports = {
   ExitCode,
   StatusCode,
   HttpMethod,
+  Role,
   FILL_DB_QUERY_FILE_NAME,
   FAKE_DATA_PATH,
   ClientDir,

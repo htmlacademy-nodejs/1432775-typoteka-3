@@ -13,4 +13,10 @@ class ValidationErr extends Error {
   }
 }
 
-module.exports = {NotFoundErr, ValidationErr};
+class UnauthorizedErr extends Error {
+  constructor() {
+    super(`Unauthorized`);
+  }
+}
+
+module.exports = {NotFoundErr, ValidationErr, UnauthorizedErr};

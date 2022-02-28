@@ -22,7 +22,9 @@ module.exports =
             }
 
             const data = await Promise.all(
-                Object.values(routeOptions).map((request) => request())
+                Object.values(routeOptions).map((request) =>
+                  typeof request === `function` ? request() : request
+                )
             );
 
             Object.keys(routeOptions).forEach((key, i) => {

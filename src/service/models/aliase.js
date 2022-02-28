@@ -11,4 +11,6 @@ module.exports = {
   ARTICLE: `Article`,
   ARTICLES_CATEGORIES: `articles_categories`,
   TOKEN: `token`,
+  ROLES: `roles`,
+  USERS_ROLES: `users_roles`,
 };

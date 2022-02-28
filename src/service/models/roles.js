@@ -1,21 +1,20 @@
-/* eslint-disable new-cap */
 "use strict";
 
 const {Model, DataTypes} = require(`sequelize`);
 
-class Token extends Model {}
+class Role extends Model {}
 
 module.exports = (sequelize) =>
-  Token.init(
+  Role.init(
       {
-        refreshToken: {
-          type: DataTypes.STRING(1000),
+        name: {
+          type: DataTypes.STRING,
           allowNull: false,
         },
       },
       {
         sequelize,
-        modelName: `Token`,
-        tableName: `tokens`,
+        modelName: `Role`,
+        tableName: `roles`,
       }
   );
