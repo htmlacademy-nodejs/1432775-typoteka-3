@@ -92,7 +92,7 @@ const getDbFillData = (notesNum, {possibleCategories, sentences, titles, comment
         createdAt: getRandomNoteCreationDate().toISOString(),
         announce: getRandomNoteAnnounce(sentences),
         fullText: getRandomNoteFullText(sentences),
-        userId: getRandomInt(1, users.length),
+        userId: 1,
       };
     });
 
