@@ -8,6 +8,7 @@ const {sequelize} = require(`../../utils/sequelize`);
 
 const {getLogger} = require(`../../utils/logger`);
 const logRequest = require(`../middlewares/logRequest`);
+const parseQueryBools = require(`../middlewares/parseQueryBools`);
 
 const logger = getLogger({name: `api`});
 const app = express();
@@ -15,6 +16,7 @@ const app = express();
 app.use(express.json());
 
 app.use(logRequest);
+app.use(parseQueryBools);
 app.use(`/api`, routes);
 
 app.use((req, res) => {
