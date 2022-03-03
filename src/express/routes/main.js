@@ -32,6 +32,8 @@ mainRouter.get(`/`, async (req, res) => {
     api.getArticles({
       mostCommented: true,
       limit: MOST_COMMENTED_ARTICLES_NUMBER,
+      categories: false,
+      photo: false,
     }),
     api.getCategories(),
     api.getLatestComments({limit: LATEST_COMMENTS_NUMBER}),

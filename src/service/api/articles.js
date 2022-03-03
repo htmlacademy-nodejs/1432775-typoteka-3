@@ -26,6 +26,8 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
       limit,
       fromCategoryId,
       needCount,
+      categories,
+      photo,
     } = req.query;
     const notes = await notesService.findAll({
       commentsNumber,
@@ -35,6 +37,8 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
       limit,
       fromCategoryId,
       needCount,
+      categories,
+      photo,
     });
     return res.status(StatusCode.OK).json(notes);
   });
