@@ -16,6 +16,10 @@ module.exports = (...allowedRoles) => (req, res, next) => {
     const user = req.cookies[Cookie.USER];
     const userRoles = user.roles;
 
+    if (!userRoles.length) {
+      next(new UnauthorizedErr());
+    }
+
     const isAllowed = userRoles.every((role) =>
       allowedRoles.includes(role.name)
     );
