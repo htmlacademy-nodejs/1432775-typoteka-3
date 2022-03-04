@@ -19,6 +19,7 @@ block content
         ul(class='hot__list')
           each article of mostCommentedArticles
             li(class='hot__list-item')
+              span(class='visually-hidden most-commented-id') #{article.id}
               a(class='hot__list-link' href=`/articles/${article.id}`) #{article.title}
                 sup(class='hot__link-sup') #{article.commentsNumber}
       section(class='main-page__last last')

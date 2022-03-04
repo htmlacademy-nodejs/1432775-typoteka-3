@@ -140,10 +140,14 @@ class NotesService {
     return final;
   }
 
-  async findOne(id, {comments = false} = {comments: false}) {
+  async findOne(
+      id,
+      {comments = false, commentsNumber = false, categories = true} = this
+      ._defaultFindAllOptions
+  ) {
     const res = await this.findAll({
-      categories: true,
-      commentsNumber: false,
+      categories,
+      commentsNumber,
       comments,
       withPagination: false,
       where: {id},

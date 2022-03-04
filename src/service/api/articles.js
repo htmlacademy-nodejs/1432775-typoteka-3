@@ -95,8 +95,12 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
             res.user.id
         );
 
-        req.app.io.emit(events.comment.create, newComment);
-        return res.status(StatusCode.CREATED).json(newComment);
+        res.status(StatusCode.CREATED).json(newComment);
+        const updatedArticle = await notesService.findOne(newComment.articleId, {
+          commentsNumber: true,
+          categories: false,
+        });
+        req.app.io.emit(events.comment.create, {newComment, updatedArticle});
       }
   );
 

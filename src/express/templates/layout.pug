@@ -69,5 +69,9 @@ html(lang='ru')
       include blocks/header.pug
       block content
       include blocks/footer.pug
+    include blocks/new-comment
+    include blocks/most-commented-article
     script(src='/js/vendor.js')
     script(src='/js/main.js')
+    script(src="https://cdn.socket.io/4.4.1/socket.io.min.js")
+    script(src='/js/socket.js')
