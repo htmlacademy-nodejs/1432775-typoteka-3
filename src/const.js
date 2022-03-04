@@ -71,6 +71,12 @@ const MockСomprisingPath = {
   NAMES: FAKE_DATA_PATH + MockFileName.NAMES
 };
 
+const events = {
+  comment: {
+    create: `comment:create`,
+  }
+};
+
 module.exports = {
   FRONT_DEFAULT_PORT,
   TIMEOUT,
@@ -87,4 +93,5 @@ module.exports = {
   LogPath,
   MockFileName,
   MockСomprisingPath,
+  events,
 };
