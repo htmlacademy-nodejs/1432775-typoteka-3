@@ -9,7 +9,7 @@ const validateBody = require(`../middlewares/validation/validateBody`);
 const checkExistance = require(`../middlewares/checkExistance`);
 const validateParams = require(`../middlewares/validation/validateParams`);
 
-const {StatusCode, Role} = require(`../../const`);
+const {StatusCode, Role, events} = require(`../../const`);
 const authJwt = require(`../middlewares/auth-jwt`);
 
 const route = new Router();
@@ -39,10 +39,15 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
     return res.status(StatusCode.OK).json(notes);
   });
 
-  route.post(`/`, authJwt(Role.ADMIN), validateBody(noteSchema), async (req, res) => {
-    const newNote = await notesService.create(res.user.id, req.body);
-    return res.status(StatusCode.CREATED).json(newNote);
-  });
+  route.post(
+      `/`,
+      authJwt(Role.ADMIN),
+      validateBody(noteSchema),
+      async (req, res) => {
+        const newNote = await notesService.create(res.user.id, req.body);
+        return res.status(StatusCode.CREATED).json(newNote);
+      }
+  );
 
   route.get(
       `/:id`,
@@ -89,6 +94,8 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
             id,
             res.user.id
         );
+
+        req.app.io.emit(events.comment.create, newComment);
         return res.status(StatusCode.CREATED).json(newComment);
       }
   );
