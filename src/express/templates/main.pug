@@ -1,6 +1,10 @@
 extends layout.pug
 
 block content
+  -
+    const MOST_COMMENTED_MAX_LENGTH = 100;
+    const LAST_COMMENT_MAX_LENGTH = 100;
+
   main.main-page
     h1.visually-hidden Главная страница личного блога Типотека
     p
@@ -20,7 +24,7 @@ block content
           ul(class='hot__list')
             each article of mostCommentedArticles
               li(class='hot__list-item')
-                a(class='hot__list-link' href=`/articles/${article.id}`) #{article.title}
+                a(class='hot__list-link' href=`/articles/${article.id}`) #{cut(article.announce, MOST_COMMENTED_MAX_LENGTH)}
                   sup(class='hot__link-sup') #{article.commentsNumber}
         section(class='main-page__last last')
           h2(class='last__name') Последние комментарии
@@ -31,7 +35,7 @@ block content
                 li(class='last__list-item')
                   img(class='last__list-image' src=`/img/${comment.User.avatar}` width='20' height='20' alt='Аватар пользователя')
                   b(class='last__list-name') #{`${comment.User.firstName} ${comment.User.lastName}`}
-                  a(class='last__list-link' href=`/articles/${comment.articleId}`) #{comment.text}
+                  a(class='last__list-link' href=`/articles/${comment.articleId}`) #{cut(comment.text, LAST_COMMENT_MAX_LENGTH)}
           else
             p Здесь пока ничего нет...
       section(class='main-page__list preview')

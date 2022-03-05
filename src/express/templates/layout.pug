@@ -1,10 +1,13 @@
 -
-  const formatDate = (dateString) => {
+  cut = (text, maxSymbols) => text.length > maxSymbols ? text.slice(0, maxSymbols) + '...' : text;
+
+  const formatDate = (dateString, needTime = false) => {
     const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const day = date.getDay();
-    return `${year}-${month}-${day}`;
+    let formatted = `${date.getDay()}.${date.getMonth()}.${date.getFullYear()}`;
+    if (needTime) {
+      formatted += `, ${date.getHours()}:${date.getMinutes()}`;
+    }
+    return formatted;
   }
 
 mixin errorMessages(errors, message)
