@@ -18,35 +18,24 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
   app.use(`/articles`, route);
 
   route.get(`/`, async (req, res) => {
-    const {
-      commentsNumber,
-      mostCommented,
-      comments,
+    const {offset, limit, fromCategoryId} = req.query;
+    const notes = await notesService.findall({
       offset,
       limit,
       fromCategoryId,
-      needCount,
-      categories,
-      photo,
-    } = req.query;
-    const notes = await notesService.findAll({
-      commentsNumber,
-      mostCommented,
-      comments,
-      offset,
-      limit,
-      fromCategoryId,
-      needCount,
-      categories,
-      photo,
     });
     return res.status(StatusCode.OK).json(notes);
   });
 
-  route.post(`/`, authJwt(Role.ADMIN), validateBody(noteSchema), async (req, res) => {
-    const newNote = await notesService.create(res.user.id, req.body);
-    return res.status(StatusCode.CREATED).json(newNote);
-  });
+  route.post(
+      `/`,
+      authJwt(Role.ADMIN),
+      validateBody(noteSchema),
+      async (req, res) => {
+        const newNote = await notesService.create(res.user.id, req.body);
+        return res.status(StatusCode.CREATED).json(newNote);
+      }
+  );
 
   route.get(
       `/:id`,

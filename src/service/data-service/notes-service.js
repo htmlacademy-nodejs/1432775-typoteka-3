@@ -11,7 +11,6 @@ class NotesService {
     this._User = sequelize.models.User;
     this._Photo = sequelize.models.Photo;
     this._ArticleCategory = sequelize.models.ArticleCategory;
-    this._searchField = `title`;
 
     this._defaultFindAllOptions = {
       categories: true,
@@ -28,6 +27,68 @@ class NotesService {
     };
   }
 
+  async findall({limit, offset = 0, fromCategoryId}) {
+    const options = {
+      include: [
+        {
+          model: this._Photo,
+          as: Aliase.PHOTO,
+          attributes: [`id`, `name`, `uniqueName`],
+        },
+        {
+          model: this._Category,
+          as: Aliase.CATEGORIES,
+          attributes: [`id`, `name`],
+        },
+        {
+          model: this._Comment,
+          as: Aliase.COMMENTS,
+          attributes: [],
+        },
+      ],
+
+      attributes: {
+        include: [
+          [
+            Sequelize.fn(`COUNT`, Sequelize.col(`comments.id`)),
+            `commentsNumber`,
+          ],
+        ],
+      },
+
+      group: [
+        `Article.id`,
+        `categories.id`,
+        `photo.id`,
+        `categories->ArticleCategory.categoryId`,
+        `categories->ArticleCategory.articleId`,
+      ],
+
+      offset,
+      order: [[`createdAt`, `DESC`]],
+      distinct: true,
+    };
+
+    if (fromCategoryId) {
+      options.include.push({
+        required: true,
+        model: this._ArticleCategory,
+        as: Aliase.ARTICLES_CATEGORIES,
+        where: {categoryId: fromCategoryId},
+        attributes: [],
+      });
+    }
+
+    let rows = await this._Article.findAll(options);
+    const count = await this._Article.count();
+
+    if (limit) {
+      rows = rows.slice(0, limit);
+    }
+
+    return {count, rows};
+  }
+
   async findAll(
       {
         categories = true,
@@ -40,7 +101,7 @@ class NotesService {
         offset = 0,
         needCount = false,
         withPagination = true,
-        where = null,
+        where = {},
       } = this._defaultFindAllOptions
   ) {
     const needIncludeCommentsNumber =
@@ -102,7 +163,7 @@ class NotesService {
         limit,
       }),
 
-      ...(where && {where}),
+      ...{where},
 
       ...(needIncludeCommentsNumber && {
         attributes: {

@@ -24,17 +24,15 @@ mainRouter.get(`/`, async (req, res) => {
 
   const [
     {count, rows: articles},
-    mostCommentedArticles,
+    // {rows: mostCommentedArticles},
     categories,
     latestComments,
   ] = await Promise.all([
     api.getArticles({limit: ARTICLES_PER_MAIN_PAGE, offset, needCount: true}),
-    api.getArticles({
-      mostCommented: true,
-      limit: MOST_COMMENTED_ARTICLES_NUMBER,
-      categories: false,
-      photo: false,
-    }),
+    // api.getArticles({
+    //   mostCommented: true,
+    //   limit: MOST_COMMENTED_ARTICLES_NUMBER,
+    // }),
     api.getCategories(),
     api.getLatestComments({limit: LATEST_COMMENTS_NUMBER}),
   ]);
@@ -44,7 +42,7 @@ mainRouter.get(`/`, async (req, res) => {
   res.render(`main`, {
     articles,
     categories,
-    mostCommentedArticles,
+    mostCommentedArticles: [],
     latestComments,
     totalPages,
     page,
