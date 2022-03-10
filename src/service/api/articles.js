@@ -2,12 +2,12 @@
 
 const {Router} = require(`express`);
 
-const {noteSchema, noteUpdateSchema} = require(`../validationSchemas/note`);
-const {commentSchema} = require(`../validationSchemas/comment`);
+const {noteSchema, noteUpdateSchema} = require(`../validation-schemas/note`);
+const {commentSchema} = require(`../validation-schemas/comment`);
 
-const validateBody = require(`../middlewares/validation/validateBody`);
-const checkExistance = require(`../middlewares/checkExistance`);
-const validateParams = require(`../middlewares/validation/validateParams`);
+const validateBody = require(`../middlewares/validation/validate-body`);
+const checkExistance = require(`../middlewares/check-existance`);
+const validateParams = require(`../middlewares/validation/validate-params`);
 
 const {StatusCode, Role} = require(`../../const`);
 const authJwt = require(`../middlewares/auth-jwt`);

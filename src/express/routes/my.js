@@ -3,7 +3,7 @@
 const {Router} = require(`express`);
 
 const {api} = require(`../api`);
-const withAuth = require(`../middlewares/withAuth`);
+const withAuth = require(`../middlewares/with-auth`);
 const {Role} = require(`../../const`);
 
 const myRouter = new Router();

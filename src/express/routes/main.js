@@ -8,7 +8,7 @@ const upload = require(`../../utils/multer`);
 const {adaptUserToServer} = require(`../../utils/adapter`);
 const {setCookie, clearCookie} = require(`../../utils/cookie`);
 
-const withValidation = require(`../middlewares/withValidation`);
+const withValidation = require(`../middlewares/with-validation`);
 const csrfProtection = require(`../../utils/csrf-protection`);
 
 const ARTICLES_PER_MAIN_PAGE = 8;

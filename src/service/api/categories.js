@@ -2,9 +2,9 @@
 
 const {Router} = require(`express`);
 
-const {newCategorySchema} = require(`../validationSchemas/category`);
-const validateBody = require(`../middlewares/validation/validateBody`);
-const validateParams = require(`../middlewares/validation/validateParams`);
+const {newCategorySchema} = require(`../validation-schemas/category`);
+const validateBody = require(`../middlewares/validation/validate-body`);
+const validateParams = require(`../middlewares/validation/validate-params`);
 const authJwt = require(`../middlewares/auth-jwt`);
 
 const {StatusCode, Role} = require(`../../const`);

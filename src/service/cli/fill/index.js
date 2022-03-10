@@ -8,7 +8,7 @@ const {
   FILL_DB_QUERY_FILE_NAME,
   Role,
 } = require(`../../../const`);
-const {getDbFillData} = require(`../generate/mockNotes`);
+const {getDbFillData} = require(`../generate/mock-notes`);
 const getFillContent = require(`./content`);
 
 const DEFAULT_NOTES_NUMBER = 10;

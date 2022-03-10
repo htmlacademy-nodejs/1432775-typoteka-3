@@ -1,7 +1,7 @@
 "use strict";
 
 const {StatusCode} = require(`../../../const`);
-const paramsSchema = require(`../../validationSchemas/params`);
+const paramsSchema = require(`../../validation-schemas/params`);
 
 module.exports = async (req, res, next) => {
   try {
