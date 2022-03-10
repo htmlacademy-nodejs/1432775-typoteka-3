@@ -24,25 +24,27 @@ mainRouter.get(`/`, async (req, res) => {
 
   const [
     {count, rows: articles},
-    // {rows: mostCommentedArticles},
+    mostCommentedArticles,
     categories,
     latestComments,
   ] = await Promise.all([
-    api.getArticles({limit: ARTICLES_PER_MAIN_PAGE, offset, needCount: true}),
-    // api.getArticles({
-    //   mostCommented: true,
-    //   limit: MOST_COMMENTED_ARTICLES_NUMBER,
-    // }),
+    api.getArticles({limit: ARTICLES_PER_MAIN_PAGE, offset}),
+    api.getCommentedArticles({
+      limit: MOST_COMMENTED_ARTICLES_NUMBER,
+    }),
     api.getCategories(),
     api.getLatestComments({limit: LATEST_COMMENTS_NUMBER}),
   ]);
 
   const totalPages = Math.ceil(count / ARTICLES_PER_MAIN_PAGE);
+  const nonEmptyCategories = categories.filter(
+      (category) => category.count > 0
+  );
 
   res.render(`main`, {
     articles,
-    categories,
-    mostCommentedArticles: [],
+    categories: nonEmptyCategories,
+    mostCommentedArticles,
     latestComments,
     totalPages,
     page,

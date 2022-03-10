@@ -110,6 +110,10 @@ class Api {
     return this._request(`/articles`, {params});
   }
 
+  async getCommentedArticles(params) {
+    return this._request(`/articles/commented`, {params});
+  }
+
   async getArticle(id, params) {
     return this._request(`/articles/${id}`, {params});
   }
