@@ -52,7 +52,7 @@ describe(`/articles route works correctly with articles`, () => {
     const res = await request(HttpMethod.GET, `/articles`);
 
     expect(res.statusCode).toBe(StatusCode.OK);
-    expect(res.body.length).toBe(3);
+    expect(res.body.rows.length).toBe(3);
   });
 
   describe(`Article creation works correctly`, () => {

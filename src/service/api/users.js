@@ -7,9 +7,9 @@ const errorMessages = require(`../../utils/error-messages`);
 const hash = require(`../../utils/hash`);
 const jwt = require(`../../utils/jwt`);
 
-const validateNewUser = require(`../middlewares/validation/validateNewUser`);
-const validateBody = require(`../middlewares/validation/validateBody`);
-const {loginSchema} = require(`../validationSchemas/user`);
+const validateNewUser = require(`../middlewares/validation/validate-new-user`);
+const validateBody = require(`../middlewares/validation/validate-body`);
+const {loginSchema} = require(`../validation-schemas/user`);
 
 const route = new Router();
 

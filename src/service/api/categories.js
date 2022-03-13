@@ -2,9 +2,9 @@
 
 const {Router} = require(`express`);
 
-const {newCategorySchema} = require(`../validationSchemas/category`);
-const validateBody = require(`../middlewares/validation/validateBody`);
-const validateParams = require(`../middlewares/validation/validateParams`);
+const {newCategorySchema} = require(`../validation-schemas/category`);
+const validateBody = require(`../middlewares/validation/validate-body`);
+const validateParams = require(`../middlewares/validation/validate-params`);
 const authJwt = require(`../middlewares/auth-jwt`);
 
 const {StatusCode, Role} = require(`../../const`);
@@ -15,7 +15,7 @@ module.exports = (app, categoryService) => {
   app.use(`/categories`, route);
 
   route.get(`/`, async (_req, res) => {
-    const categories = await categoryService.findAll({count: true});
+    const categories = await categoryService.findAll();
     return res.status(StatusCode.OK).json(categories);
   });
 

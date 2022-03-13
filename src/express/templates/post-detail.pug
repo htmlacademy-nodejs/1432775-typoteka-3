@@ -35,7 +35,7 @@ block content
                   div(class='comments__text')
                     div(class='comments__head')
                       p #{comment.User.firstName} #{comment.User.lastName} •
-                      time(class='comments__date' datetime=`${comment.createdAt}`) #{formatDate(comment.createdAt)}
+                      time(class='comments__date' datetime=`${comment.createdAt}`) #{formatDate(comment.createdAt, true)}
                     p(class='comments__message') #{comment.text}
           if user
             div(class='comments__footer comments__footer--user')

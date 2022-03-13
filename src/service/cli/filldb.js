@@ -3,7 +3,7 @@
 const chalk = require(`chalk`);
 
 const {ExitCode, MockСomprisingPath, Role} = require(`../../const`);
-const {getDbFillData} = require(`./generate/mockNotes`);
+const {getDbFillData} = require(`./generate/mock-notes`);
 const {getLogger} = require(`../../utils/logger`);
 const {sequelize, initdb} = require(`../../utils/sequelize`);
 const {readContentByLines} = require(`../../utils/fs`);
