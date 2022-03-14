@@ -92,10 +92,7 @@ module.exports = (app, notesService, commentsService) => {
         );
 
         res.status(StatusCode.CREATED).json(newComment);
-        const updatedArticle = await notesService.findOne(newComment.articleId, {
-          commentsNumber: true,
-          categories: false,
-        });
+        const updatedArticle = await notesService.findOne(newComment.articleId);
         req.app.io.emit(events.comment.create, {newComment, updatedArticle});
       }
   );
