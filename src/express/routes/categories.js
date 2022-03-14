@@ -6,9 +6,9 @@ const {api} = require(`../api`);
 const {StatusCode, Role} = require(`../../const`);
 const csrfProtection = require(`../../utils/csrf-protection`);
 
-const asyncHandler = require(`../middlewares/asyncHandler`);
-const withValidation = require(`../middlewares/withValidation`);
-const withAuth = require(`../middlewares/withAuth`);
+const asyncHandler = require(`../middlewares/async-handler`);
+const withValidation = require(`../middlewares/with-validation`);
+const withAuth = require(`../middlewares/with-auth`);
 
 const categoriesRouter = new Router();
 

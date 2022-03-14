@@ -1,8 +1,8 @@
 "use strict";
 
 const {getRandomInt, shuffle, getRandomDate} = require(`../../../utils/util`);
-const {getDbComments} = require(`./mockComments`);
-const getMockUsers = require(`./mockUsers`);
+const {getDbComments} = require(`./mock-comments`);
+const getMockUsers = require(`./mock-users`);
 const getCategories = require(`./categories`);
 const getRoles = require(`./roles`);
 
