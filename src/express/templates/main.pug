@@ -22,11 +22,14 @@ block content
         section(class='main-page__hot hot')
           h2(class='hot__name') Самое обсуждаемое
             span(class='hot__icon hot__icon--fire')
-          ul(class='hot__list')
-            each article of mostCommentedArticles
-              li(class='hot__list-item')
-                a(class='hot__list-link' href=`/articles/${article.id}`) #{cut(article.announce, MOST_COMMENTED_MAX_LENGTH)}
-                  sup(class='hot__link-sup') #{article.commentsNumber}
+          if mostCommentedArticles.length
+            ul(class='hot__list')
+              each article of mostCommentedArticles
+                li(class='hot__list-item')
+                  a(class='hot__list-link' href=`/articles/${article.id}`) #{cut(article.announce, MOST_COMMENTED_MAX_LENGTH)}
+                    sup(class='hot__link-sup') #{article.commentsNumber}
+          else
+            p Здесь пока ничего нет...
         section(class='main-page__last last')
           h2(class='last__name') Последние комментарии
             span(class='last__icon last__icon--cloud')
