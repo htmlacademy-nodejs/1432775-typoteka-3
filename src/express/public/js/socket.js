@@ -9,7 +9,6 @@ const socket = io(SERVER_URL);
 const addLatestComment = (comment) => {
   const template = document.querySelector(`#new-comment`);
   const newComment = template.cloneNode(true).content;
-  console.log(newComment);
 
   newComment.querySelector(
     `.last__list-image`
@@ -37,7 +36,6 @@ const swap = (container, newElement, oldElementPosition) => {
 const getMostCommentedArticleElement = (newArticle) => {
   const template = document.querySelector(`#most-commented-article`);
   const newElement = template.cloneNode(true).content;
-  console.log(newElement);
 
   newElement.querySelector(`.most-commented-id`).textContent = newArticle.id;
   newElement.querySelector(`.hot__link-sup`).textContent =
@@ -58,10 +56,10 @@ const updateMostCommented = (updatedArticle) => {
     (el) => +el.querySelector(`.hot__link-sup`).textContent
   );
 
-  if (
-    commentsNumbers.length &&
-    updatedArticle.commentsNumber < commentsNumbers[commentsNumbers.length - 1]
-  ) {
+  const notEnoughComments =
+    updatedArticle.commentsNumber < commentsNumbers[commentsNumbers.length - 1];
+
+  if (commentsNumbers.length && notEnoughComments) {
     return;
   }
 
