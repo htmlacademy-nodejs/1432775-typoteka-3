@@ -30,13 +30,11 @@ describe(`/my route works correctly`, () => {
     request = configRequest(app, res.body.tokens.accessToken);
   });
 
-  it(`Returns my comments list`, async () => {
+  it(`Returns comments list`, async () => {
     const res = await request(HttpMethod.GET, `/my/comments`);
 
     expect(res.statusCode).toBe(StatusCode.OK);
-
-    const isMy = res.body.every((comment) => comment.user.id === 1);
-    expect(isMy).toBeTruthy();
+    expect(res.body.length).toBe(15);
   });
 
   it(`Returns my articles list`, async () => {

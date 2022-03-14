@@ -2,39 +2,27 @@
 
 const {Router} = require(`express`);
 
-const {noteSchema, noteUpdateSchema} = require(`../validationSchemas/note`);
-const {commentSchema} = require(`../validationSchemas/comment`);
+const {noteSchema, noteUpdateSchema} = require(`../validation-schemas/note`);
+const {commentSchema} = require(`../validation-schemas/comment`);
 
-const validateBody = require(`../middlewares/validation/validateBody`);
-const checkExistance = require(`../middlewares/checkExistance`);
-const validateParams = require(`../middlewares/validation/validateParams`);
+const validateBody = require(`../middlewares/validation/validate-body`);
+const checkExistance = require(`../middlewares/check-existance`);
+const validateParams = require(`../middlewares/validation/validate-params`);
 
 const {StatusCode, Role, events} = require(`../../const`);
 const authJwt = require(`../middlewares/auth-jwt`);
 
 const route = new Router();
 
-module.exports = (app, notesService, commentsService, categoriesService) => {
+module.exports = (app, notesService, commentsService) => {
   app.use(`/articles`, route);
 
   route.get(`/`, async (req, res) => {
-    const {
-      commentsNumber,
-      mostCommented,
-      comments,
-      offset,
-      limit,
-      fromCategoryId,
-      needCount,
-    } = req.query;
+    const {offset, limit, fromCategoryId} = req.query;
     const notes = await notesService.findAll({
-      commentsNumber,
-      mostCommented,
-      comments,
       offset,
       limit,
       fromCategoryId,
-      needCount,
     });
     return res.status(StatusCode.OK).json(notes);
   });
@@ -48,6 +36,14 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
         return res.status(StatusCode.CREATED).json(newNote);
       }
   );
+
+  route.get(`/commented`, async (req, res) => {
+    const {limit} = req.query;
+    const notes = await notesService.findMostCommented({
+      limit,
+    });
+    return res.status(StatusCode.OK).json(notes);
+  });
 
   route.get(
       `/:id`,
@@ -122,12 +118,4 @@ module.exports = (app, notesService, commentsService, categoriesService) => {
         return res.sendStatus(StatusCode.OK);
       }
   );
-
-  route.get(`/:articleId/categories`, validateParams, async (req, res) => {
-    const {articleId} = req.params;
-    const articleCategories = await categoriesService.findAll({
-      where: {articleId},
-    });
-    return res.status(StatusCode.OK).json(articleCategories);
-  });
 };

@@ -11,53 +11,41 @@ class NotesService {
     this._User = sequelize.models.User;
     this._Photo = sequelize.models.Photo;
     this._ArticleCategory = sequelize.models.ArticleCategory;
-    this._searchField = `title`;
-
-    this._defaultFindAllOptions = {
-      categories: true,
-      fromCategoryId: null,
-      photo: true,
-      comments: false,
-      commentsNumber: false,
-      mostCommented: true,
-      limit: 10,
-      offset: 0,
-      needCount: false,
-      withPagination: true,
-      where: null,
-    };
   }
 
-  async findAll(
-      {
-        categories = true,
-        fromCategoryId = null,
-        photo = true,
-        comments = false,
-        commentsNumber = true,
-        mostCommented = false,
-        limit = 10,
-        offset = 0,
-        needCount = false,
-        withPagination = true,
-        where = null,
-      } = this._defaultFindAllOptions
-  ) {
-    const needIncludeCommentsNumber =
-      (commentsNumber || mostCommented) && !comments;
+  async findAll({limit, offset = 0, fromCategoryId}) {
+    const options = {
+      include: [
+        {
+          model: this._Photo,
+          as: Aliase.PHOTO,
+          attributes: [`id`, `name`, `uniqueName`],
+        },
+        {
+          model: this._Category,
+          as: Aliase.CATEGORIES,
+          attributes: [`id`, `name`],
+        },
+      ],
 
-    const include = [];
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(
+                `(SELECT COUNT(*) FROM comments WHERE "articleId" = "Article"."id")`
+            ),
+            `commentsNumber`,
+          ],
+        ],
+      },
 
-    if (categories) {
-      include.push({
-        model: this._Category,
-        as: Aliase.CATEGORIES,
-        attributes: [`id`, `name`],
-      });
-    }
+      offset,
+      limit,
+      order: [[`createdAt`, `DESC`]],
+    };
 
     if (fromCategoryId) {
-      include.push({
+      options.include.push({
         required: true,
         model: this._ArticleCategory,
         as: Aliase.ARTICLES_CATEGORIES,
@@ -66,103 +54,126 @@ class NotesService {
       });
     }
 
-    if (comments) {
-      include.push({
-        model: this._Comment,
-        as: Aliase.COMMENTS,
-        include: [
-          {
-            model: this._User,
-            as: Aliase.USER,
-            attributes: [`firstName`, `lastName`, `avatar`],
-          },
-        ],
-      });
-    }
+    let rows = await this._Article.findAll(options);
+    const count = await this._Article.count();
 
-    if (photo) {
-      include.push(Aliase.PHOTO);
-    }
-
-    const order = [];
-
-    if (mostCommented) {
-      order.push([Sequelize.col(`commentsNumber`), `DESC`]);
-    } else {
-      order.push([`createdAt`, `DESC`]);
-    }
-
-    const queryOptions = {
-      order,
-      include,
-      distinct: true,
-
-      ...(withPagination && {
-        offset,
-        limit,
-      }),
-
-      ...(where && {where}),
-
-      ...(needIncludeCommentsNumber && {
-        attributes: {
-          include: [
-            [
-              Sequelize.literal(
-                  `(SELECT COUNT(*) FROM comments WHERE "articleId" = "Article"."id")`
-              ),
-              `commentsNumber`,
-            ],
-          ],
-        },
-      }),
-    };
-
-    const promises = [this._Article.findAll(queryOptions)];
-
-    if (needCount) {
-      if (fromCategoryId) {
-        promises.push(
-            this._ArticleCategory.count({
-              where: {
-                categoryId: fromCategoryId,
-              },
-            })
-        );
-      } else {
-        promises.push(this._Article.count());
-      }
-    }
-
-    const res = await Promise.all(promises);
-
-    const final = needCount ? {count: res[1], rows: res[0]} : res[0];
-    return final;
+    return {count, rows};
   }
 
-  async findOne(
-      id,
-      {comments = false, commentsNumber = false, categories = true} = this
-      ._defaultFindAllOptions
-  ) {
-    const res = await this.findAll({
-      categories,
-      commentsNumber,
-      comments,
-      withPagination: false,
-      where: {id},
-    });
-    return res[0];
+  async findMostCommented({limit}) {
+    const options = {
+      include: [
+        {
+          model: this._Photo,
+          as: Aliase.PHOTO,
+          attributes: [`id`, `name`, `uniqueName`],
+        },
+        {
+          model: this._Category,
+          as: Aliase.CATEGORIES,
+          attributes: [`id`, `name`],
+        },
+      ],
+
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(
+                `(SELECT COUNT(*) FROM comments WHERE "articleId" = "Article"."id")`
+            ),
+            `commentsNumber`,
+          ],
+        ],
+      },
+
+      limit,
+      order: [[Sequelize.col(`commentsNumber`), `DESC`]],
+    };
+
+    const res = await this._Article.findAll(options);
+    const articlesWithComments = res
+      .map((e) => e.get())
+      .filter((article) => article.commentsNumber > 0);
+
+    return articlesWithComments;
+  }
+
+  async findOne(id) {
+    const options = {
+      include: [
+        {
+          model: this._Photo,
+          as: Aliase.PHOTO,
+          attributes: [`id`, `name`, `uniqueName`],
+        },
+        {
+          model: this._Category,
+          as: Aliase.CATEGORIES,
+          attributes: [`id`, `name`],
+        },
+        {
+          model: this._Comment,
+          as: Aliase.COMMENTS,
+          include: [
+            {
+              model: this._User,
+              as: Aliase.USER,
+              attributes: [`firstName`, `lastName`, `avatar`],
+            },
+          ],
+        },
+      ],
+
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(
+                `(SELECT COUNT(*) FROM comments WHERE "articleId" = "Article"."id")`
+            ),
+            `commentsNumber`,
+          ],
+        ],
+      },
+
+      order: [[`createdAt`, `DESC`]],
+    };
+
+    return await this._Article.findByPk(id, options);
   }
 
   async findUserArticles(userId) {
-    return this.findAll({
-      categories: false,
-      commentsNumber: false,
-      photo: false,
-      withPagination: false,
-      where: {userId},
-    });
+    const options = {
+      include: [
+        {
+          model: this._Photo,
+          as: Aliase.PHOTO,
+          attributes: [`id`, `name`, `uniqueName`],
+        },
+        {
+          model: this._Category,
+          as: Aliase.CATEGORIES,
+          attributes: [`id`, `name`],
+        },
+      ],
+
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(
+                `(SELECT COUNT(*) FROM comments WHERE "articleId" = "Article"."id")`
+            ),
+            `commentsNumber`,
+          ],
+        ],
+      },
+
+      order: [[`createdAt`, `DESC`]],
+      where: {
+        userId
+      }
+    };
+
+    return await this._Article.findAll(options);
   }
 
   async create(userId, article) {

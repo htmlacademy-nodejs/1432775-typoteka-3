@@ -8,7 +8,7 @@ const upload = require(`../../utils/multer`);
 const {adaptUserToServer} = require(`../../utils/adapter`);
 const {setCookie, clearCookie} = require(`../../utils/cookie`);
 
-const withValidation = require(`../middlewares/withValidation`);
+const withValidation = require(`../middlewares/with-validation`);
 const csrfProtection = require(`../../utils/csrf-protection`);
 
 const ARTICLES_PER_MAIN_PAGE = 8;
@@ -28,9 +28,8 @@ mainRouter.get(`/`, async (req, res) => {
     categories,
     latestComments,
   ] = await Promise.all([
-    api.getArticles({limit: ARTICLES_PER_MAIN_PAGE, offset, needCount: true}),
-    api.getArticles({
-      mostCommented: true,
+    api.getArticles({limit: ARTICLES_PER_MAIN_PAGE, offset}),
+    api.getCommentedArticles({
       limit: MOST_COMMENTED_ARTICLES_NUMBER,
     }),
     api.getCategories(),
@@ -38,10 +37,13 @@ mainRouter.get(`/`, async (req, res) => {
   ]);
 
   const totalPages = Math.ceil(count / ARTICLES_PER_MAIN_PAGE);
+  const nonEmptyCategories = categories.filter(
+      (category) => category.count > 0
+  );
 
   res.render(`main`, {
     articles,
-    categories,
+    categories: nonEmptyCategories,
     mostCommentedArticles,
     latestComments,
     totalPages,

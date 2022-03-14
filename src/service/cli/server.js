@@ -9,7 +9,7 @@ const {sequelize} = require(`../../utils/sequelize`);
 const socket = require(`../../utils/socket`);
 
 const {getLogger} = require(`../../utils/logger`);
-const logRequest = require(`../middlewares/logRequest`);
+const logRequest = require(`../middlewares/log-request`);
 
 const logger = getLogger({name: `api`});
 const app = express();

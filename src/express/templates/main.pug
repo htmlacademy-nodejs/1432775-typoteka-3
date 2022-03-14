@@ -1,53 +1,64 @@
 extends layout.pug
 
 block content
+  -
+    const MOST_COMMENTED_MAX_LENGTH = 100;
+    const LAST_COMMENT_MAX_LENGTH = 100;
+
   main.main-page
     h1.visually-hidden Главная страница личного блога Типотека
     p
       | Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏
-    section(class='main-page__theme-list')
-      h2.visually-hidden Список тем
-      ul.themes
-        each category in categories
-          li(class='themes__item')
-            a(class='themes__item-link' href=`/articles/category/${category.id}`) #{category.name}
-              sup #{category.count}
-    div(class='main-page__section-flex')
-      section(class='main-page__hot hot')
-        h2(class='hot__name') Самое обсуждаемое
-          span(class='hot__icon hot__icon--fire')
-        ul(class='hot__list')
-          each article of mostCommentedArticles
-            li(class='hot__list-item')
-              span(class='visually-hidden most-commented-id') #{article.id}
-              a(class='hot__list-link' href=`/articles/${article.id}`) #{article.title}
-                sup(class='hot__link-sup') #{article.commentsNumber}
-      section(class='main-page__last last')
-        h2(class='last__name') Последние комментарии
-          span(class='last__icon last__icon--cloud')
-        ul(class='last__list')
-          each comment of latestComments
-            li(class='last__list-item')
-              img(class='last__list-image' src=`/img/${comment.User.avatar}` width='20' height='20' alt='Аватар пользователя')
-              b(class='last__list-name') #{`${comment.User.firstName} ${comment.User.lastName}`}
-              a(class='last__list-link' href=`/articles/${comment.articleId}`) #{comment.text}
-    section(class='main-page__list preview')
-      h2.visually-hidden Список превью статей
-      ul(class='preview__list')
-        each article of articles
-          li(class='preview__item')
-            ul(class='preview__breadcrumbs')
-              each category of article.categories
-                li(class='preview__breadcrumbs-item')
-                  a(class='preview__breadcrumbs-link' href=`/articles/category/${category.id}`) #{category.name}
-            if article.photo
-              div(class='preview__background')
-                img(class='preview__background-image' src=`/img/${article.photo.uniqueName}` width='460' height='240' alt='Фотография пользователя')
-            time(class='preview__time' datetime=`${article.createdAt}`) #{formatDate(article.createdAt)}
-            h3(class='preview__name')
-              a(class='preview__name-link' href=`/articles/${article.id}`) #{article.title}
-            p(class='preview__text') #{article.announce}
-            a(class='preview__comment' href=`/articles/${article.id}`) Комментарии
-              span(class='preview__cloud')
-              b(class='preview__comment-count') #{article.commentsNumber}
-    +pagination(+page, totalPages, 5, `/`)
+
+    if articles.length
+      section(class='main-page__theme-list')
+        h2.visually-hidden Список тем
+        ul.themes
+          each category in categories
+            li(class='themes__item')
+              a(class='themes__item-link' href=`/articles/category/${category.id}`) #{category.name}
+                sup #{category.count}
+      div(class='main-page__section-flex')
+        section(class='main-page__hot hot')
+          h2(class='hot__name') Самое обсуждаемое
+            span(class='hot__icon hot__icon--fire')
+          ul(class='hot__list')
+            each article of mostCommentedArticles
+              li(class='hot__list-item')
+                a(class='hot__list-link' href=`/articles/${article.id}`) #{cut(article.announce, MOST_COMMENTED_MAX_LENGTH)}
+                  sup(class='hot__link-sup') #{article.commentsNumber}
+        section(class='main-page__last last')
+          h2(class='last__name') Последние комментарии
+            span(class='last__icon last__icon--cloud')
+          if latestComments.length
+            ul(class='last__list')
+              each comment of latestComments
+                li(class='last__list-item')
+                  img(class='last__list-image' src=`/img/${comment.User.avatar}` width='20' height='20' alt='Аватар пользователя')
+                  b(class='last__list-name') #{`${comment.User.firstName} ${comment.User.lastName}`}
+                  a(class='last__list-link' href=`/articles/${comment.articleId}`) #{cut(comment.text, LAST_COMMENT_MAX_LENGTH)}
+          else
+            p Здесь пока ничего нет...
+      section(class='main-page__list preview')
+        h2.visually-hidden Список превью статей
+        ul(class='preview__list')
+          each article of articles
+            li(class='preview__item')
+              ul(class='preview__breadcrumbs')
+                each category of article.categories
+                  li(class='preview__breadcrumbs-item')
+                    a(class='preview__breadcrumbs-link' href=`/articles/category/${category.id}`) #{category.name}
+              if article.photo
+                div(class='preview__background')
+                  img(class='preview__background-image' src=`/img/${article.photo.uniqueName}` width='460' height='240' alt='Фотография пользователя')
+              time(class='preview__time' datetime=`${article.createdAt}`) #{formatDate(article.createdAt)}
+              h3(class='preview__name')
+                a(class='preview__name-link' href=`/articles/${article.id}`) #{article.title}
+              p(class='preview__text') #{article.announce}
+              a(class='preview__comment' href=`/articles/${article.id}`) Комментарии
+                span(class='preview__cloud')
+                b(class='preview__comment-count') #{article.commentsNumber}
+      +pagination(+page, totalPages, 5, `/`)
+    else
+      .main-page__empty-wrapper
+        p.main-page__empty-text Здесь пока пусто!

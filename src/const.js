@@ -46,8 +46,8 @@ const ClientDir = {
 const LOG_DIR = `logs/`;
 
 const LogPath = {
-  API: LOG_DIR + `apiLogs.log`,
-  FRONT: LOG_DIR + `frontLogs.log`
+  API: LOG_DIR + `api-logs.log`,
+  FRONT: LOG_DIR + `front-logs.log`
 };
 
 const FILL_DB_QUERY_FILE_NAME = `fill-db.sql`;
@@ -57,7 +57,7 @@ const MockFileName = {
   NOTE_SENTENCES: `sentences.txt`,
   TITLES: `titles.txt`,
   CATEGORIES: `categories.txt`,
-  COMMENT_SENTENCES: `commentSentences.txt`,
+  COMMENT_SENTENCES: `comment-sentences.txt`,
   PHOTOS: `photos.txt`,
   NAMES: `names.txt`,
 };

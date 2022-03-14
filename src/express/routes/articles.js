@@ -6,9 +6,9 @@ const {api} = require(`../api`);
 const upload = require(`../../utils/multer`);
 const {adaptArticleToServer} = require(`../../utils/adapter`);
 
-const asyncHandler = require(`../middlewares/asyncHandler`);
-const withValidation = require(`../middlewares/withValidation`);
-const withAuth = require(`../middlewares/withAuth`);
+const asyncHandler = require(`../middlewares/async-handler`);
+const withValidation = require(`../middlewares/with-validation`);
+const withAuth = require(`../middlewares/with-auth`);
 const csrfProtection = require(`../../utils/csrf-protection`);
 const {Role} = require(`../../const`);
 
@@ -126,10 +126,11 @@ articlesRouter.get(
       ]);
 
       const chosenCategory = categories.find((e) => e.id === +id);
+      const nonEmptyCategories = categories.filter((category) => category.count > 0);
       const totalPages = Math.ceil(count / ARTICLES_IN_CATEGORY_BY_PAGE);
 
       return res.render(`articles-by-category`, {
-        categories,
+        categories: nonEmptyCategories,
         articles,
         chosenCategory,
         page,
