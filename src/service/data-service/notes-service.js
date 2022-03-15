@@ -54,7 +54,7 @@ class NotesService {
       });
     }
 
-    let rows = await this._Article.findAll(options);
+    const rows = await this._Article.findAll(options);
     const count = await this._Article.count();
 
     return {count, rows};

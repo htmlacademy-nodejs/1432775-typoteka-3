@@ -1,16 +1,22 @@
 "use strict";
 
 const express = require(`express`);
+const http = require(`http`);
 
 const {StatusCode, BACK_DEFAULT_PORT, ExitCode} = require(`../../const`);
 const routes = require(`../api`);
 const {sequelize} = require(`../../utils/sequelize`);
+const socket = require(`../../utils/socket`);
 
 const {getLogger} = require(`../../utils/logger`);
 const logRequest = require(`../middlewares/log-request`);
 
 const logger = getLogger({name: `api`});
 const app = express();
+const server = http.createServer(app);
+const io = socket(server);
+
+app.io = io;
 
 app.use(express.json());
 
@@ -43,7 +49,7 @@ const run = async () => {
     process.exit(ExitCode.ERROR);
   }
 
-  app.listen(port, (err) => {
+  server.listen(port, (err) => {
     if (err) {
       logger.error(`Error on server creation: ${err.message}`);
       process.exit(1);
