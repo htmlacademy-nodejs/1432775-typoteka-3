@@ -9,7 +9,7 @@ const validateBody = require(`../middlewares/validation/validate-body`);
 const checkExistance = require(`../middlewares/check-existance`);
 const validateParams = require(`../middlewares/validation/validate-params`);
 
-const {StatusCode, Role} = require(`../../const`);
+const {StatusCode, Role, events} = require(`../../const`);
 const authJwt = require(`../middlewares/auth-jwt`);
 
 const route = new Router();
@@ -90,7 +90,10 @@ module.exports = (app, notesService, commentsService) => {
             id,
             res.user.id
         );
-        return res.status(StatusCode.CREATED).json(newComment);
+
+        res.status(StatusCode.CREATED).json(newComment);
+        const updatedArticle = await notesService.findOne(newComment.articleId);
+        req.app.io.emit(events.comment.create, {newComment, updatedArticle});
       }
   );
 
