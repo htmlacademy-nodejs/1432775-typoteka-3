@@ -3,7 +3,7 @@
 
   const formatDate = (dateString, needTime = false) => {
     const date = new Date(dateString);
-    let formatted = `${date.getDay()}.${date.getMonth()}.${date.getFullYear()}`;
+    let formatted = `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
     if (needTime) {
       formatted += `, ${date.getHours()}:${date.getMinutes()}`;
     }
