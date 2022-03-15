@@ -37,7 +37,8 @@ block content
             ul(class='last__list')
               each comment of latestComments
                 li(class='last__list-item')
-                  img(class='last__list-image' src=`/img/${comment.User.avatar}` width='20' height='20' alt='Аватар пользователя')
+                  if comment.User.avatar
+                    img(class='last__list-image' src=`/img/${comment.User.avatar}` width='20' height='20' alt='Аватар пользователя')
                   b(class='last__list-name') #{`${comment.User.firstName} ${comment.User.lastName}`}
                   a(class='last__list-link' href=`/articles/${comment.articleId}`) #{cut(comment.text, LAST_COMMENT_MAX_LENGTH)}
           else
