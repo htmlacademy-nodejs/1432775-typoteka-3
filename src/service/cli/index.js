@@ -3,7 +3,7 @@
 const version = require(`./version`);
 const help = require(`./help`);
 const server = require(`./server`);
-const fill = require(`./fill`);
+const fill = require(`./fill/fill`);
 const fillDb = require(`./filldb`);
 
 module.exports = {

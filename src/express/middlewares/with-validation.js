@@ -1,6 +1,6 @@
 "use strict";
 
-const {ValidationErr} = require(`../../utils/exceptions`);
+const {ValidationError} = require(`../../utils/exceptions`);
 
 module.exports =
   (fn, renderRoute, getRouteOptions) =>
@@ -9,17 +9,15 @@ module.exports =
         await fn(...args);
       } catch (err) {
         const [req, res, next] = args;
-        if (err instanceof ValidationErr) {
+        if (err instanceof ValidationError) {
           const templateData = {};
           const validationMessages = err.data.split(`\n`);
 
           if (getRouteOptions) {
-            let routeOptions;
-            if (typeof getRouteOptions === `function`) {
-              routeOptions = getRouteOptions(req, res);
-            } else {
-              routeOptions = getRouteOptions;
-            }
+            const routeOptions =
+            typeof getRouteOptions === `function`
+              ? getRouteOptions(req, res)
+              : getRouteOptions;
 
             const data = await Promise.all(
                 Object.values(routeOptions).map((request) =>

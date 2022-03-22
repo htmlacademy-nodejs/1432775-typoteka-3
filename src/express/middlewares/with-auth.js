@@ -2,14 +2,14 @@
 
 const {Cookie} = require(`../../utils/cookie`);
 const {api} = require(`../api`);
-const {UnauthorizedErr} = require(`../../utils/exceptions`);
+const {UnauthorizedError} = require(`../../utils/exceptions`);
 
 module.exports = (...allowedRoles) => (req, res, next) => {
   const accessToken = req.cookies[Cookie.ACCESS_TOKEN];
   const refreshToken = req.cookies[Cookie.REFRESH_TOKEN];
 
   if (!accessToken) {
-    next(new UnauthorizedErr());
+    next(new UnauthorizedError());
   }
 
   if (allowedRoles.length) {
@@ -17,7 +17,7 @@ module.exports = (...allowedRoles) => (req, res, next) => {
     const userRoles = user.roles;
 
     if (!userRoles.length) {
-      next(new UnauthorizedErr());
+      next(new UnauthorizedError());
     }
 
     const isAllowed = userRoles.every((role) =>
@@ -25,7 +25,7 @@ module.exports = (...allowedRoles) => (req, res, next) => {
     );
 
     if (!isAllowed) {
-      next(new UnauthorizedErr());
+      next(new UnauthorizedError());
     }
   }
 

@@ -6,7 +6,7 @@ require(`pg`).defaults.parseInt8 = true;
 const Sequelize = require(`sequelize`);
 const {Env} = require(`../const`);
 const {DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME} = process.env;
-const defineModels = require(`../service/models`);
+const defineModels = require(`../service/models/define-models`);
 
 const initdb = async (
     sequelize,
