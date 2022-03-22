@@ -1,22 +1,22 @@
 "use strict";
 
-class NotFoundErr extends Error {
+class NotFoundError extends Error {
   constructor() {
     super(`NotFound`);
   }
 }
 
-class ValidationErr extends Error {
+class ValidationError extends Error {
   constructor(err) {
-    super(`ValidationErr`);
+    super(`ValidationError`);
     this.data = err.response.data;
   }
 }
 
-class UnauthorizedErr extends Error {
+class UnauthorizedError extends Error {
   constructor() {
     super(`Unauthorized`);
   }
 }
 
-module.exports = {NotFoundErr, ValidationErr, UnauthorizedErr};
+module.exports = {NotFoundError, ValidationError, UnauthorizedError};
