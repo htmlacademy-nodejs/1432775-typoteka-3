@@ -9,9 +9,9 @@ const {
   HttpMethod,
 } = require(`../const`);
 const {
-  NotFoundErr,
-  ValidationErr,
-  UnauthorizedErr,
+  NotFoundError,
+  ValidationError,
+  UnauthorizedError,
 } = require(`../utils/exceptions`);
 const {setCookie} = require(`../utils/cookie`);
 
@@ -75,7 +75,7 @@ class Api {
               this._tokens = tokens;
               return this._axios.request(res.config);
             } catch (e) {
-              throw new UnauthorizedErr();
+              throw new UnauthorizedError();
             }
           }
 
@@ -85,16 +85,16 @@ class Api {
           const {status} = err.response;
           switch (status) {
             case StatusCode.NOT_FOUND:
-              throw new NotFoundErr();
+              throw new NotFoundError();
 
             case StatusCode.BAD_REQUEST:
-              throw new ValidationErr(err);
+              throw new ValidationError(err);
 
             case StatusCode.UNAUTHORIZED:
-              throw new UnauthorizedErr();
+              throw new UnauthorizedError();
 
             case StatusCode.FORBIDDEN:
-              throw new UnauthorizedErr();
+              throw new UnauthorizedError();
           }
           return Promise.reject(err);
         }

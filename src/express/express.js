@@ -12,7 +12,7 @@ const {
 } = require(`../const`);
 const router = require(`./routes`);
 const {getFrontLogger} = require(`../utils/logger`);
-const {NotFoundErr, UnauthorizedErr} = require(`../utils/exceptions`);
+const {NotFoundError, UnauthorizedError} = require(`../utils/exceptions`);
 const pinUserObj = require(`./middlewares/pin-user-obj`);
 
 const logger = getFrontLogger({name: `express`});
@@ -34,11 +34,11 @@ app.set(`view engine`, `pug`);
 app.use((_, res) => res.status(StatusCode.NOT_FOUND).render(`404`));
 
 app.use((err, _req, res, _next) => {
-  if (err instanceof NotFoundErr) {
+  if (err instanceof NotFoundError) {
     return res.status(StatusCode.NOT_FOUND).render(`404`);
   }
 
-  if (err instanceof UnauthorizedErr) {
+  if (err instanceof UnauthorizedError) {
     return res.status(StatusCode.UNAUTHORIZED).redirect(`/login`);
   }
 
