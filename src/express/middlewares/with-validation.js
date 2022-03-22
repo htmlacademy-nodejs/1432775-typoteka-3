@@ -14,12 +14,10 @@ module.exports =
           const validationMessages = err.data.split(`\n`);
 
           if (getRouteOptions) {
-            let routeOptions;
-            if (typeof getRouteOptions === `function`) {
-              routeOptions = getRouteOptions(req, res);
-            } else {
-              routeOptions = getRouteOptions;
-            }
+            const routeOptions =
+            typeof getRouteOptions === `function`
+              ? getRouteOptions(req, res)
+              : getRouteOptions;
 
             const data = await Promise.all(
                 Object.values(routeOptions).map((request) =>
